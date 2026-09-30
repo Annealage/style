@@ -66,6 +66,14 @@ p { margin: 0; }
 .btn.primary { background: var(--ink); border-color: var(--ink); color: var(--view); }
 .btn.danger { color: var(--danger); }
 .btn[aria-pressed=true], .btn.on { background: var(--temper-wash); border-color: var(--temper); color: var(--ink); }
+/* The light/dark switch (scheme.js): <button class="btn quiet icon" data-scheme-toggle>
+   with one <svg class="ico" data-for="system|light|dark"> each; the one
+   matching the button's data-scheme shows. */
+[data-scheme-toggle] > svg[data-for] { display: none; }
+[data-scheme-toggle][data-scheme=system] > svg[data-for=system],
+[data-scheme-toggle][data-scheme=light] > svg[data-for=light],
+[data-scheme-toggle][data-scheme=dark] > svg[data-for=dark],
+[data-scheme-toggle]:not([data-scheme]) > svg[data-for=system] { display: block; }
 kbd {
   display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 3px;
   border: 1px solid var(--rule-2); border-radius: 2px; background: var(--field);

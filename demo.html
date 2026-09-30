@@ -6,6 +6,7 @@
 <title>Annealage Workbench theme reference</title>
 <!-- The order a product page uses: tokens, the agent layer's agent.css, the
      theme, then the product's own stylesheet. -->
+<script src="scheme.js"></script>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="demo.css">
@@ -25,6 +26,7 @@
     <div class="tb-right">
       <button class="btn quiet" id="pauseBtn" type="button" aria-pressed="false" title="Stop the agent's view and project tools"><svg class="ico ico--sm"><use href="icons.svg#i-pause"/></svg><span data-label>Pause</span></button>
       <button class="btn quiet icon on" id="panelBtn" type="button" aria-label="Show or hide the review panel" title="Review panel"><svg class="ico"><use href="icons.svg#i-panel"/></svg></button>
+      <button class="btn quiet icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico" data-for="system"><use href="icons.svg#i-monitor"/></svg><svg class="ico" data-for="light"><use href="icons.svg#i-sun"/></svg><svg class="ico" data-for="dark"><use href="icons.svg#i-moon"/></svg></button>
       <button class="btn quiet icon" type="button" aria-label="Settings" title="Settings"><svg class="ico"><use href="icons.svg#i-settings"/></svg></button>
     </div>
   </header>
