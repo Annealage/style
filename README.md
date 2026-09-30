@@ -20,7 +20,7 @@ The page supplies the frame markup (`.wb` and its children, see `demo.html`), th
 - `data-turn-started` (epoch ms)
 - `data-pending` (the number of open approvals)
 
-Canvas and WebGL code that needs a token colour should resolve it through an element rather than read the custom property. `getComputedStyle(root).getPropertyValue('--pin')` returns the unresolved `light-dark(...)` text. Instead, set `probe.style.color = 'var(--pin)'` on a hidden element and read `getComputedStyle(probe).color`. Redraw when `matchMedia('(prefers-color-scheme: dark)')` changes.
+Canvas and WebGL code that needs a token colour should resolve it through an element rather than read the custom property. `getComputedStyle(root).getPropertyValue('--pin')` returns the unresolved `light-dark(...)` text. Instead, set `probe.style.color = 'var(--pin)'` on a hidden element and read `getComputedStyle(probe).color`. A module script doesn't wait for stylesheets, so wait for the `<link rel=stylesheet>` loads before the first read, or the colours come out as the inherited text colour. Redraw when `matchMedia('(prefers-color-scheme: dark)')` changes.
 
 Ember (`#E8632A`) means "the agent needs you". It's the pending approval's Allow button (`.pactions button.allow`) and the status-bar `.alert`, and nothing else on the page uses it.
 
