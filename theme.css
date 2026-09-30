@@ -207,7 +207,7 @@ body:not(.panel-open) .wb[data-rail=none] { grid-template-columns: 0 minmax(0, 1
 .vhead .right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .vhead .btn { height: 24px; }
 .canvas { position: relative; min-height: 0; overflow: hidden; }
-.hud { position: absolute; z-index: 3; font-size: 11.5px; color: var(--ink-2); }
+.hud { position: absolute; z-index: 3; padding: 1px 6px; border-radius: 2px; background: color-mix(in oklab, var(--panel) 85%, transparent); font-size: 11.5px; color: var(--ink-2); }
 .hud--tl { left: 10px; top: 8px; }
 .hud--bl { left: 10px; bottom: 8px; }
 
@@ -217,6 +217,7 @@ body:not(.panel-open) .wb[data-rail=none] { grid-template-columns: 0 minmax(0, 1
   background: var(--panel); border-top: 1px solid var(--rule);
   padding-left: 6px; overflow-x: auto; scrollbar-width: none;
 }
+.subtabs[hidden] { display: none; }
 .subtab {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 0 12px; border: 0; background: none; cursor: pointer; white-space: nowrap;
@@ -224,6 +225,11 @@ body:not(.panel-open) .wb[data-rail=none] { grid-template-columns: 0 minmax(0, 1
 }
 .subtab:hover { color: var(--ink); background: var(--hover); }
 .subtab[aria-current] { background: var(--view); color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--temper); margin-top: -1px; }
+/* A view with sheet tabs along the bottom: <main class="view"> .vhead, .canvas, .subtabs. */
+.view:has(> .subtabs:not([hidden])) { grid-template-rows: 32px minmax(0, 1fr) auto; }
+.wb[data-preview] .view:has(> .subtabs:not([hidden])) { grid-template-rows: 32px auto minmax(0, 1fr) auto; }
+/* A small outlined label, e.g. "view only" beside the document name. */
+.tag { display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border: 1px solid var(--rule-2); border-radius: 2px; font-size: 11px; font-weight: 400; color: var(--ink-2); white-space: nowrap; }
 
 /* A view-local side panel beside the drawing, for controls that belong to
    one view rather than the page (a board's layers and query). Selection,
@@ -235,6 +241,7 @@ body:not(.panel-open) .wb[data-rail=none] { grid-template-columns: 0 minmax(0, 1
 .canvas.split[data-vpanel=closed] > .vpanel { display: none; }
 .vpanel { min-width: 0; min-height: 0; overflow: hidden auto; scrollbar-width: thin; background: var(--panel); border-right: 1px solid var(--rule); }
 .stage { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
+.canvas:not(.split) > .stage { position: absolute; inset: 0; }
 .stage > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
 
 /* Chips: presets and example queries. aria-pressed=true for a chosen preset. */
@@ -322,6 +329,10 @@ table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anyw
 #timeline { display: none; }
 .wb[data-side=timeline] #review { display: none; }
 .wb[data-side=timeline] #timeline { display: flex; }
+/* More than two tabs in one inspector: .ptabs buttons with aria-controls,
+   and .ipane children switched with the hidden attribute. */
+.ipane { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.ipane[hidden] { display: none; }
 .iscroll { flex: 1; min-height: 0; overflow: hidden auto; scrollbar-width: thin; }
 .toggles { display: grid; gap: 4px; padding: 8px 12px; border-bottom: 1px solid var(--rule); }
 
@@ -751,6 +762,189 @@ table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anyw
 }
 #chat.dragover { outline: 2px dashed var(--temper); outline-offset: -2px; background: var(--temper-wash); }
 
+/* ------------------------------------------------------ review components */
+/* For a product that runs a review rather than a chat (Trace), and anything
+   else that needs them: a run console in the chat's place, findings,
+   coverage, data tables, and the upload page's drop zone and notice. */
+
+/* The run console, in the grid's chat area:
+   <section class="console"><header class="chead"><h1>Run</h1>... .working, .spacer, .hdrbtn</header>
+   <div class="cbody"><ol class="steps">...</ol><pre class="log">...</pre></div></section>
+   data-working on .console shows the .working bar. */
+.console {
+  grid-area: chat;
+  display: grid; grid-template-rows: 32px minmax(0, 1fr);
+  min-width: 0; min-height: 0;
+  background: var(--panel); border-top: 1px solid var(--rule-2);
+}
+.chead {
+  display: flex; align-items: center; gap: 14px; min-width: 0;
+  padding: 0 6px 0 0; background: var(--chrome); border-bottom: 1px solid var(--rule);
+}
+.chead h1 {
+  align-self: stretch; margin: 0; display: flex; align-items: center; gap: 8px;
+  padding: 0 14px; font-size: 12.5px; font-weight: 700;
+  background: var(--panel); box-shadow: inset 0 2px 0 var(--temper);
+  border-right: 1px solid var(--rule); margin-bottom: -1px;
+}
+.chead > span { font-size: 12px; color: var(--ink-2); }
+.chead .spacer { flex: 1; }
+.console[data-working] .working { display: inline-flex; }
+.cbody { display: grid; grid-template-columns: minmax(260px, 380px) minmax(0, 1fr); min-height: 0; }
+.cbody > * { min-width: 0; min-height: 0; overflow: auto; scrollbar-width: thin; }
+.cbody > * + * { border-left: 1px solid var(--rule); }
+
+/* Run steps: li.step[data-state=done|running|waiting|queued|failed|skipped]
+   holding a .name and a .meta; a nested ol for a stage's parts. */
+.steps { margin: 0; padding: 6px 0; list-style: none; font-size: 12.5px; }
+.steps ol { margin: 0; padding: 0 0 0 18px; list-style: none; }
+.step { display: flex; align-items: center; gap: 8px; min-height: 24px; padding: 0 12px; }
+.step::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.step[data-state=done]::before { background: var(--quench); box-shadow: none; }
+.step[data-state=running]::before { background: var(--temper); box-shadow: 0 0 0 3px var(--temper-wash); }
+.step[data-state=waiting]::before { box-shadow: inset 0 0 0 1.5px var(--warn); }
+.step[data-state=failed]::before { background: var(--danger); box-shadow: none; }
+.step[data-state=skipped] { color: var(--ink-3); }
+.step[data-state=queued] .name { color: var(--ink-2); }
+.step[data-state=running] .name { font-weight: 600; }
+.step .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.step .meta { margin-left: auto; flex: none; font: 400 11.5px var(--mono); color: var(--ink-2); }
+.log { margin: 0; padding: 8px 12px; font: 400 11.5px/1.55 var(--mono); color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere; }
+.log b { font-weight: 500; color: var(--ink); }
+.log .err { color: var(--danger); }
+.log .warn { color: var(--warn); }
+
+/* Spend against a ceiling: <progress class="meter" value max>. */
+.meter { width: 64px; height: 5px; border: 0; background: var(--temper-wash); appearance: none; vertical-align: middle; }
+.meter::-webkit-progress-bar { background: var(--temper-wash); }
+.meter::-webkit-progress-value { background: var(--temper); }
+.meter::-moz-progress-bar { background: var(--temper); }
+
+/* Filters: .filters holding .frow rows, each a label and .chips. */
+.filters { padding: 6px 0 2px; border-bottom: 1px solid var(--rule); }
+.frow { display: flex; align-items: baseline; gap: 4px; padding: 0 12px 4px; }
+.frow > span { flex: none; width: 64px; font-size: 11.5px; color: var(--ink-2); }
+.frow .chips { padding: 0; }
+.chip .n { margin-left: 4px; font: 400 11px var(--mono); color: var(--ink-3); }
+
+/* Severity: .sev[data-sev=critical|major|minor|info]. Never ember. */
+.sev {
+  display: inline-grid; place-items: center; flex: none;
+  height: 17px; padding: 0 5px; border-radius: 2px;
+  font-size: 11px; font-weight: 600; line-height: 1;
+  color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--rule-2);
+}
+.sev[data-sev=critical] { background: var(--danger); color: var(--panel); box-shadow: none; }
+.sev[data-sev=major] { color: var(--warn); box-shadow: inset 0 0 0 1px var(--warn); }
+.sev[data-sev=info] { color: var(--ink-3); }
+/* Status in words: .fstat[data-status=unverified|confirmed|confirmed-interpretive|refuted|needs-evidence]. */
+.fstat { font-size: 11.5px; color: var(--ink-2); }
+.fstat[data-status^=confirmed] { color: var(--quench); }
+.fstat[data-status=needs-evidence] { color: var(--warn); }
+.fstat[data-status=refuted] { color: var(--ink-3); }
+
+/* A finding: <details class="finding"><summary> .fhead (.sev, .fid, .fstat), .claim, .subj </summary> .fbody </details>.
+   Refuted findings stay listed, dimmed with the claim struck through. */
+.finding { border-bottom: 1px solid var(--rule); }
+.finding > summary { display: grid; gap: 3px; padding: 8px 12px; list-style: none; cursor: pointer; }
+.finding > summary::-webkit-details-marker { display: none; }
+.finding > summary:hover { background: var(--hover); }
+.finding[open] > summary, .finding[aria-current] > summary { background: var(--temper-wash); box-shadow: inset 2px 0 0 var(--temper); }
+.fhead { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.fid { font: 500 11.5px var(--mono); color: var(--ink-2); }
+.fhead .fstat { margin-left: auto; }
+.claim { font-size: 12.5px; line-height: 1.4; }
+.finding[data-status=refuted] .claim { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--rule-2); }
+.subj { display: flex; flex-wrap: wrap; gap: 4px; }
+.subj code { padding: 0 4px; border-radius: 2px; background: var(--field); box-shadow: inset 0 0 0 1px var(--rule); font-size: 11px; color: var(--ink-2); }
+.fbody { display: grid; gap: 8px; padding: 4px 12px 12px 14px; font-size: 12.5px; box-shadow: inset 2px 0 0 var(--temper); }
+.fbody h3 { margin: 4px 0 0; font-size: 11.5px; font-weight: 600; color: var(--ink-2); }
+.fbody p { line-height: 1.45; }
+.fbody .acts { display: flex; flex-wrap: wrap; gap: 6px; }
+/* Evidence: ul.evidence of li each with a .etype and its text; a datasheet cite as a .linkish. */
+.evidence { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.evidence li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; font: 400 11.5px/1.45 var(--mono); overflow-wrap: anywhere; }
+.evidence .etype { font-family: var(--font); color: var(--ink-3); }
+.note { padding: 6px 8px; border-left: 2px solid var(--rule-2); background: var(--field); font-size: 12px; color: var(--ink-2); }
+
+/* Coverage per dimension: <details class="sec cov"> with .covlist groups. */
+.covcounts { margin-left: auto; flex: none; display: flex; gap: 8px; white-space: nowrap; font: 400 11px var(--mono); color: var(--ink-2); }
+.covcounts .ne { color: var(--warn); }
+.covlist { display: grid; gap: 2px; margin: 0; padding: 0 12px 6px; list-style: none; font-size: 12px; }
+.covlist li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 6px; align-items: baseline; }
+.covlist li::before { content: ""; width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.covlist .ck::before { background: var(--quench); box-shadow: none; }
+.covlist .ne::before { box-shadow: inset 0 0 0 1.5px var(--warn); }
+.covlist .nc { color: var(--ink-2); }
+.covhead { padding: 4px 12px 2px; font-size: 11.5px; color: var(--ink-2); }
+
+/* A data table in a panel or page: table.dtable, a .state tag in a cell. */
+.dtable { width: 100%; border-collapse: collapse; font-size: 12px; }
+.dtable th { position: sticky; top: 0; z-index: 1; padding: 5px 8px; background: var(--panel); border-bottom: 1px solid var(--rule-2); font-weight: 600; font-size: 11.5px; color: var(--ink-2); text-align: left; white-space: nowrap; }
+.dtable td { padding: 4px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.dtable td.mono, .dtable td code { font: 400 11.5px var(--mono); }
+.dtable td.num { text-align: right; font: 400 11.5px var(--mono); }
+.dtable th:first-child, .dtable td:first-child { padding-left: 12px; white-space: nowrap; }
+.dtable tr:hover td { background: var(--hover); }
+.dtable tr[aria-current] td { background: var(--temper-wash); }
+/* .state[data-state=...]: good states in quench, gaps in warn, failures in danger. */
+.state { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; white-space: nowrap; color: var(--ink-2); }
+.state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.state[data-state=covered]::before, .state[data-state=agree]::before, .state[data-state=ok]::before { background: var(--quench); box-shadow: none; }
+.state[data-state=missing], .state[data-state=differ], .state[data-state=no-mpn] { color: var(--warn); }
+.state[data-state=missing]::before, .state[data-state=differ]::before, .state[data-state=no-mpn]::before { box-shadow: inset 0 0 0 1.5px var(--warn); }
+.state[data-state=queued]::before { box-shadow: inset 0 0 0 1.5px var(--temper); }
+.state[data-state=failed] { color: var(--danger); }
+.state[data-state=failed]::before { background: var(--danger); box-shadow: none; }
+
+/* A page outside the Workbench frame (an upload or front page):
+   <div class="page"><header class="titlebar">...</header><main class="pagebody">...</main></div> */
+.page { min-height: 100vh; min-height: 100dvh; display: grid; grid-template-rows: 38px auto; align-content: start; background: var(--view); }
+.page > .titlebar { grid-area: auto; }
+.pagebody { width: min(880px, 100%); margin: 0 auto; padding: 28px 20px 48px; display: grid; gap: 18px; align-content: start; }
+.pagebody h1 { margin: 0; font-size: 22px; font-weight: 700; }
+.pagebody h2 { margin: 8px 0 0; font-size: 15px; font-weight: 700; }
+.pagebody .lede { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+.card { background: var(--panel); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; }
+.card > h2, .card > .chd { margin: 0; padding: 8px 12px; font-size: 13px; font-weight: 700; background: var(--chrome); border-bottom: 1px solid var(--rule); }
+.card > p, .card > ul { margin: 0; padding: 10px 12px; }
+.pagebody > [hidden] { display: none; }
+.pagebody[hidden] { display: none; }
+.pageacts { display: flex; flex-wrap: wrap; gap: 8px; }
+.card .dtable th { background: var(--panel); }
+
+/* A plain notice: .notice, with .notice--warn for one the user must read. */
+.notice { padding: 10px 12px; border: 1px solid var(--rule-2); border-left-width: 3px; border-radius: var(--r); background: var(--panel); font-size: 13px; line-height: 1.5; }
+.notice--warn { border-left-color: var(--warn); }
+.notice ul { margin: 4px 0 0; padding-left: 18px; }
+
+/* The drop zone: label.drop around a hidden file input. .over while dragging. */
+.drop {
+  display: grid; place-items: center; gap: 8px; min-height: 180px; padding: 24px;
+  border: 1.5px dashed var(--rule-2); border-radius: var(--r); background: var(--panel);
+  text-align: center; font-size: 13px; color: var(--ink-2); cursor: pointer;
+}
+.drop:hover, .drop.over { border-color: var(--temper); background: var(--temper-wash); color: var(--ink); }
+.drop .ico { width: 28px; height: 28px; color: var(--temper-text); }
+.drop b { font-size: 15px; color: var(--ink); }
+.drop input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+/* A labelled read-only value with a copy button, e.g. a share link. */
+.linkrow { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 6px 12px; }
+.linkrow > span { font-size: 12px; color: var(--ink-2); }
+.linkrow .input { font: 400 12px var(--mono); }
+@media (max-width: 900px) {
+  .console { grid-area: main; border-top: 0; }
+  .cbody { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .cbody > * + * { border-left: 0; border-top: 1px solid var(--rule); }
+  .linkrow { grid-template-columns: minmax(0, 1fr) auto; }
+  .linkrow > span { grid-column: 1 / -1; }
+  .card { overflow-x: auto; }
+  .dtable th:first-child, .dtable td:first-child { white-space: normal; }
+  .dtable td code { overflow-wrap: anywhere; }
+  .pagebody { padding: 20px 12px 40px; }
+}
+
 /* ------------------------------------------------ settings (settings.js) */
 .modal { background: rgba(10, 12, 15, 0.45); }
 .setpanel {
@@ -822,7 +1016,14 @@ table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anyw
   #tabbar button.on { color: var(--ink); font-weight: 700; background: var(--panel); box-shadow: inset 0 -2px 0 var(--temper); }
   .view, .inspector, #chat { grid-area: main; }
   body:not(.panel-open) .inspector, #timeline, .wb[data-side=timeline] #review { display: flex; border-left: 0; }
-  .ptabs { display: none; }
+  /* Review/Timeline come from the tab bar; an inspector with its own panes keeps its tabs. */
+  .ptabs:not(:has([aria-controls])) { display: none; }
+  .ptabs { margin-left: -12px; }
+  /* Title-bar buttons drop their words to fit: <span class="lbl"> around the text. */
+  .titlebar .btn > .lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .titlebar .btn:has(> .lbl) { width: var(--ctl); padding: 0; }
+  /* The floating tools sit above a view's sheet tabs. */
+  .wb:has(> .view > .subtabs:not([hidden])) > .rail { margin-bottom: 40px; }
 
   #chat { display: flex; flex-direction: column; border-top: 0; }
   #chat > header { flex: none; flex-wrap: wrap; gap: 4px 12px; padding: 0 8px 6px 0; height: auto; }
