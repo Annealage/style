@@ -32,6 +32,8 @@
   var root = document.documentElement;
   var mq = window.matchMedia("(prefers-color-scheme: dark)");
   var ORDER = ["system", "light", "dark"];
+  // A mark's dark source: its original media, or the one kept once rewritten.
+  var SOURCES = "picture > source[media*='prefers-color-scheme'], picture > source[data-scheme-media]";
   var LABEL = { system: "Colours: follow the system", light: "Colours: light", dark: "Colours: dark" };
 
   function stored() {
@@ -49,7 +51,7 @@
 
   function fixSources(scope) {
     var forced = stored();
-    var list = (scope || document).querySelectorAll("picture > source[media*='prefers-color-scheme']");
+    var list = (scope || document).querySelectorAll(SOURCES);
     for (var i = 0; i < list.length; i++) fixSource(list[i], forced);
   }
   function fixSource(s, forced) {
@@ -117,7 +119,7 @@
       for (var j = 0; j < added.length; j++) {
         var n = added[j];
         if (n.nodeType !== 1) continue;
-        if (n.matches("picture > source[media*='prefers-color-scheme']")) fixSource(n, forced);
+        if (n.matches(SOURCES)) fixSource(n, forced);
         else if (n.querySelector) fixSources(n);
       }
     }
