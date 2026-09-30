@@ -904,14 +904,17 @@ table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anyw
 .finding > summary:hover { background: var(--hover); }
 .finding[open] > summary, .finding[aria-current] > summary { background: var(--temper-wash); box-shadow: inset 2px 0 0 var(--temper); }
 .fhead { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.fid { font: 500 11.5px var(--mono); color: var(--ink-2); }
-.fhead .fstat { margin-left: auto; }
+.fid { margin-right: auto; font: 500 11.5px var(--mono); color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.fhead > :not(.fid) { flex: none; }
 /* The owner's triage, separate from the review's status:
    .ftri[data-triage=accepted|dismissed] beside .fstat (open shows nothing).
    A dismissed finding dims like a refuted one, without the strike-through. */
 .ftri { font-size: 11px; color: var(--ink-2); padding: 0 5px; border-radius: 2px; box-shadow: inset 0 0 0 1px var(--rule-2); }
-.fhead .ftri { margin-left: auto; }
-.fhead .ftri + .fstat { margin-left: 0; }
+/* Beside the status: .fver names a non-skeptic verifier (a deterministic
+   check), .fstale says a fact the finding used has changed since. */
+.fver, .fstale { font-size: 11px; padding: 0 5px; border-radius: 2px; }
+.fver { font-family: var(--mono); color: var(--ink-2); background: var(--field); box-shadow: inset 0 0 0 1px var(--rule); }
+.fstale { color: var(--warn); box-shadow: inset 0 0 0 1px var(--warn); }
 .ftri[data-triage=accepted] { color: var(--temper-text); box-shadow: inset 0 0 0 1px var(--temper); }
 .finding[data-triage=dismissed] .claim { color: var(--ink-2); }
 .finding[hidden] { display: none; }
