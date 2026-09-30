@@ -43,13 +43,13 @@
      takes the next slot of the series; slot 1 is the neutral part grey and
      2-8 are muted tones at one lightness, none near ember. */
   --mv-part-1: light-dark(#A4ACB2, #7C868D);
-  --mv-part-2: light-dark(#84A4B7, #6C8B9E);
-  --mv-part-3: light-dark(#AD9C7F, #958468);
-  --mv-part-4: light-dark(#8BA790, #738E78);
-  --mv-part-5: light-dark(#A797B4, #8E7F9B);
-  --mv-part-6: light-dark(#B593A2, #9C7B8A);
-  --mv-part-7: light-dark(#7EA8A7, #668F8E);
-  --mv-part-8: light-dark(#A0A181, #87896A);
+  --mv-part-2: light-dark(#B29B74, #9E855B);
+  --mv-part-3: light-dark(#84A98B, #6D9574);
+  --mv-part-4: light-dark(#AA94BB, #957EA7);
+  --mv-part-5: light-dark(#7AA5BF, #6190AB);
+  --mv-part-6: light-dark(#BC90A4, #A8798F);
+  --mv-part-7: light-dark(#71ABAA, #579695);
+  --mv-part-8: light-dark(#A0A277, #8B8D5F);
   --mv-edge: light-dark(#4A5358, #151A1A);
   --mv-grid: light-dark(#E3E8E7, #1B2222);
   --mv-grid-2: light-dark(#CCD4D2, #263030);
