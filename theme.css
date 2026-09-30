@@ -225,6 +225,74 @@ body:not(.panel-open) .wb[data-rail=none] { grid-template-columns: 0 minmax(0, 1
 .subtab:hover { color: var(--ink); background: var(--hover); }
 .subtab[aria-current] { background: var(--view); color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--temper); margin-top: -1px; }
 
+/* A view-local side panel beside the drawing, for controls that belong to
+   one view rather than the page (a board's layers and query). Selection,
+   findings and comments stay in the inspector.
+   <div class="canvas split"><aside class="vpanel">details.sec ...</aside><div class="stage">...</div></div>
+   data-vpanel=closed on the .canvas hides the panel. */
+.canvas.split { display: grid; grid-template-columns: 232px minmax(0, 1fr); }
+.canvas.split[data-vpanel=closed] { grid-template-columns: minmax(0, 1fr); }
+.canvas.split[data-vpanel=closed] > .vpanel { display: none; }
+.vpanel { min-width: 0; min-height: 0; overflow: hidden auto; scrollbar-width: thin; background: var(--panel); border-right: 1px solid var(--rule); }
+.stage { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
+.stage > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+/* Chips: presets and example queries. aria-pressed=true for a chosen preset. */
+.chips { display: flex; flex-wrap: wrap; gap: 4px; padding: 2px 12px 6px; }
+.chip {
+  height: 22px; padding: 0 8px; border: 1px solid var(--rule-2); border-radius: var(--r);
+  background: var(--field); font-size: 11.5px; color: var(--ink-2); white-space: nowrap; cursor: pointer;
+}
+.chip:hover { color: var(--ink); background: var(--hover); }
+.chip[aria-pressed=true] { background: var(--temper-wash); border-color: var(--temper); color: var(--ink); }
+.chip code, .chip.mono { font: 400 11px var(--mono); }
+
+/* A layer list: .layergroup headings, then label.layerrow each holding a
+   checkbox, a .swatch (its colour set from script, element.style is fine
+   under the CSP) and a .name. A <details> of rows folds a long group away. */
+.layerlist { display: grid; padding: 0 12px 4px; }
+.layergroup { margin: 6px 0 2px; font-size: 11px; color: var(--ink-3); }
+details > summary.layergroup { cursor: pointer; list-style: none; }
+details > summary.layergroup::-webkit-details-marker { display: none; }
+.layerrow { display: flex; align-items: center; gap: 8px; min-width: 0; height: 22px; font-size: 12px; cursor: pointer; }
+.layerrow input { margin: 0; width: 14px; height: 14px; flex: none; accent-color: var(--temper); }
+.layerrow .swatch { width: 10px; height: 10px; flex: none; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(20, 23, 26, 0.3); }
+.layerrow .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.layerrow .hint { margin-left: auto; font: 400 11px var(--mono); color: var(--ink-3); }
+
+/* A labelled range, e.g. zone opacity. */
+.slider { display: flex; align-items: center; gap: 10px; padding: 4px 12px; font-size: 12px; color: var(--ink-2); }
+.slider input { flex: 1; min-width: 0; margin: 0; accent-color: var(--temper); }
+
+/* A query or search box across the panel. */
+.query { display: flex; gap: 6px; padding: 4px 12px; }
+.query .input { flex: 1; min-width: 0; font: 400 12px var(--mono); }
+.qmeta { padding: 2px 12px; font-size: 11.5px; color: var(--ink-2); }
+.qacts { display: flex; gap: 6px; padding: 4px 12px; }
+
+/* Query or search results: .hit rows of .kind, .ref and .why. .on is the active one. */
+.results { display: grid; padding: 2px 6px 6px; }
+.hit {
+  display: flex; align-items: baseline; gap: 8px; min-width: 0;
+  padding: 3px 6px; border: 0; border-radius: var(--r); background: none;
+  font-size: 12px; text-align: left; cursor: pointer;
+}
+.hit:hover { background: var(--hover); }
+.hit.on, .hit[aria-current] { background: var(--temper-wash); box-shadow: inset 2px 0 0 var(--temper); }
+.hit .kind { flex: none; width: 36px; font-size: 11px; color: var(--ink-3); }
+.hit .ref { flex: none; font: 500 12px var(--mono); white-space: nowrap; }
+.hit .why { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); }
+
+/* A selection's properties: .propshead (.ref, then actions), then a table.props. */
+.propshead { display: flex; align-items: baseline; gap: 8px; padding: 4px 12px; }
+.propshead .ref { font: 600 14px var(--mono); }
+.propshead .acts { margin-left: auto; display: flex; gap: 4px; }
+table.props { width: calc(100% - 24px); margin: 0 12px 6px; border-collapse: collapse; font-size: 12px; }
+table.props th { width: 1%; padding: 2px 12px 2px 0; font-weight: 400; color: var(--ink-2); text-align: left; white-space: nowrap; vertical-align: top; }
+table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anywhere; }
+.linkish { padding: 0; border: 0; background: none; font: inherit; color: var(--temper-text); text-align: left; overflow-wrap: anywhere; cursor: pointer; }
+.linkish:hover { text-decoration: underline; }
+
 /* --------------------------------------------------------------- inspector */
 /* The inspector holds two panes, #review and #timeline, each an .inspector.
    The page switches them with data-side on .wb and aria-selected on .ptabs. */
@@ -768,6 +836,9 @@ body:not(.panel-open) .wb[data-rail=none] { grid-template-columns: 0 minmax(0, 1
   .side { flex: none; border-left: 0; border-top: 1px solid var(--rule); }
   #chatPending { flex: none; overflow: visible; }
   .setpanel { border-radius: 0; }
+  /* A view's side panel goes above the drawing, clear of the floating tools. */
+  .canvas.split { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .vpanel { max-height: 38vh; border-right: 0; border-bottom: 1px solid var(--rule); }
 }
 
 @media (prefers-reduced-motion: reduce) {

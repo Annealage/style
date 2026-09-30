@@ -54,3 +54,9 @@ if (q.get("working")) {
   chat.dataset.turnStarted = String(Date.now() - 72000);
 }
 if (q.get("banner")) document.getElementById("chatBanner").hidden = false;
+if (q.get("view") === "board") {
+  document.querySelector(".view > .canvas").replaceWith(document.getElementById("boardCanvas").content.cloneNode(true));
+  document.querySelectorAll(".swatch[data-c]").forEach((s) => { s.style.background = s.dataset.c; });
+  document.querySelector("#review .iscroll").prepend(document.getElementById("boardSel").content.cloneNode(true));
+  document.querySelector(".vtab code").textContent = "board";
+}

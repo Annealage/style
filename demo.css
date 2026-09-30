@@ -24,3 +24,13 @@
   background: var(--callout); color: var(--on-callout);
   clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
 }
+
+/* ?view=board: a stand-in board outline where KiCanvas would draw. */
+.demo-board { background: var(--view); }
+.demo-board::before {
+  content: ""; position: absolute; left: 18%; top: 16%; width: 56%; height: 60%;
+  border: 1.5px solid var(--ink-3); border-radius: 6px;
+  background:
+    linear-gradient(90deg, transparent 30%, var(--mv-part-2) 30%, var(--mv-part-2) 32%, transparent 32%),
+    linear-gradient(transparent 55%, var(--mv-part-5) 55%, var(--mv-part-5) 57%, transparent 57%);
+}

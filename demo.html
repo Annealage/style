@@ -61,6 +61,64 @@
     </div>
   </main>
 
+  <!-- ?view=board swaps this in for the model canvas: a board view's layers and query beside the drawing. -->
+  <template id="boardCanvas">
+    <div class="canvas split">
+      <aside class="vpanel" aria-label="Board controls">
+        <details class="sec" open>
+          <summary><svg class="ico ico--sm"><use href="icons.svg#i-chev"/></svg>Layers</summary>
+          <div class="secbody">
+            <div class="chips"><button class="chip" type="button" aria-pressed="true">All</button><button class="chip" type="button" aria-pressed="false">Front</button><button class="chip" type="button" aria-pressed="false">Back</button><button class="chip" type="button" aria-pressed="false">Copper</button></div>
+            <div class="layerlist">
+              <div class="layergroup">Copper</div>
+              <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#C8493A"></span><span class="name">F.Cu</span></label>
+              <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#D8B640"></span><span class="name">In1.Cu</span></label>
+              <label class="layerrow"><input type="checkbox"><span class="swatch" data-c="#6FA85A"></span><span class="name">In2.Cu</span></label>
+              <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#4A7FC0"></span><span class="name">B.Cu</span></label>
+              <div class="layergroup">Objects</div>
+              <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#B9BEC3"></span><span class="name">Footprints</span></label>
+              <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#9E8BC0"></span><span class="name">Vias</span></label>
+              <details>
+                <summary class="layergroup">Other (2 of 9 shown)</summary>
+                <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#E0E0D0"></span><span class="name">F.Silkscreen</span></label>
+              </details>
+            </div>
+            <label class="slider">Zones <input type="range" min="0" max="100" value="70"></label>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary><svg class="ico ico--sm"><use href="icons.svg#i-chev"/></svg>Query</summary>
+          <div class="secbody">
+            <form class="query"><input class="input" type="search" value="net:GND kind:via" aria-label="Board query" spellcheck="false"></form>
+            <div class="chips"><button class="chip mono" type="button">ref:U3</button><button class="chip mono" type="button">width&lt;0.2</button><button class="chip mono" type="button">conn:U3.12</button></div>
+            <div class="qmeta">14 vias on GND</div>
+            <div class="qacts"><button class="btn sm" type="button">Highlight all</button><button class="btn sm quiet" type="button">Clear</button></div>
+            <div class="results">
+              <button class="hit on" type="button"><span class="kind">via</span><span class="ref">GND</span><span class="why">12.40, 31.75 F.Cu to B.Cu</span></button>
+              <button class="hit" type="button"><span class="kind">via</span><span class="ref">GND</span><span class="why">18.10, 31.75 F.Cu to B.Cu</span></button>
+              <button class="hit" type="button"><span class="kind">via</span><span class="ref">GND</span><span class="why">22.86, 8.25 F.Cu to In1.Cu</span></button>
+            </div>
+          </div>
+        </details>
+      </aside>
+      <div class="stage demo-board" aria-hidden="true"></div>
+    </div>
+  </template>
+  <template id="boardSel">
+    <details class="sec" open>
+      <summary><svg class="ico ico--sm"><use href="icons.svg#i-chev"/></svg>Selection</summary>
+      <div class="secbody">
+        <div class="propshead"><span class="ref">U3</span><span class="hint">RP2040</span><span class="acts"><button class="btn sm quiet" type="button">Zoom</button></span></div>
+        <table class="props">
+          <tr><th>Footprint</th><td>QFN-56-1EP_7x7mm_P0.4mm</td></tr>
+          <tr><th>Side</th><td>front</td></tr>
+          <tr><th>At</th><td>24.13, 19.05 mm, 0°</td></tr>
+          <tr><th>Nets</th><td><button class="linkish" type="button">GND</button>, <button class="linkish" type="button">+3V3</button>, <button class="linkish" type="button">+1V1</button> and 41 more</td></tr>
+        </table>
+      </div>
+    </details>
+  </template>
+
   <aside class="inspector" id="review" aria-label="Review">
     <div class="ihead"><div class="ptabs" role="tablist" aria-label="Side panel"><button role="tab" type="button" data-side="review" aria-selected="true">Review</button><button role="tab" type="button" data-side="timeline" aria-selected="false">Timeline</button></div><span>2 pins, 1 callout</span></div>
     <div class="iscroll">
