@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en" data-product="mesh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annealage Workbench theme reference</title>
+<!-- The order a product page uses: tokens, the agent layer's agent.css, the
+     theme, then the product's own stylesheet. -->
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="demo.css">
+</head>
+<!-- A static reference page: the Workbench frame with Mesh-like content, and
+     the chat markup exactly as annealage-agent's chat.js builds it. Query
+     string: ?product=mesh|loom|trace, ?theme=light|dark, ?side=timeline,
+     ?preview=1, ?working=1. -->
+<body class="panel-open">
+<div class="wb" data-side="review">
+
+  <header class="titlebar">
+    <picture class="mark"><source data-mark-dark srcset="marks/mesh-layers-dark.svg" media="(prefers-color-scheme: dark)"><img data-mark src="marks/mesh-layers.svg" alt="" width="640" height="512"></picture>
+    <span class="prod" data-prod>Annealage Mesh</span>
+    <span class="tsep"></span>
+    <span class="doc"><code>~/cad/dual-pci/build</code></span>
+    <div class="tb-right">
+      <button class="btn quiet" type="button" aria-pressed="false" title="Stop the agent's view and project tools"><svg class="ico ico--sm"><use href="icons.svg#i-pause"/></svg>Pause</button>
+      <button class="btn quiet icon on" id="panelBtn" type="button" aria-label="Show or hide the review panel" title="Review panel"><svg class="ico"><use href="icons.svg#i-panel"/></svg></button>
+      <button class="btn quiet icon" type="button" aria-label="Settings" title="Settings"><svg class="ico"><use href="icons.svg#i-settings"/></svg></button>
+    </div>
+  </header>
+
+  <nav id="tabbar" aria-label="Panes"><button type="button" class="on">Model</button><button type="button">Review</button><button type="button">Timeline</button><button type="button">Chat</button></nav>
+
+  <nav class="rail" aria-label="Tools">
+    <button class="tool" type="button" aria-pressed="true" aria-label="Navigate" title="Navigate"><svg class="ico"><use href="icons.svg#i-select"/></svg></button>
+    <button class="tool" type="button" aria-pressed="false" aria-label="Add pin (A)" title="Add pin (A)"><svg class="ico"><use href="icons.svg#i-pin"/></svg><span class="k">A</span></button>
+    <button class="tool" type="button" aria-pressed="false" aria-label="Measure" title="Measure between two pins"><svg class="ico"><use href="icons.svg#i-measure"/></svg></button>
+    <button class="tool" type="button" aria-pressed="false" aria-label="Sketch (S)" title="Draw on the model and send it to the agent"><svg class="ico"><use href="icons.svg#i-sketch"/></svg><span class="k">S</span></button>
+    <hr>
+    <button class="tool" type="button" aria-label="Fit (F)" title="Fit (F)"><svg class="ico"><use href="icons.svg#i-fit"/></svg><span class="k">F</span></button>
+  </nav>
+
+  <main class="view" aria-label="Model">
+    <div class="vhead">
+      <button class="vtab" type="button" aria-current="page"><code>build</code></button>
+      <div class="meta"><span>3 parts</span><span><b>60,496</b> triangles</span><span>rebuilt <b>14:26</b></span></div>
+      <div class="right">
+        <div class="seg" role="group" aria-label="Up axis"><button type="button" aria-pressed="true">Z-up</button><button type="button" aria-pressed="false">Y-up</button></div>
+      </div>
+    </div>
+    <div class="previewbar" role="status">
+      <svg class="ico"><use href="icons.svg#i-restore"/></svg>
+      <b>Previewing turn 2</b><span>before the brace move. Pins and callouts as they are now.</span>
+      <button class="btn" type="button" data-act="now">Back to now</button>
+    </div>
+    <div class="canvas">
+      <div class="demo-scene" aria-hidden="true">
+        <span class="demo-pin">1</span>
+        <span class="demo-callout">A2</span>
+      </div>
+    </div>
+  </main>
+
+  <aside class="inspector" id="review" aria-label="Review">
+    <div class="ihead"><div class="ptabs" role="tablist" aria-label="Side panel"><button role="tab" type="button" data-side="review" aria-selected="true">Review</button><button role="tab" type="button" data-side="timeline" aria-selected="false">Timeline</button></div><span>2 pins, 1 callout</span></div>
+    <div class="iscroll">
+      <details class="sec" open>
+        <summary><svg class="ico ico--sm"><use href="icons.svg#i-chev"/></svg>Parts <span class="c">3</span></summary>
+        <div class="secbody toggles">
+          <label class="check"><input type="checkbox" checked>shroud <span class="hint mono">48,212</span></label>
+          <label class="check"><input type="checkbox" checked>end_clip <span class="hint mono">9,904</span></label>
+          <label class="check"><input type="checkbox">blanking_plate <span class="hint mono">2,380</span></label>
+        </div>
+      </details>
+      <details class="sec" open>
+        <summary><svg class="ico ico--sm"><use href="icons.svg#i-chev"/></svg>Your pins <span class="c">2</span><input class="vis" type="checkbox" checked aria-label="Show your pins"></summary>
+        <div class="secbody">
+          <div class="row">
+            <span class="mk mk--human">1</span>
+            <dl class="fields"><div><dt>Part</dt><dd>shroud</dd></div><div><dt>Face</dt><dd>−Y</dd></div><div><dt>At (mm)</dt><dd>14.4, −44.6, 61.0</dd></div></dl>
+            <button class="btn quiet icon x" type="button" aria-label="Delete pin 1"><svg class="ico ico--sm"><use href="icons.svg#i-x"/></svg></button>
+            <textarea rows="2" aria-label="Comment on pin 1">Wall is 2 mm here. Take it to 2.4 so it doesn't flex when the clip snaps in.</textarea>
+          </div>
+          <div class="row is-selected">
+            <span class="mk mk--human">2</span>
+            <dl class="fields"><div><dt>Part</dt><dd>shroud</dd></div><div><dt>Face</dt><dd>+X</dd></div><div><dt>At (mm)</dt><dd>2.0, 21.7, 38.5</dd></div></dl>
+            <button class="btn quiet icon x" type="button" aria-label="Delete pin 2"><svg class="ico ico--sm"><use href="icons.svg#i-x"/></svg></button>
+            <textarea rows="2" aria-label="Comment on pin 2">This brace fouls the fan hub screw. Can it move 8 mm towards the back?</textarea>
+          </div>
+        </div>
+      </details>
+      <details class="sec" open>
+        <summary><svg class="ico ico--sm"><use href="icons.svg#i-chev"/></svg>Agent callouts <span class="c">1</span><input class="vis" type="checkbox" checked aria-label="Show agent callouts"></summary>
+        <div class="secbody">
+          <div class="row">
+            <span class="mk mk--agent">A2</span>
+            <dl class="fields"><div><dt>Part</dt><dd>shroud</dd></div><div><dt>Face</dt><dd>+Z</dd></div><div><dt>At (mm)</dt><dd>4.7, 3.4, 87.4</dd></div></dl>
+            <p>Top skin is 1.6 mm: four perimeters at 0.4 mm.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+    <div class="ifoot"><span><b>2 pins</b>, unsaved</span><button class="btn quiet" type="button">Clear all</button><button class="btn" type="button">Submit</button></div>
+  </aside>
+
+  <aside class="inspector" id="timeline" aria-label="Timeline">
+    <div class="ihead"><div class="ptabs" role="tablist" aria-label="Side panel"><button role="tab" type="button" data-side="review" aria-selected="false">Review</button><button role="tab" type="button" data-side="timeline" aria-selected="true">Timeline</button></div><span>3 restore points</span></div>
+    <div class="tlscroll">
+      <ol class="tl">
+        <li class="ev ck"><time>14:12</time><span class="node node--build"></span><div class="ebody"><p class="eh"><b>Session started</b></p><ul class="chg"><li>3 parts</li></ul><div class="eacts"><button class="btn" type="button" data-act="preview">Preview</button><button class="btn quiet" type="button">Restore…</button></div></div></li>
+        <li class="ev ck is-preview"><time>14:19</time><span class="node node--msg"></span><div class="ebody"><p class="eh"><b>You</b></p><p class="eq">Move the brace back 8 mm and take the side wall to 2.4 mm, see pins 1 and 2.</p>
+          <form class="restore" aria-label="Restore">
+            <h3>Restore to just before this message</h3>
+            <label><input type="radio" name="r" checked><span>Files and chat</span><small>The files go back, and the chat picks up from here.</small></label>
+            <label><input type="radio" name="r"><span>Files only</span><small>The agent is told what was put back.</small></label>
+            <label><input type="radio" name="r"><span>Chat only</span><small>Keep the files as they are now.</small></label>
+            <p class="note">Pins and callouts stay.</p>
+            <div class="racts"><button class="btn primary" type="button">Restore</button><button class="btn quiet" type="button" data-act="now">Cancel</button></div>
+          </form></div></li>
+        <li class="ev"><time>14:20</time><span class="node node--ev"></span><div class="ebody"><p class="eh"><b>Edit</b> <code>model.py</code></p><ul class="chg"><li><ins>+4</ins> <del>−2</del></li><li><code>WALL</code> 2.0 → 2.4</li></ul></div></li>
+        <li class="ev ck"><time>14:21</time><span class="node node--build"></span><div class="ebody"><p class="eh"><b>Rebuilt</b></p><ul class="chg"><li>60,496 tri</li></ul></div></li>
+        <li class="ev"><time>14:26</time><span class="node node--wait"></span><div class="ebody"><p class="eh"><b>Waiting on you</b> to allow a write</p></div></li>
+        <li class="ev"><time>now</time><span class="node node--now"></span><div class="ebody"><p class="eh"><b>Now</b></p></div></li>
+      </ol>
+    </div>
+  </aside>
+
+  <!-- From here down is chat.js's markup: the page supplies the header,
+       banner, hint, log, pending and composer elements (by id), and chat.js
+       fills them. The .side wrapper and .working are the page's additions. -->
+  <aside id="chat" aria-label="Agent" data-pending="1">
+    <header>
+      <h1>Agent</h1>
+      <span class="chatusage">38% context, $0.19</span>
+      <span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
+      <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b>1:12</b></span>
+      <span class="spacer"></span>
+      <button id="chatExport" type="button" class="hdrbtn"><svg class="ico ico--sm"><use href="icons.svg#i-export"/></svg>Export</button>
+    </header>
+    <div id="chatBanner" class="chatbanner" data-kind="error" hidden><span id="chatBannerText">The agent stopped: omp exited with status 1.</span><button id="chatBannerClose" type="button" aria-label="Dismiss">×</button></div>
+    <div id="chatLog">
+      <div class="turn" data-turn="1">
+        <div class="msg user"><div class="text">How thick is the top skin at the moment?</div><div class="attachthumbs"></div></div>
+        <div class="msg assistant"><div class="text"><p>1.6 mm, which is four perimeters at 0.4 mm. I've marked it as callout A2.</p></div><div class="tools"></div><div class="turnmeta">Stop: end_turn · $0.0412 · in 6,120 · out 814</div></div>
+      </div>
+      <div class="turn" data-turn="2">
+        <div class="msg user"><div class="text">Move the brace back 8 mm and take the side wall to 2.4 mm, see pins 1 and 2.</div><div class="attachthumbs"></div></div>
+        <div class="msg assistant"><div class="text"><p>Wall thickness is <code>WALL</code> in <code>model.py</code>, and the brace position is <code>BRACE_OFFSET</code>.</p></div>
+          <div class="tools">
+            <details class="toolcard"><summary>Read</summary><pre class="toolinput">file_path: model.py</pre><pre class="toolresult">142 lines</pre></details>
+            <details class="toolcard" open><summary>Bash</summary><pre class="toolinput">command: python model.py --wall 2.4 --brace-offset 8</pre><pre class="toolresult">wrote build/shroud.stl (48,212 triangles) in 1.9 s</pre></details>
+          </div>
+          <div class="turnmeta"></div></div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="chathint">Approval cards appear here for actions outside this project folder, over the network, or that write files. A plain command confined to this folder runs without asking.</div>
+      <div id="chatPending">
+        <div class="permcard" data-request-id="r1">
+          <div class="porigin" hidden></div>
+          <div class="ptool">Write</div>
+          <pre class="toolinput">file_path: ~/cad/dual-pci/cad/clip.py
+content: NUT_SLOT = 5.7</pre>
+          <div class="pactions"><button type="button" class="allow">Allow</button><button type="button">Always allow (this project)</button><textarea class="preason" rows="1" placeholder="Reason (sent to the agent if you deny)"></textarea><button type="button" class="danger">Deny</button></div>
+          <div class="pstatus"></div>
+        </div>
+      </div>
+      <div id="chatComposer">
+        <div id="chatModelRow" class="chatmodelrow"><label for="chatModelInput">Model</label><input id="chatModelInput" type="text" placeholder="backend default"></div>
+        <div id="chatAttachStrip" class="attachstrip" hidden></div>
+        <div id="chatComposerRow">
+          <button id="chatAttachBtn" type="button" class="attachbtn" aria-label="Attach an image"><svg class="ico"><use href="icons.svg#i-attach"/></svg></button>
+          <textarea id="chatInput" placeholder="Message the agent…" rows="2"></textarea>
+          <div class="chatbtns"><button id="chatInterrupt" type="button">Interrupt</button><button id="chatSend" type="button" class="primary">Send</button></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <footer class="statusbar">
+    <span class="conn" data-state="live">Live</span>
+    <span>Agent <b>Ready</b></span>
+    <button class="alert" type="button" title="Go to the pending approval"><svg class="ico"><use href="icons.svg#i-alert"/></svg>Approval needed: Write</button>
+    <span class="push">Pin 2 at <b>2.0, 21.7, 38.5</b> mm</span>
+    <span class="pv">Previewing turn 2</span>
+    <span>Z-up</span>
+  </footer>
+</div>
+<script type="module" src="demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+/* Annealage design tokens.
+
+   Colours follow the OS light/dark setting through light-dark(). A page can
+   force one with <html data-theme="light|dark">. The product is picked with
+   <html data-product="mesh|loom|trace">: it sets the temper, and the chrome
+   greys lean slightly towards it, so the products can be told apart with no
+   accent on screen. Without data-product the greys are neutral.
+
+   Ember means one thing in a product UI: the agent needs you (a pending
+   approval and its alert). Quench is functional only (ok, connected, added).
+   Neither is a decoration colour. */
+
+:root {
+  color-scheme: light dark;
+
+  --ink: light-dark(#14171A, #E6EDF3);
+  --ink-2: light-dark(#4B5357, #A5AFB4);
+  --ink-3: light-dark(#5F686C, #8C969B);
+  --hover: light-dark(rgba(20, 23, 26, 0.06), rgba(230, 237, 243, 0.06));
+
+  --ember: #E8632A;
+  --on-ember: #14171A;
+  --quench: light-dark(#2E6E8E, #5599B8);
+  --danger: light-dark(#B3261E, #F08A80);
+  --warn: light-dark(#8A5A00, #E0A94A);
+
+  /* Findings drawn on a schematic sheet, which is paper in both modes. */
+  --sheet-danger: #C42B21;
+  --sheet-warn: #B07A0C;
+
+  /* Review markers: the human's pins and the agent's callouts, in the page
+     and in a 3D scene or sheet overlay. --pin-selected marks the selected
+     pin, in temper as every other selection is. --measure is the measuring
+     line. */
+  --pin: var(--ink);
+  --on-pin: var(--view);
+  --pin-selected: var(--temper);
+  --callout: var(--temper);
+  --on-callout: #FFFFFF;
+  --measure: var(--quench);
+
+  /* A 3D scene (Mesh): the parts, their edges and the floor grid. Each part
+     takes the next slot of the series; slot 1 is the neutral part grey and
+     2-8 are muted tones at one lightness, none near ember. */
+  --mv-part-1: light-dark(#A4ACB2, #7C868D);
+  --mv-part-2: light-dark(#84A4B7, #6C8B9E);
+  --mv-part-3: light-dark(#AD9C7F, #958468);
+  --mv-part-4: light-dark(#8BA790, #738E78);
+  --mv-part-5: light-dark(#A797B4, #8E7F9B);
+  --mv-part-6: light-dark(#B593A2, #9C7B8A);
+  --mv-part-7: light-dark(#7EA8A7, #668F8E);
+  --mv-part-8: light-dark(#A0A181, #87896A);
+  --mv-edge: light-dark(#4A5358, #151A1A);
+  --mv-grid: light-dark(#E3E8E7, #1B2222);
+  --mv-grid-2: light-dark(#CCD4D2, #263030);
+
+  --font: 'Chivo', system-ui, sans-serif;
+  --mono: 'Chivo Mono', ui-monospace, monospace;
+  --r: 3px;
+  --ctl: 28px;
+
+  /* Neutral chrome, for a page with no data-product. */
+  --temper: #5F686C;
+  --temper-text: light-dark(#4B5357, #A5AFB4);
+  --temper-wash: light-dark(#E2E2E2, #2D2D2D);
+  --chrome: light-dark(#E7E7E7, #1E1E1E);
+  --panel: light-dark(#F3F3F3, #242424);
+  --view: light-dark(#FBFBFB, #151515);
+  --field: light-dark(#FFFFFF, #191919);
+  --rule: light-dark(#D7D7D7, #313131);
+  --rule-2: light-dark(#BBBBBB, #4C4C4C);
+  --code: light-dark(#EAEAEA, #2D2D2D);
+}
+:root[data-theme=light] { color-scheme: light; }
+:root[data-theme=dark] { color-scheme: dark; }
+
+:root[data-product=mesh] {
+  --temper: #2F8F86;
+  --temper-text: light-dark(#22716A, #5CB5AB);
+  --temper-wash: light-dark(#D5E6E3, #1E3634);
+  --chrome: light-dark(#E4E9E8, #1A2020);
+  --panel: light-dark(#F1F4F3, #1F2626);
+  --view: light-dark(#FAFBFB, #121717);
+  --field: light-dark(#FFFFFF, #151B1B);
+  --rule: light-dark(#D2DAD8, #2B3434);
+  --rule-2: light-dark(#B3BDBB, #435050);
+  --code: light-dark(#E6ECEA, #253030);
+}
+
+:root[data-product=loom] {
+  --temper: #3E6FA8;
+  --temper-text: light-dark(#335E91, #7EA6D8);
+  --temper-wash: light-dark(#D9E3EF, #1F2B3B);
+  --chrome: light-dark(#E3E7EC, #1A1E24);
+  --panel: light-dark(#F0F3F6, #1F242B);
+  --view: light-dark(#FAFBFC, #12151A);
+  --field: light-dark(#FFFFFF, #15191F);
+  --rule: light-dark(#D1D8E0, #2B313A);
+  --rule-2: light-dark(#B2BCC8, #434C58);
+  --code: light-dark(#E5EAF0, #262D37);
+}
+
+/* Trace's greys take the Mesh/Loom average lightness and chroma per token
+   (OKLCH) at Trace's hue. */
+:root[data-product=trace] {
+  --temper: #7A5C9E;
+  --temper-text: light-dark(#6A5387, #AF96CF);
+  --temper-wash: light-dark(#E4DFEC, #312A3B);
+  --chrome: light-dark(#E8E6EB, #1F1D22);
+  --panel: light-dark(#F3F2F5, #252329);
+  --view: light-dark(#FBFBFC, #161419);
+  --field: light-dark(#FFFFFF, #1A181D);
+  --rule: light-dark(#D9D6DE, #332F38);
+  --rule-2: light-dark(#BDB8C3, #4E4A55);
+  --code: light-dark(#EBE9EF, #2F2B34);
+}

@@ -1,0 +1,26 @@
+/* Stand-ins for what a product draws in its view, for the reference page only. */
+.demo-scene {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(var(--mv-grid-2) 1px, transparent 1px) 0 0 / 80px 80px,
+    linear-gradient(90deg, var(--mv-grid-2) 1px, transparent 1px) 0 0 / 80px 80px,
+    linear-gradient(var(--mv-grid) 1px, transparent 1px) 0 0 / 16px 16px,
+    linear-gradient(90deg, var(--mv-grid) 1px, transparent 1px) 0 0 / 16px 16px,
+    var(--view);
+}
+.demo-scene::before {
+  content: ""; position: absolute; left: 30%; top: 22%; width: 40%; height: 52%;
+  background: var(--mv-part-1); box-shadow: 60px 40px 0 -40px var(--mv-part-2);
+}
+.demo-pin, .demo-callout {
+  position: absolute; display: grid; place-items: center; font: 600 11px/1 var(--mono);
+}
+.demo-pin {
+  left: 42%; top: 40%; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--pin-selected); color: var(--on-pin); box-shadow: 0 0 0 2px var(--view);
+}
+.demo-callout {
+  left: 58%; top: 30%; width: 28px; height: 20px;
+  background: var(--callout); color: var(--on-callout);
+  clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
+}
