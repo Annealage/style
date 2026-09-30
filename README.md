@@ -25,6 +25,9 @@ Canvas and WebGL code that needs a token colour should resolve it through an ele
 Beyond the frame and the chat, theme.css has components for the pieces more than one product draws. Each one's markup is in a comment above its rules:
 - **A board or other view's own panel:** `.canvas.split` with an `aside.vpanel` beside a `.stage`, holding `.chips`, `.layerlist` / `.layerrow`, `.slider`, `.query`, `.results` / `.hit`, and a selection's `.propshead` and `table.props`.
 - **Sheet tabs:** `.subtabs` along the bottom of a `.view`.
+- **Comments on a drawing:** SVG `.pin` groups (`.model` for the agent's, `.resolved`), `.pindraft`, and a floating `form.composer`.
+- **Panel text:** `.empty`, `.hint`, `.subhead`, `.metaline`, and `.notice` with `--warn`, `--danger` or `--ok`.
+- **States:** `.state[data-kind=good|busy|gap|bad|pending|waiting]`, a dot and a word.
 - **Inspector panes:** more than two tabs in one inspector use `.ptabs` buttons with `aria-controls` and `.ipane`s.
 - **A review run instead of a chat** (Trace): a `.console` with `.chead`, `.steps` and a `.log`, a `.meter` for spend against a ceiling, and `data-console=none` on `.wb` for a page with no console at all.
 - **Findings:** `.filters`, `details.finding` with `.sev`, `.fstat`, `.claim`, `.subj` and `.evidence`, and coverage as `.covcounts` and `.covlist`.

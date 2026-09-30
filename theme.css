@@ -151,9 +151,9 @@ body:not(.panel-open) .wb[data-rail=none] { grid-template-columns: 0 minmax(0, 1
 .prod { font-size: 14px; font-weight: 700; letter-spacing: -0.005em; white-space: nowrap; }
 .prod span { font-weight: 400; color: var(--ink-2); }
 .tsep { width: 1px; height: 18px; background: var(--rule-2); flex: none; }
-.doc { display: flex; align-items: baseline; gap: 10px; min-width: 0; overflow: hidden; white-space: nowrap; }
-.doc strong { font-weight: 600; }
-.doc code { font-size: 12px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }
+.titlebar .doc { display: flex; align-items: baseline; gap: 10px; min-width: 0; overflow: hidden; white-space: nowrap; }
+.titlebar .doc strong { font-weight: 600; }
+.titlebar .doc code { font-size: 12px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }
 .tb-right { margin-left: auto; display: flex; align-items: center; gap: 4px; }
 /* Pause is a safety control, so it lives here where it's always visible. */
 .tb-right .btn[aria-pressed=true] { font-weight: 600; }
@@ -299,6 +299,47 @@ table.props th { width: 1%; padding: 2px 12px 2px 0; font-weight: 400; color: va
 table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anywhere; }
 .linkish { padding: 0; border: 0; background: none; font: inherit; color: var(--temper-text); text-align: left; overflow-wrap: anywhere; cursor: pointer; }
 .linkish:hover { text-decoration: underline; }
+
+/* Small panel text: .empty for "nothing here yet", .hint for guidance,
+   .subhead for a heading inside a section, .metaline for a wrapping line of
+   short facts (author, date, commit). */
+.empty { padding: 2px 12px 8px; font-size: 12px; color: var(--ink-2); }
+.hint { color: var(--ink-2); }
+.secbody > .hint { padding: 0 12px 6px; font-size: 12px; line-height: 1.4; }
+.subhead { padding: 8px 12px 2px; font-size: 12px; font-weight: 600; }
+.subhead .c { font-weight: 400; color: var(--ink-2); }
+.metaline { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 12px; color: var(--ink-2); }
+.metaline code { font-size: 11.5px; }
+
+/* Comment pins drawn in SVG over a sheet or a board: <g class="pin"> with a
+   circle.dot, a text, and a circle.ring when selected. .model is the
+   agent's, .resolved is done; .pindraft is one being placed. */
+.pin { pointer-events: all; cursor: pointer; }
+.pin .dot { fill: var(--pin); stroke: var(--on-pin); }
+.pin text { fill: var(--on-pin); font-family: var(--mono); font-weight: 600; }
+.pin.model .dot { fill: var(--callout); stroke: var(--on-callout); }
+.pin.model text { fill: var(--on-callout); }
+.pin.resolved .dot { fill: var(--ink-3); }
+.pin .ring { fill: none; stroke: var(--pin-selected); }
+.pindraft { fill: none; stroke: var(--pin); }
+
+/* A floating comment composer over a drawing, positioned by script:
+   form.composer > .where, textarea, .acts. */
+.composer {
+  position: absolute; z-index: 5; width: 19rem; max-width: calc(100% - 8px);
+  display: grid; gap: 6px; padding: 8px;
+  background: var(--panel); border: 1px solid var(--rule-2); border-radius: var(--r);
+  box-shadow: 0 2px 8px rgba(10, 12, 15, 0.18); cursor: default;
+}
+.composer[hidden] { display: none; }
+.composer .where { font-size: 12px; color: var(--ink-2); overflow-wrap: anywhere; }
+.composer textarea {
+  display: block; width: 100%; min-height: 4.5em; resize: vertical;
+  padding: 5px 8px; font-size: 12.5px; line-height: 1.45;
+  background: var(--field); border: 1px solid var(--rule-2); border-radius: var(--r);
+}
+.composer textarea:focus { outline: 2px solid var(--temper); outline-offset: -1px; border-color: var(--temper); }
+.composer .acts { display: flex; gap: 6px; }
 
 /* --------------------------------------------------------------- inspector */
 /* The inspector holds two panes, #review and #timeline, each an .inspector.
@@ -491,6 +532,8 @@ table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anyw
 .conn[data-state=connecting]::before { background: none; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
 .conn[data-state=polling]::before { background: var(--warn); }
 .conn[data-state=refused]::before, .conn[data-state=reauth]::before, .conn[data-state=down]::before { background: var(--danger); }
+/* In the title bar instead: <span class="conn"> in .tb-right. */
+.tb-right .conn { display: inline-flex; align-items: center; gap: 6px; padding: 0 8px; font-size: 12px; color: var(--ink-2); }
 /* The approval alert: shown while the chat has pending approvals
    (#chat[data-pending] > 0), jumps to the card. */
 .alert {
@@ -895,20 +938,28 @@ table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anyw
 .dtable { width: 100%; border-collapse: collapse; font-size: 12px; }
 .dtable th { position: sticky; top: 0; z-index: 1; padding: 5px 8px; background: var(--panel); border-bottom: 1px solid var(--rule-2); font-weight: 600; font-size: 11.5px; color: var(--ink-2); text-align: left; white-space: nowrap; }
 .dtable td { padding: 4px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
-.dtable td.mono, .dtable td code { font: 400 11.5px var(--mono); }
+.dtable td.mono, .dtable td code { font: 400 11.5px var(--mono); overflow-wrap: anywhere; }
 .dtable td.num { text-align: right; font: 400 11.5px var(--mono); }
 .dtable th:first-child, .dtable td:first-child { padding-left: 12px; white-space: nowrap; }
 .dtable tr:hover td { background: var(--hover); }
 .dtable tr[aria-current] td { background: var(--temper-wash); }
-/* .state[data-state=...]: good states in quench, gaps in warn, failures in danger. */
-.state { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; white-space: nowrap; color: var(--ink-2); }
-.state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
-.state[data-state=covered]::before, .state[data-state=agree]::before, .state[data-state=ok]::before { background: var(--quench); box-shadow: none; }
-.state[data-state=missing], .state[data-state=differ], .state[data-state=no-mpn] { color: var(--warn); }
-.state[data-state=missing]::before, .state[data-state=differ]::before, .state[data-state=no-mpn]::before { box-shadow: inset 0 0 0 1.5px var(--warn); }
-.state[data-state=queued]::before { box-shadow: inset 0 0 0 1.5px var(--temper); }
-.state[data-state=failed] { color: var(--danger); }
-.state[data-state=failed]::before { background: var(--danger); box-shadow: none; }
+/* A state as a dot and a word: .state[data-kind=good|busy|gap|bad|pending|waiting].
+   No kind is a neutral solid dot (idle, not used). Good is quench, busy the
+   temper, gap a warn ring, bad danger, pending a hollow ring (connecting,
+   queued), waiting the ink of your own marks. Never ember. */
+.state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; white-space: nowrap; color: var(--ink); }
+.state::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--ink-3); }
+.state[data-kind=good]::before { background: var(--quench); }
+.state[data-kind=busy]::before { background: var(--temper); }
+.state[data-kind=pending]::before { background: none; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.state[data-kind=gap] { color: var(--warn); }
+.state[data-kind=gap]::before { background: none; box-shadow: inset 0 0 0 1.5px var(--warn); }
+.state[data-kind=bad] { color: var(--danger); }
+.state[data-kind=bad]::before { background: var(--danger); }
+.state[data-kind=waiting] { font-weight: 600; }
+.state[data-kind=waiting]::before { background: var(--ink); }
+.dtable .state { gap: 5px; font-size: 11.5px; }
+.dtable td:has(> .btn) { width: 1%; padding-top: 2px; padding-bottom: 2px; }
 
 /* A page outside the Workbench frame (an upload or front page):
    <div class="page"><header class="titlebar">...</header><main class="pagebody">...</main></div> */
@@ -929,6 +980,10 @@ table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anyw
 /* A plain notice: .notice, with .notice--warn for one the user must read. */
 .notice { padding: 10px 12px; border: 1px solid var(--rule-2); border-left-width: 3px; border-radius: var(--r); background: var(--panel); font-size: 13px; line-height: 1.5; }
 .notice--warn { border-left-color: var(--warn); }
+.notice--danger { border-left-color: var(--danger); }
+.notice--ok { border-left-color: var(--quench); }
+.notice:empty { display: none; }
+.secbody > .notice { margin: 0 12px 6px; padding: 7px 8px 7px 10px; font-size: 12.5px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .notice ul { margin: 4px 0 0; padding-left: 18px; }
 
 /* The drop zone: label.drop around a hidden file input. .over while dragging. */
@@ -1022,8 +1077,10 @@ table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anyw
     grid-area: tabs; display: flex;
     background: var(--chrome); border-bottom: 1px solid var(--rule);
   }
+  #tabbar { overflow-x: auto; scrollbar-width: none; }
+  .tb-right .conn { padding: 0 4px; font-size: 0; }
   #tabbar button {
-    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    flex: 1 0 auto; padding: 0 12px; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     border: 0; background: none; font-size: 13px; color: var(--ink-2); cursor: pointer;
   }
   #tabbar button.on { color: var(--ink); font-weight: 700; background: var(--panel); box-shadow: inset 0 -2px 0 var(--temper); }
