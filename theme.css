@@ -275,6 +275,9 @@ body:not(.panel-open) .wb[data-rail=none] { grid-template-columns: 0 minmax(0, 1
 /* A visibility checkbox in a section header (Your pins, Agent callouts). */
 .sec > summary .vis { margin: 0 0 0 auto; width: 14px; height: 14px; accent-color: var(--temper); }
 .secbody { padding: 0 0 8px; }
+/* A toggle list as a section body, either on the .secbody itself or inside it. */
+.secbody.toggles { padding: 0 12px 8px; border-bottom: 0; }
+.secbody > .toggles { padding: 0 12px; border-bottom: 0; }
 
 /* A review item: marker, fields, remove button, then its text and actions. */
 .row {
