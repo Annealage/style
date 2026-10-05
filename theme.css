@@ -41,7 +41,7 @@ body {
 button, input, textarea, select { font: inherit; color: inherit; }
 code, pre, kbd { font-family: var(--mono); }
 p { margin: 0; }
-:focus-visible { outline: 2px solid var(--temper); outline-offset: 1px; }
+:focus-visible { outline: 2px solid var(--temper-text); outline-offset: 1px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 /* Icons come from icons.svg: <svg class="ico"><use href=".../icons.svg#i-pin"/></svg>.
@@ -346,7 +346,7 @@ table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anyw
   padding: 5px 8px; font-size: 12.5px; line-height: 1.45;
   background: var(--field); border: 1px solid var(--rule-2); border-radius: var(--r);
 }
-.composer textarea:focus { outline: 2px solid var(--temper); outline-offset: -1px; border-color: var(--temper); }
+.composer textarea:focus { outline: 2px solid var(--temper-text); outline-offset: -1px; border-color: var(--temper-text); }
 .composer .acts { display: flex; gap: 6px; }
 
 /* --------------------------------------------------------------- inspector */
@@ -771,7 +771,7 @@ table.props td { padding: 2px 0; font: 400 12px var(--mono); overflow-wrap: anyw
   font: 400 12px var(--mono); color: var(--ink);
   background: var(--field); border: 1px solid var(--rule-2); border-radius: var(--r);
 }
-#chatModelInput:focus, #chatInput:focus { outline: 2px solid var(--temper); outline-offset: -1px; border-color: var(--temper); }
+#chatModelInput:focus, #chatInput:focus { outline: 2px solid var(--temper-text); outline-offset: -1px; border-color: var(--temper-text); }
 #chatModelInput::placeholder, #chatInput::placeholder { color: var(--ink-3); opacity: 1; }
 #chatComposerRow { display: flex; align-items: stretch; gap: 6px; }
 #chat .attachbtn {
