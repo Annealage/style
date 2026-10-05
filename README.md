@@ -1,10 +1,10 @@
 # Annealage style
 
-The shared look of the Annealage product web UIs (Mesh, Loom, Trace): design tokens, the Workbench theme, fonts, icons and the product marks. Each product pulls this repo in as a `lib/style` submodule and serves it from its own static tree.
+The shared look of the Annealage product web UIs (Canvas, Mesh, Loom, Trace): design tokens, the Workbench theme, fonts, icons and the product marks. Each product pulls this repo in as a `lib/style` submodule and serves it from its own static tree.
 
 ## What's here
 
-- `tokens.css`: colours, type and sizes. Light and dark follow the OS through `light-dark()`, and `<html data-theme="light|dark">` forces one. `<html data-product="mesh|loom|trace">` picks the product's temper colour, and the chrome greys lean slightly towards it.
+- `tokens.css`: colours, type and sizes. Light and dark follow the OS through `light-dark()`, and `<html data-theme="light|dark">` forces one. `<html data-product="canvas|mesh|loom|trace">` picks the product's temper colour, and the chrome greys lean slightly towards it.
 - `theme.css`: the Workbench layout. That's the title bar, tool rail, view with document tabs, an inspector with Review and Timeline tabs, the agent console and the status bar. It also styles the agent chat that annealage-agent's `chat.js` and `settings.js` build, through the ids and classes that layer already uses.
 - `scheme.js`: light and dark follow the OS unless the user picks one, remembered per origin in localStorage. Load it as a plain `<script src=".../scheme.js"></script>` in `<head>` before the stylesheets, so the choice is applied before the first paint. It sets `<html data-theme>`, keeps the marks' `<picture>` sources in step, wires any `<button data-scheme-toggle>` (System, Light, Dark, with one `<svg data-for="system|light|dark">` each), and fires `schemechange` on `<html>` (detail `{scheme, choice}`) on every effective change. `window.annealageScheme` has `choice()`, `get()` and `set('light'|'dark'|null)`.
 - `icons.svg`: a sprite of 20px stroke icons, used as `<svg class="ico"><use href="icons.svg#i-pin"/></svg>`.

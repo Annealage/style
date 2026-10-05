@@ -7,6 +7,7 @@ const wb = document.querySelector(".wb");
 const chat = document.getElementById("chat");
 
 const PRODUCTS = {
+  canvas: { name: "Annealage Canvas", mark: "canvas-frame" },
   mesh: { name: "Annealage Mesh", mark: "mesh-layers" },
   loom: { name: "Annealage Loom", mark: "loom-weave" },
   trace: { name: "Annealage Trace", mark: "trace-net" },

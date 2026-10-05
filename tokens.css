@@ -2,7 +2,7 @@
 
    Colours follow the OS light/dark setting through light-dark(). A page can
    force one with <html data-theme="light|dark">. The product is picked with
-   <html data-product="mesh|loom|trace">: it sets the temper, and the chrome
+   <html data-product="canvas|mesh|loom|trace">: it sets the temper, and the chrome
    greys lean slightly towards it, so the products can be told apart with no
    accent on screen. Without data-product the greys are neutral.
 
@@ -113,4 +113,23 @@
   --rule: light-dark(#D9D6DE, #332F38);
   --rule-2: light-dark(#BDB8C3, #4E4A55);
   --code: light-dark(#EBE9EF, #2F2B34);
+}
+
+/* Canvas takes the first temper, light straw (#E6C36A, the mark's colour). The
+   greys are Mesh and Loom's average lightness and chroma per token (OKLCH) at
+   straw's hue, as Trace's are. Straw is pale on a light page (1.6:1 on --view),
+   so it only fills and rings there; --temper-text is the readable one, 5.5:1 or
+   better on every light and dark surface above. */
+:root[data-product=canvas] {
+  --temper: #E6C36A;
+  --temper-text: light-dark(#6D540A, #BCA260);
+  --on-callout: #14171A;
+  --temper-wash: light-dark(#E7E1D4, #342D1A);
+  --chrome: light-dark(#E9E7E2, #201E18);
+  --panel: light-dark(#F4F3F0, #26241D);
+  --view: light-dark(#FBFBFA, #171511);
+  --field: light-dark(#FFFFFF, #1B1913);
+  --rule: light-dark(#DBD7CF, #343129);
+  --rule-2: light-dark(#BFBAAF, #514C40);
+  --code: light-dark(#ECEAE4, #312D23);
 }
