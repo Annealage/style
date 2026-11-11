@@ -1,0 +1,11 @@
+{
+  "name": "annealage-style-tools",
+  "private": true,
+  "type": "module",
+  "description": "Dev tooling for the style library: headless shot runner, baselines, conformance. Not shipped (see runtime-files.txt).",
+  "dependencies": {
+    "pixelmatch": "7.1.0",
+    "playwright-core": "1.62.1",
+    "pngjs": "7.0.0"
+  }
+}

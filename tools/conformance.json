@@ -1,0 +1,1243 @@
+{
+  "about": "Structural conformance for tools/shot --conform. Everything but 'expected' is hand-written; 'expected' is generated: run `tools/shot --derive-conformance` after a library change and commit the diff with it. A value that differs between two viewports of one class is stored as null (or '*' per grid track) and not asserted.",
+  "tolerancePx": 1,
+  "phoneMaxWidth": 640,
+  "viewports": {
+    "desktop": [
+      [1600, 1000],
+      [1440, 900]
+    ],
+    "phone": [
+      [400, 860],
+      [380, 800]
+    ]
+  },
+  "shapes": {
+    "workbench": "workbench.html?product=loom",
+    "flow": "flow.html#datasheets",
+    "list": "list.html#list",
+    "settings": "settings.html#overview",
+    "components": "components.html"
+  },
+  "productPage": "workbench.html?product={product}",
+  "products": ["loom", "trace", "canvas", "mesh"],
+  "tokens": ["--ground", "--well", "--field", "--ink", "--ink-2", "--ink-3", "--rule", "--rule-strong", "--ember", "--quench", "--danger", "--warn"],
+  "productTokens": ["--temper", "--temper-text", "--on-temper"],
+  "checks": [
+    {
+      "id": "body",
+      "selector": "body",
+      "props": ["fontFamily", "fontSize", "lineHeight", "color", "backgroundColor"]
+    },
+    {
+      "id": "wb",
+      "selector": ".wb",
+      "props": ["display", "gridTemplateColumns"]
+    },
+    {
+      "id": "titlebar",
+      "selector": ".titlebar",
+      "props": ["height", "backgroundColor", "borderBottomWidth", "borderBottomColor", "paddingLeft", "fontSize"]
+    },
+    {
+      "id": "vhead",
+      "selector": ".vhead",
+      "props": ["height", "backgroundColor", "borderBottomWidth"]
+    },
+    {
+      "id": "statusbar",
+      "selector": ".statusbar",
+      "props": ["height", "backgroundColor", "borderTopWidth", "fontSize"]
+    },
+    {
+      "id": "btn",
+      "selector": ".btn:not(.icon, .sm, .primary, .ember)",
+      "props": ["height", "fontSize", "fontWeight", "borderRadius"]
+    },
+    {
+      "id": "input",
+      "selector": ".input",
+      "props": ["height", "fontSize", "borderRadius", "backgroundColor"]
+    },
+    {
+      "id": "card",
+      "selector": ".card",
+      "props": ["backgroundColor", "borderTopWidth", "borderTopColor", "borderRadius"]
+    }
+  ],
+  "check": {
+    "about": "Exceptions for tools/check. hexAllowFiles: files that may define colours (the library itself, whose paper sheets are always light, and the reference pages' own demo.css). hexAllowValues: colours allowed anywhere. exclude: paths skipped in any tree, relative to it. styleRepoExclude: paths skipped when the tree is the style repo itself (it has runtime-files.txt): the vendored demo assets and these tools. A hex colour in a data-* attribute is data (a layer colour), not chrome. A line, or the line above it, carrying 'check-ok' and a reason is skipped for every rule.",
+    "hexAllowFiles": ["tokens.css", "theme.css", "pages.css", "demo.css"],
+    "hexAllowValues": [],
+    "exclude": [],
+    "styleRepoExclude": ["demo/assets", "tools"]
+  },
+  "expected": {
+    "workbench": {
+      "desktop": {
+        "light": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(20, 23, 26)",
+              "backgroundColor": "rgb(252, 252, 251)"
+            },
+            "wb": {
+              "display": "grid",
+              "gridTemplateColumns": ["40px", null, "300px", "400px"]
+            },
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(228, 230, 229)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": {
+              "height": "34px",
+              "backgroundColor": "rgb(252, 252, 251)",
+              "borderBottomWidth": "1px"
+            },
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(252, 252, 251)",
+            "--well": "rgb(240, 241, 240)",
+            "--field": "rgb(255, 255, 255)",
+            "--ink": "rgb(20, 23, 26)",
+            "--ink-2": "rgb(86, 93, 99)",
+            "--ink-3": "rgb(102, 109, 115)",
+            "--rule": "rgb(228, 230, 229)",
+            "--rule-strong": "rgb(201, 205, 204)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(46, 110, 142)",
+            "--danger": "rgb(179, 38, 30)",
+            "--warn": "rgb(138, 90, 0)"
+          }
+        },
+        "dark": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(230, 237, 243)",
+              "backgroundColor": "rgb(22, 25, 28)"
+            },
+            "wb": {
+              "display": "grid",
+              "gridTemplateColumns": ["40px", null, "300px", "400px"]
+            },
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(43, 48, 53)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": {
+              "height": "34px",
+              "backgroundColor": "rgb(22, 25, 28)",
+              "borderBottomWidth": "1px"
+            },
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(22, 25, 28)",
+            "--well": "rgb(14, 16, 18)",
+            "--field": "rgb(30, 34, 38)",
+            "--ink": "rgb(230, 237, 243)",
+            "--ink-2": "rgb(163, 171, 178)",
+            "--ink-3": "rgb(144, 153, 161)",
+            "--rule": "rgb(43, 48, 53)",
+            "--rule-strong": "rgb(66, 73, 80)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(85, 153, 184)",
+            "--danger": "rgb(240, 138, 128)",
+            "--warn": "rgb(224, 169, 74)"
+          }
+        }
+      },
+      "phone": {
+        "light": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(20, 23, 26)",
+              "backgroundColor": "rgb(252, 252, 251)"
+            },
+            "wb": {
+              "display": "grid",
+              "gridTemplateColumns": [null]
+            },
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(228, 230, 229)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": {
+              "height": "34px",
+              "backgroundColor": "rgb(252, 252, 251)",
+              "borderBottomWidth": "1px"
+            },
+            "statusbar": null,
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(252, 252, 251)",
+            "--well": "rgb(240, 241, 240)",
+            "--field": "rgb(255, 255, 255)",
+            "--ink": "rgb(20, 23, 26)",
+            "--ink-2": "rgb(86, 93, 99)",
+            "--ink-3": "rgb(102, 109, 115)",
+            "--rule": "rgb(228, 230, 229)",
+            "--rule-strong": "rgb(201, 205, 204)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(46, 110, 142)",
+            "--danger": "rgb(179, 38, 30)",
+            "--warn": "rgb(138, 90, 0)"
+          }
+        },
+        "dark": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(230, 237, 243)",
+              "backgroundColor": "rgb(22, 25, 28)"
+            },
+            "wb": {
+              "display": "grid",
+              "gridTemplateColumns": [null]
+            },
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(43, 48, 53)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": {
+              "height": "34px",
+              "backgroundColor": "rgb(22, 25, 28)",
+              "borderBottomWidth": "1px"
+            },
+            "statusbar": null,
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(22, 25, 28)",
+            "--well": "rgb(14, 16, 18)",
+            "--field": "rgb(30, 34, 38)",
+            "--ink": "rgb(230, 237, 243)",
+            "--ink-2": "rgb(163, 171, 178)",
+            "--ink-3": "rgb(144, 153, 161)",
+            "--rule": "rgb(43, 48, 53)",
+            "--rule-strong": "rgb(66, 73, 80)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(85, 153, 184)",
+            "--danger": "rgb(240, 138, 128)",
+            "--warn": "rgb(224, 169, 74)"
+          }
+        }
+      }
+    },
+    "flow": {
+      "desktop": {
+        "light": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(20, 23, 26)",
+              "backgroundColor": "rgb(252, 252, 251)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(228, 230, 229)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(252, 252, 251)",
+            "--well": "rgb(240, 241, 240)",
+            "--field": "rgb(255, 255, 255)",
+            "--ink": "rgb(20, 23, 26)",
+            "--ink-2": "rgb(86, 93, 99)",
+            "--ink-3": "rgb(102, 109, 115)",
+            "--rule": "rgb(228, 230, 229)",
+            "--rule-strong": "rgb(201, 205, 204)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(46, 110, 142)",
+            "--danger": "rgb(179, 38, 30)",
+            "--warn": "rgb(138, 90, 0)"
+          }
+        },
+        "dark": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(230, 237, 243)",
+              "backgroundColor": "rgb(22, 25, 28)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(43, 48, 53)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(22, 25, 28)",
+            "--well": "rgb(14, 16, 18)",
+            "--field": "rgb(30, 34, 38)",
+            "--ink": "rgb(230, 237, 243)",
+            "--ink-2": "rgb(163, 171, 178)",
+            "--ink-3": "rgb(144, 153, 161)",
+            "--rule": "rgb(43, 48, 53)",
+            "--rule-strong": "rgb(66, 73, 80)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(85, 153, 184)",
+            "--danger": "rgb(240, 138, 128)",
+            "--warn": "rgb(224, 169, 74)"
+          }
+        }
+      },
+      "phone": {
+        "light": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(20, 23, 26)",
+              "backgroundColor": "rgb(252, 252, 251)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(228, 230, 229)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(252, 252, 251)",
+            "--well": "rgb(240, 241, 240)",
+            "--field": "rgb(255, 255, 255)",
+            "--ink": "rgb(20, 23, 26)",
+            "--ink-2": "rgb(86, 93, 99)",
+            "--ink-3": "rgb(102, 109, 115)",
+            "--rule": "rgb(228, 230, 229)",
+            "--rule-strong": "rgb(201, 205, 204)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(46, 110, 142)",
+            "--danger": "rgb(179, 38, 30)",
+            "--warn": "rgb(138, 90, 0)"
+          }
+        },
+        "dark": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(230, 237, 243)",
+              "backgroundColor": "rgb(22, 25, 28)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(43, 48, 53)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(22, 25, 28)",
+            "--well": "rgb(14, 16, 18)",
+            "--field": "rgb(30, 34, 38)",
+            "--ink": "rgb(230, 237, 243)",
+            "--ink-2": "rgb(163, 171, 178)",
+            "--ink-3": "rgb(144, 153, 161)",
+            "--rule": "rgb(43, 48, 53)",
+            "--rule-strong": "rgb(66, 73, 80)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(85, 153, 184)",
+            "--danger": "rgb(240, 138, 128)",
+            "--warn": "rgb(224, 169, 74)"
+          }
+        }
+      }
+    },
+    "list": {
+      "desktop": {
+        "light": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(20, 23, 26)",
+              "backgroundColor": "rgb(252, 252, 251)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(228, 230, 229)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": {
+              "height": "28px",
+              "fontSize": "13px",
+              "borderRadius": "6px",
+              "backgroundColor": "rgb(255, 255, 255)"
+            },
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(252, 252, 251)",
+            "--well": "rgb(240, 241, 240)",
+            "--field": "rgb(255, 255, 255)",
+            "--ink": "rgb(20, 23, 26)",
+            "--ink-2": "rgb(86, 93, 99)",
+            "--ink-3": "rgb(102, 109, 115)",
+            "--rule": "rgb(228, 230, 229)",
+            "--rule-strong": "rgb(201, 205, 204)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(46, 110, 142)",
+            "--danger": "rgb(179, 38, 30)",
+            "--warn": "rgb(138, 90, 0)"
+          }
+        },
+        "dark": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(230, 237, 243)",
+              "backgroundColor": "rgb(22, 25, 28)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(43, 48, 53)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": {
+              "height": "28px",
+              "fontSize": "13px",
+              "borderRadius": "6px",
+              "backgroundColor": "rgb(30, 34, 38)"
+            },
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(22, 25, 28)",
+            "--well": "rgb(14, 16, 18)",
+            "--field": "rgb(30, 34, 38)",
+            "--ink": "rgb(230, 237, 243)",
+            "--ink-2": "rgb(163, 171, 178)",
+            "--ink-3": "rgb(144, 153, 161)",
+            "--rule": "rgb(43, 48, 53)",
+            "--rule-strong": "rgb(66, 73, 80)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(85, 153, 184)",
+            "--danger": "rgb(240, 138, 128)",
+            "--warn": "rgb(224, 169, 74)"
+          }
+        }
+      },
+      "phone": {
+        "light": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(20, 23, 26)",
+              "backgroundColor": "rgb(252, 252, 251)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(228, 230, 229)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": {
+              "height": "28px",
+              "fontSize": "13px",
+              "borderRadius": "6px",
+              "backgroundColor": "rgb(255, 255, 255)"
+            },
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(252, 252, 251)",
+            "--well": "rgb(240, 241, 240)",
+            "--field": "rgb(255, 255, 255)",
+            "--ink": "rgb(20, 23, 26)",
+            "--ink-2": "rgb(86, 93, 99)",
+            "--ink-3": "rgb(102, 109, 115)",
+            "--rule": "rgb(228, 230, 229)",
+            "--rule-strong": "rgb(201, 205, 204)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(46, 110, 142)",
+            "--danger": "rgb(179, 38, 30)",
+            "--warn": "rgb(138, 90, 0)"
+          }
+        },
+        "dark": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(230, 237, 243)",
+              "backgroundColor": "rgb(22, 25, 28)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(43, 48, 53)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": {
+              "height": "28px",
+              "fontSize": "13px",
+              "borderRadius": "6px",
+              "backgroundColor": "rgb(30, 34, 38)"
+            },
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(22, 25, 28)",
+            "--well": "rgb(14, 16, 18)",
+            "--field": "rgb(30, 34, 38)",
+            "--ink": "rgb(230, 237, 243)",
+            "--ink-2": "rgb(163, 171, 178)",
+            "--ink-3": "rgb(144, 153, 161)",
+            "--rule": "rgb(43, 48, 53)",
+            "--rule-strong": "rgb(66, 73, 80)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(85, 153, 184)",
+            "--danger": "rgb(240, 138, 128)",
+            "--warn": "rgb(224, 169, 74)"
+          }
+        }
+      }
+    },
+    "settings": {
+      "desktop": {
+        "light": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(20, 23, 26)",
+              "backgroundColor": "rgb(252, 252, 251)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(228, 230, 229)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(252, 252, 251)",
+            "--well": "rgb(240, 241, 240)",
+            "--field": "rgb(255, 255, 255)",
+            "--ink": "rgb(20, 23, 26)",
+            "--ink-2": "rgb(86, 93, 99)",
+            "--ink-3": "rgb(102, 109, 115)",
+            "--rule": "rgb(228, 230, 229)",
+            "--rule-strong": "rgb(201, 205, 204)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(46, 110, 142)",
+            "--danger": "rgb(179, 38, 30)",
+            "--warn": "rgb(138, 90, 0)"
+          }
+        },
+        "dark": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(230, 237, 243)",
+              "backgroundColor": "rgb(22, 25, 28)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(43, 48, 53)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(22, 25, 28)",
+            "--well": "rgb(14, 16, 18)",
+            "--field": "rgb(30, 34, 38)",
+            "--ink": "rgb(230, 237, 243)",
+            "--ink-2": "rgb(163, 171, 178)",
+            "--ink-3": "rgb(144, 153, 161)",
+            "--rule": "rgb(43, 48, 53)",
+            "--rule-strong": "rgb(66, 73, 80)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(85, 153, 184)",
+            "--danger": "rgb(240, 138, 128)",
+            "--warn": "rgb(224, 169, 74)"
+          }
+        }
+      },
+      "phone": {
+        "light": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(20, 23, 26)",
+              "backgroundColor": "rgb(252, 252, 251)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(228, 230, 229)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(252, 252, 251)",
+            "--well": "rgb(240, 241, 240)",
+            "--field": "rgb(255, 255, 255)",
+            "--ink": "rgb(20, 23, 26)",
+            "--ink-2": "rgb(86, 93, 99)",
+            "--ink-3": "rgb(102, 109, 115)",
+            "--rule": "rgb(228, 230, 229)",
+            "--rule-strong": "rgb(201, 205, 204)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(46, 110, 142)",
+            "--danger": "rgb(179, 38, 30)",
+            "--warn": "rgb(138, 90, 0)"
+          }
+        },
+        "dark": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(230, 237, 243)",
+              "backgroundColor": "rgb(22, 25, 28)"
+            },
+            "wb": null,
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(43, 48, 53)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": null,
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": null,
+            "card": null
+          },
+          "tokens": {
+            "--ground": "rgb(22, 25, 28)",
+            "--well": "rgb(14, 16, 18)",
+            "--field": "rgb(30, 34, 38)",
+            "--ink": "rgb(230, 237, 243)",
+            "--ink-2": "rgb(163, 171, 178)",
+            "--ink-3": "rgb(144, 153, 161)",
+            "--rule": "rgb(43, 48, 53)",
+            "--rule-strong": "rgb(66, 73, 80)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(85, 153, 184)",
+            "--danger": "rgb(240, 138, 128)",
+            "--warn": "rgb(224, 169, 74)"
+          }
+        }
+      }
+    },
+    "components": {
+      "desktop": {
+        "light": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(20, 23, 26)",
+              "backgroundColor": "rgb(252, 252, 251)"
+            },
+            "wb": {
+              "display": "block",
+              "gridTemplateColumns": ["40px", "minmax(0px,", "1fr)", "300px", "400px"]
+            },
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgb(252, 252, 251)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(228, 230, 229)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": {
+              "height": "34px",
+              "backgroundColor": "rgb(252, 252, 251)",
+              "borderBottomWidth": "1px"
+            },
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": {
+              "height": "28px",
+              "fontSize": "13px",
+              "borderRadius": "6px",
+              "backgroundColor": "rgb(255, 255, 255)"
+            },
+            "card": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "borderTopColor": "rgb(228, 230, 229)",
+              "borderRadius": "0px"
+            }
+          },
+          "tokens": {
+            "--ground": "rgb(252, 252, 251)",
+            "--well": "rgb(240, 241, 240)",
+            "--field": "rgb(255, 255, 255)",
+            "--ink": "rgb(20, 23, 26)",
+            "--ink-2": "rgb(86, 93, 99)",
+            "--ink-3": "rgb(102, 109, 115)",
+            "--rule": "rgb(228, 230, 229)",
+            "--rule-strong": "rgb(201, 205, 204)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(46, 110, 142)",
+            "--danger": "rgb(179, 38, 30)",
+            "--warn": "rgb(138, 90, 0)"
+          }
+        },
+        "dark": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(230, 237, 243)",
+              "backgroundColor": "rgb(22, 25, 28)"
+            },
+            "wb": {
+              "display": "block",
+              "gridTemplateColumns": ["40px", "minmax(0px,", "1fr)", "300px", "400px"]
+            },
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgb(22, 25, 28)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(43, 48, 53)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": {
+              "height": "34px",
+              "backgroundColor": "rgb(22, 25, 28)",
+              "borderBottomWidth": "1px"
+            },
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": {
+              "height": "28px",
+              "fontSize": "13px",
+              "borderRadius": "6px",
+              "backgroundColor": "rgb(30, 34, 38)"
+            },
+            "card": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "borderTopColor": "rgb(43, 48, 53)",
+              "borderRadius": "0px"
+            }
+          },
+          "tokens": {
+            "--ground": "rgb(22, 25, 28)",
+            "--well": "rgb(14, 16, 18)",
+            "--field": "rgb(30, 34, 38)",
+            "--ink": "rgb(230, 237, 243)",
+            "--ink-2": "rgb(163, 171, 178)",
+            "--ink-3": "rgb(144, 153, 161)",
+            "--rule": "rgb(43, 48, 53)",
+            "--rule-strong": "rgb(66, 73, 80)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(85, 153, 184)",
+            "--danger": "rgb(240, 138, 128)",
+            "--warn": "rgb(224, 169, 74)"
+          }
+        }
+      },
+      "phone": {
+        "light": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(20, 23, 26)",
+              "backgroundColor": "rgb(252, 252, 251)"
+            },
+            "wb": {
+              "display": "block",
+              "gridTemplateColumns": ["minmax(0px,", "1fr)"]
+            },
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgb(252, 252, 251)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(228, 230, 229)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": {
+              "height": "34px",
+              "backgroundColor": "rgb(252, 252, 251)",
+              "borderBottomWidth": "1px"
+            },
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": {
+              "height": "28px",
+              "fontSize": "13px",
+              "borderRadius": "6px",
+              "backgroundColor": "rgb(255, 255, 255)"
+            },
+            "card": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "borderTopColor": "rgb(228, 230, 229)",
+              "borderRadius": "0px"
+            }
+          },
+          "tokens": {
+            "--ground": "rgb(252, 252, 251)",
+            "--well": "rgb(240, 241, 240)",
+            "--field": "rgb(255, 255, 255)",
+            "--ink": "rgb(20, 23, 26)",
+            "--ink-2": "rgb(86, 93, 99)",
+            "--ink-3": "rgb(102, 109, 115)",
+            "--rule": "rgb(228, 230, 229)",
+            "--rule-strong": "rgb(201, 205, 204)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(46, 110, 142)",
+            "--danger": "rgb(179, 38, 30)",
+            "--warn": "rgb(138, 90, 0)"
+          }
+        },
+        "dark": {
+          "checks": {
+            "body": {
+              "fontFamily": "\"Instrument Sans\", system-ui, sans-serif",
+              "fontSize": "13px",
+              "lineHeight": "18px",
+              "color": "rgb(230, 237, 243)",
+              "backgroundColor": "rgb(22, 25, 28)"
+            },
+            "wb": {
+              "display": "block",
+              "gridTemplateColumns": ["minmax(0px,", "1fr)"]
+            },
+            "titlebar": {
+              "height": "40px",
+              "backgroundColor": "rgb(22, 25, 28)",
+              "borderBottomWidth": "1px",
+              "borderBottomColor": "rgb(43, 48, 53)",
+              "paddingLeft": "0px",
+              "fontSize": "13px"
+            },
+            "vhead": {
+              "height": "34px",
+              "backgroundColor": "rgb(22, 25, 28)",
+              "borderBottomWidth": "1px"
+            },
+            "statusbar": {
+              "height": "24px",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "fontSize": "12px"
+            },
+            "btn": {
+              "height": "28px",
+              "fontSize": "13px",
+              "fontWeight": "500",
+              "borderRadius": "6px"
+            },
+            "input": {
+              "height": "28px",
+              "fontSize": "13px",
+              "borderRadius": "6px",
+              "backgroundColor": "rgb(30, 34, 38)"
+            },
+            "card": {
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "1px",
+              "borderTopColor": "rgb(43, 48, 53)",
+              "borderRadius": "0px"
+            }
+          },
+          "tokens": {
+            "--ground": "rgb(22, 25, 28)",
+            "--well": "rgb(14, 16, 18)",
+            "--field": "rgb(30, 34, 38)",
+            "--ink": "rgb(230, 237, 243)",
+            "--ink-2": "rgb(163, 171, 178)",
+            "--ink-3": "rgb(144, 153, 161)",
+            "--rule": "rgb(43, 48, 53)",
+            "--rule-strong": "rgb(66, 73, 80)",
+            "--ember": "rgb(232, 99, 42)",
+            "--quench": "rgb(85, 153, 184)",
+            "--danger": "rgb(240, 138, 128)",
+            "--warn": "rgb(224, 169, 74)"
+          }
+        }
+      }
+    },
+    "products": {
+      "loom": {
+        "light": {
+          "--temper": "rgb(62, 111, 168)",
+          "--temper-text": "rgb(51, 94, 145)",
+          "--on-temper": "rgb(255, 255, 255)"
+        },
+        "dark": {
+          "--temper": "rgb(62, 111, 168)",
+          "--temper-text": "rgb(126, 166, 216)",
+          "--on-temper": "rgb(255, 255, 255)"
+        }
+      },
+      "trace": {
+        "light": {
+          "--temper": "rgb(122, 92, 158)",
+          "--temper-text": "rgb(106, 83, 135)",
+          "--on-temper": "rgb(255, 255, 255)"
+        },
+        "dark": {
+          "--temper": "rgb(122, 92, 158)",
+          "--temper-text": "rgb(175, 150, 207)",
+          "--on-temper": "rgb(255, 255, 255)"
+        }
+      },
+      "canvas": {
+        "light": {
+          "--temper": "rgb(230, 195, 106)",
+          "--temper-text": "rgb(109, 84, 10)",
+          "--on-temper": "rgb(20, 23, 26)"
+        },
+        "dark": {
+          "--temper": "rgb(230, 195, 106)",
+          "--temper-text": "rgb(188, 162, 96)",
+          "--on-temper": "rgb(20, 23, 26)"
+        }
+      },
+      "mesh": {
+        "light": {
+          "--temper": "rgb(47, 143, 134)",
+          "--temper-text": "rgb(34, 113, 106)",
+          "--on-temper": "rgb(20, 23, 26)"
+        },
+        "dark": {
+          "--temper": "rgb(47, 143, 134)",
+          "--temper-text": "rgb(92, 181, 171)",
+          "--on-temper": "rgb(20, 23, 26)"
+        }
+      }
+    }
+  }
+}

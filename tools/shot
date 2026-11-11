@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+// tools/shot: headless shots of a product or the reference pages, baseline diffs and
+// the structural check. `tools/shot --help` lists the options; README "Automated checks".
+import('./lib/shot-cli.mjs').then((m) => m.main(process.argv.slice(2)), (e) => { console.error(e.message || e); process.exit(2); });
