@@ -20,6 +20,7 @@ The look is **Hairline + plate**. Everything sits on one surface divided by 1px 
   - `list.html`: the project register (`#list`, `#tiles`).
   - `settings.html`: an account page (`#overview`, `#usage`, `#security`, `#workspaces`, `#danger`).
   - Each takes `?product=loom|trace|canvas|mesh|pod|none` and `?theme=light|dark`, and has the scheme button. `demo/shots/` holds screenshots of all of them; `tools/shoot.mjs` retakes them.
+- `runtime-files.txt`: what a product serves and ships (see "What a product ships"). `tools/shoot.mjs` is the port gate tool (see "Checking a port"); `tools/bump-style.sh` is the pin-bump template.
 - `tools/contrast.py`: reads `tokens.css` and checks every text token against every surface the theme puts it on, in both schemes and for every product. Run it after changing a colour; it exits non-zero on a failure.
 
 ## Using it in a product
@@ -47,6 +48,28 @@ Things only one product draws stay in that product's stylesheet: Mesh's scene, L
 ### Canvas and WebGL colours
 
 Canvas and WebGL code that needs a token colour should resolve it through an element rather than read the custom property. `getComputedStyle(root).getPropertyValue('--pin')` returns the unresolved `light-dark(...)` text. Instead, set `probe.style.color = 'var(--pin)'` on a hidden element and read `getComputedStyle(probe).color`. A module script doesn't wait for stylesheets, so wait for the `<link rel=stylesheet>` loads before the first read, or the colours come out as the inherited text colour. Redraw on scheme.js's `schemechange` event, which covers both the OS changing and the user's choice. `--hover`, `--press` and `--temper-wash` are translucent, so composite them over the surface beneath if the scene needs an opaque value.
+
+## What a product ships
+
+`runtime-files.txt` is the one list of what a product serves and packages: one path or directory per line, no globs (fonts are the directory). Static routes, wheel `force-include`, Canvas's copy list and Trace's `Containerfile` read it; `demo/`, `tools/` and the `*.md` files are not on it. `frame.js` and `palette.js` are listed before the library has them (the frame helper and the palette script land with later tickets); `runtime-pending.txt` names those two, and `tools/bump-style.sh` and the existence check skip any path named there. Once both files exist, `runtime-pending.txt` is deleted.
+
+`tools/bump-style.sh` is a template: copy it to `scripts/bump-style.sh` in a product. `scripts/bump-style.sh [sha-or-tag]` fetches `lib/style`, checks out the ref detached, refuses a ref that is not on `origin/main` or a submodule with changes of its own, checks the runtime list exists, stages the gitlink and prints the log between the old and new pin. It never commits.
+
+## Checking a port
+
+`tools/shoot.mjs` is the gate's shot tool. From an omp JS eval cell, with the product running:
+
+```js
+const { shoot } = await import('/path/to/style/tools/shoot.mjs');
+const table = (await import('/path/to/style/tools/shots/loom.example.mjs')).default;
+await shoot(browser, { base: 'http://127.0.0.1:18765', shots: table.shots, allow: table.allow, out: '/tmp/loom-shots' });
+```
+
+`shoot(browser)` alone retakes the reference pages into `demo/shots/` (serve the repo root on :8793 first). Each table entry is `{ name, path, state?, ready?, full?, viewports?, schemes?, webgl? }`; the header of `tools/shoot.mjs` documents them, and `tools/shots/loom.example.mjs` is a worked table. Each entry gives `<name>-<scheme>-<width>.png` for light and dark at 1600 and 400 wide. The page is shot once fonts, stylesheets and images are in (plus the entry's own `ready` and `state`); no test hook is needed in the product. The scheme is forced through `localStorage` and `prefers-color-scheme`, so a product that predates `scheme.js` still switches, and the stored choice is removed afterwards.
+
+The result is `{ ok, shots, stale, text }` and `text` is also printed. A shot is clean only if it became ready (20 s limit, then `ready: false`), logged no console error, made no request that failed, answered 4xx/5xx or left the origin, and shows no old look: a computed `font-family` containing Chivo, or a stylesheet reference to `var(--chrome`, `--panel`, `--view`, `--rule-2`, `--code`, `--font` or `--console-h`. A table's `allow` list (`{ match, reason }`) lets a known refusal through, for instance the agent socket in a no-backend run; allowed items are listed per shot. `ok` is true when every shot is clean, so the gate needs no judgement; an agent then reads the PNGs beside `demo/shots/`. PNGs from an earlier run are deleted before shooting, and any left in the folder from a renamed entry are listed as `stale`.
+
+Bumping a product's pin without porting it reports the same faults (old markup under the new theme), which is the point of the probe. Board and 3D views need WebGL: run the browser under the viewer's SwiftShader launcher (`scripts/webgl-browser.sh`) and pass `{ webgl: true }`; entries marked `webgl: true` are otherwise skipped with a note rather than shot blank. Pixel diffs and baselines are not part of the gate.
 
 ## The rules the theme keeps
 
