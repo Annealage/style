@@ -9,7 +9,10 @@ const urlOf = (loc) => (loc && loc.url ? ` (${loc.url})` : '');
 export async function launchBrowser({ executablePath } = {}) {
   let pw;
   try {
-    pw = await chromium.launch({ headless: true, executablePath });
+    // A dead X forward in DISPLAY makes headless Chromium hang on its first screenshot, so the browser does not see it.
+    const env = { ...process.env };
+    delete env.DISPLAY;
+    pw = await chromium.launch({ headless: true, executablePath, env });
   } catch (e) {
     throw new Error(`cannot start Chromium: ${String(e.message || e).split('\n')[0]}\n(tools/package.json pins playwright-core to the Chromium in ~/.cache/ms-playwright; pass --executable to use another)`);
   }
