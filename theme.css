@@ -79,8 +79,16 @@ code, pre, kbd, .mono { font-family: var(--mono); font-size: var(--fs-small); fo
 .btn.primary:hover { background: color-mix(in srgb, var(--ink) 86%, var(--ground)); }
 .btn.danger { color: var(--danger); }
 .btn[aria-pressed=true], .btn.on { background: var(--press); color: var(--ink); }
-.btn:disabled, .btn[aria-disabled=true] { color: var(--ink-3); background: none; cursor: default; }
-.btn.primary:disabled, .btn.primary[aria-disabled=true] { background: var(--rule-strong); color: var(--ground); }
+/* A control that cannot act now is shown disabled, with a title saying why:
+   ink-3 text on no wash (a primary loses its fill), still focusable when it is
+   aria-disabled so the title reads on keyboard focus. Menu items, segments and
+   tabs below follow the same rule. */
+.btn:is(:disabled, [aria-disabled=true]), .btn:is(:disabled, [aria-disabled=true]):is(:hover, :active) { color: var(--ink-3); background: none; cursor: default; }
+.btn.primary:is(:disabled, [aria-disabled=true]), .btn.primary:is(:disabled, [aria-disabled=true]):is(:hover, :active) { background: var(--hover); color: var(--ink-3); }
+.seg > :is(:disabled, [aria-disabled=true]), .seg > :is(:disabled, [aria-disabled=true]):hover { background: none; box-shadow: none; color: var(--ink-3); cursor: default; }
+.vtab:is(:disabled, [aria-disabled=true]), .ptabs button:is(:disabled, [aria-disabled=true]), #tabbar button:is(:disabled, [aria-disabled=true]) { color: var(--ink-3); cursor: default; }
+.vtab:is(:disabled, [aria-disabled=true]):hover { border-bottom-color: transparent; }
+.ptabs button:is(:disabled, [aria-disabled=true]):hover { color: var(--ink-3); }
 /* A button at the end of a row pulls its padding back so its text meets the edge. */
 .btn.edge { margin-right: -10px; }
 
@@ -332,6 +340,7 @@ input[type=range] { accent-color: var(--ink); }
 }
 .menu button:hover, .menu a:hover { background: var(--hover); }
 .menu .danger { color: var(--danger); }
+.menu :is(button, a):is(:disabled, [aria-disabled=true]), .menu :is(button, a):is(:disabled, [aria-disabled=true]):hover { background: none; color: var(--ink-3); cursor: default; }
 .menu hr { height: 1px; margin: 4px -4px; border: 0; background: var(--rule); }
 .menu .menu-note { display: block; padding: 6px 8px 4px; color: var(--ink-3); font-size: var(--fs-small); }
 details.more { position: relative; }
@@ -381,6 +390,25 @@ summary { cursor: pointer; }
 .notice:empty { display: none; }
 .secbody > .notice { margin: 0 12px 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .notice ul { margin: 4px 0 0; padding-left: 16px; list-style: disc; }
+/* The toast and the error line, which ui.js writes into the page's #toast and
+   #err (class ok or err on the toast). They float, so they have the menu's
+   edge and shadow, and a lamp like any message: quench for ok, danger for an
+   error. The toast sits above the status bar, the error line at the top. ui.js
+   sets display inline, so the lamp is positioned, not a grid column. */
+html #toast, html #err {
+  position: fixed; z-index: 60; left: var(--s-3); right: var(--s-3); bottom: calc(var(--h-status) + var(--s-3));
+  width: fit-content; max-width: 560px; margin-inline: auto; padding: 8px 12px 8px 30px;
+  border: 1px solid var(--rule-strong); border-radius: var(--r);
+  background: var(--field); box-shadow: var(--shadow-menu); color: var(--ink);
+  font-size: var(--fs-ui); line-height: var(--lh-ui); white-space: pre-wrap; overflow-wrap: anywhere;
+}
+html #err { top: var(--s-3); bottom: auto; }
+html #toast::before, html #err::before {
+  content: ""; position: absolute; left: 12px; top: 14px; width: 8px; height: 8px; border-radius: 1px; background: var(--ink-3);
+}
+html #toast.ok::before { background: var(--quench); }
+html #toast.err::before, html #err::before { background: var(--danger); }
+html #toast:empty, html #err:empty { display: none; }
 /* A quiet aside under a comment or a finding. */
 .note { font-size: var(--fs-small); color: var(--ink-2); }
 
@@ -1334,7 +1362,7 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 .setbody h3 { display: flex; align-items: center; height: 32px; margin: 0; font: 600 var(--fs-small)/1 var(--sans); color: var(--ink); text-transform: none; letter-spacing: normal; }
 .setbody h4, .setmodels h4 { margin: 12px 0 2px; font: 500 var(--fs-small)/1 var(--sans); color: var(--ink-2); }
 .setrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 12px; padding: 6px 0; }
-.setlabel { font: 400 var(--fs-small)/var(--lh-ui) var(--mono); color: var(--ink); }
+.setlabel { font: 400 var(--fs-small)/var(--lh-ui) var(--sans); color: var(--ink); }
 .setinput, .setinput-model-choice {
   min-height: 0; height: var(--ctl); min-width: 150px; padding: 0 8px;
   border: 1px solid var(--rule-strong); border-radius: var(--r);
@@ -1370,6 +1398,155 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 .setpanel > footer button.primary { padding: 0 12px; background: var(--ink); border: 0; color: var(--ground); font-weight: 600; }
 .setpanel > footer button.primary:hover:not(:disabled) { background: color-mix(in srgb, var(--ink) 86%, var(--ground)); }
 .setpanel > footer button:disabled { opacity: 0.5; cursor: default; }
+
+/* ------------------------------------------- project views (project.js) */
+/* annealage-ember's project.js builds the title bar's project name and Rename,
+   the History pane, the "Send to" lineage bar, the project list and the
+   confirming dialog out of pj-* classes. They are drawn here, from the page's
+   own tokens, with no --pj-* variable. Every rule sits under one of the five
+   roots (.pj-header, .pj-history, .pj-lineage, .pj-projects, .pj-modal) so it
+   outranks ember's single-class project.css whichever order the two load in.
+   .pj-btn is a text button (.btn), .pj-menu the menu, .pj-dialog the settings
+   window's dialog. Rows are hairlines; only the dialog, the menu and inputs
+   have an edge.
+   .pj-header > .pj-titlerow (strong.pj-title, .pj-btn Rename, .pj-btn Change id | input.pj-nameedit) .pj-banner .pj-error
+   .pj-history > .pj-bar (.pj-now, .pj-refresh) .pj-banner .pj-error .pj-notice .pj-list > section.pj-group (header .pj-grouplabel .pj-count .pj-btn)
+     > .pj-commit (.pj-commithead .pj-subject .pj-btn, .pj-meta .pj-author-agent|human code, pre.pj-diff > .pj-d-add .pj-d-del .pj-d-hunk .pj-d-file)
+   .pj-lineage > .pj-bar (h3.pj-lineage-title, .pj-menuwrap > .pj-btn + .pj-menu > .pj-menuitem, .pj-revnote, .pj-notice) .pj-result .pj-links > h4 + ul > li.pj-link
+   .pj-projects > form.pj-new, .pj-cards > article.pj-card (header .pj-name code .pj-state, .pj-meta), p.pj-empty
+   .pj-modal > .pj-dialog (header h2, .pj-modal-main > .pj-modal-body + .pj-error, footer) */
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) { color: var(--ink); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-hint { color: var(--ink-2); font-size: var(--fs-small); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-actions { display: flex; flex-wrap: wrap; gap: 2px; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: var(--ctl); padding: 0 10px; flex: none;
+  border: 0; border-radius: var(--r); background: none; color: var(--ink);
+  font: 500 var(--fs-ui)/1 var(--sans); white-space: nowrap; cursor: pointer;
+}
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn:hover:not(:disabled) { background: var(--hover); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn:active:not(:disabled) { background: var(--press); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn.pj-quiet { color: var(--ink-2); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn.pj-quiet:hover:not(:disabled) { color: var(--ink); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn.pj-sm { height: var(--ctl-sm); padding: 0 8px; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn.pj-danger { color: var(--danger); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn[aria-expanded=true] { background: var(--press); color: var(--ink); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn:disabled { background: none; color: var(--ink-3); cursor: default; }
+
+/* Messages are rows with a square lamp, never boxes. */
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-error, :is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict {
+  display: grid; grid-template-columns: 8px minmax(0, 1fr); column-gap: 8px; align-items: baseline;
+  margin: 0; padding: 4px 0; color: var(--ink); font-size: var(--fs-ui); overflow-wrap: anywhere;
+}
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-error::before, :is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict::before { content: ""; width: 8px; height: 8px; border-radius: 1px; background: var(--danger); transform: translateY(-1px); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-error > *, :is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict > * { grid-column: 2; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-error:empty, :is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-notice:empty { display: none; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-notice { margin: 0; padding: 4px 0; color: var(--ink-2); font-size: var(--fs-small); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict { margin: 8px 0; padding: 8px 0; border-block: 1px solid var(--rule); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict p { margin: 0 0 4px; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict .pj-actions { margin-top: 2px; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-result {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px;
+  margin: 8px 0; padding: 8px 0; border-block: 1px solid var(--rule); font-size: var(--fs-ui);
+}
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-result::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 1px; background: var(--quench); }
+
+/* The project name in the title bar. */
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-titlerow { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pj-header { min-width: 0; }
+.pj-header .pj-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-nameedit {
+  height: var(--ctl); min-width: 16ch; width: 32ch; max-width: 40vw; padding: 0 8px;
+  border: 1px solid var(--rule-strong); border-radius: var(--r);
+  background: var(--field); color: var(--ink); font: 600 var(--fs-ui)/1 var(--sans);
+}
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-nameedit:disabled { color: var(--ink-3); }
+
+/* History: a group of commits is a heading over hairline rows. */
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-bar { display: flex; align-items: center; gap: 12px; min-height: var(--h-row); margin: 0; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-bar .pj-refresh { margin-left: auto; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-now { color: var(--ink-2); font-size: var(--fs-small); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-group { margin: 0 0 12px; border: 0; border-top: 1px solid var(--rule); border-radius: 0; background: none; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-group > header { display: flex; align-items: center; gap: 10px; min-height: var(--h-row); padding: 0; border: 0; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-grouplabel { font-weight: 600; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-count { color: var(--ink-2); font-size: var(--fs-small); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-group > header .pj-btn { margin-left: auto; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-commit { padding: 8px 0; border-top: 1px solid var(--rule); background: none; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-commit:first-of-type { border-top: 0; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-commit + .pj-commit { border-top: 1px solid var(--rule); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-commithead { display: flex; align-items: center; gap: 4px 10px; margin: 0 0 2px; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-subject { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-meta { display: flex; flex-wrap: wrap; gap: 2px 12px; color: var(--ink-2); font-size: var(--fs-small); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-author { font-weight: 500; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-author-agent { color: var(--temper-text); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-author-human { color: var(--ink); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-more { margin-top: 4px; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) pre.pj-diff {
+  max-height: 28em; margin: 6px 0 0; padding: 6px 8px; overflow: auto;
+  border: 0; border-block: 1px solid var(--rule); border-radius: 0; background: var(--field);
+  color: var(--ink); font-size: var(--fs-small);
+}
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-d-add { color: var(--quench); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-d-del { color: var(--danger); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-d-hunk { color: var(--ink-3); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-d-file { color: var(--ink); font-weight: 600; }
+
+/* The project list: hairline rows, the state as a lamp and a word. */
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-new { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-new textarea, html .pj-modal textarea {
+  width: 100%; padding: 5px 8px; border: 1px solid var(--rule-strong); border-radius: var(--r);
+  background: var(--field); color: var(--ink); font: 400 var(--fs-ui)/var(--lh-ui) var(--sans);
+}
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-new textarea { flex: 1 1 100%; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-cards { display: grid; gap: 0; border-top: 1px solid var(--rule); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-card { padding: 8px 0; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: none; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-card > header { display: flex; align-items: baseline; gap: 10px; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-name { font-weight: 600; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-state { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; color: var(--ink-2); font-size: var(--fs-small); white-space: nowrap; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-state::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 1px; background: var(--ink-3); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-empty { color: var(--ink-2); }
+
+/* "Send to" and "Derived from". */
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-lineage-title { margin: 0; font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); }
+.pj-lineage .pj-bar { flex-wrap: wrap; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menuwrap { position: relative; display: inline-flex; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menu {
+  position: absolute; top: calc(100% + 4px); left: 0; z-index: 20;
+  display: flex; flex-direction: column; min-width: 200px; margin: 0; padding: 4px; text-align: left;
+  border: 1px solid var(--rule-strong); border-radius: var(--r);
+  background: var(--field); box-shadow: var(--shadow-menu);
+}
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menuitem {
+  display: flex; align-items: center; gap: 8px; width: 100%; height: var(--ctl); padding: 0 8px;
+  border: 0; border-radius: var(--r-sm); background: none; color: var(--ink);
+  font: 400 var(--fs-ui)/1 var(--sans); white-space: nowrap; text-align: left; cursor: pointer;
+}
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menuitem:hover:not(:disabled), :is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menuitem:focus-visible { background: var(--hover); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menuitem:disabled { background: none; color: var(--ink-3); cursor: default; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-revnote { color: var(--ink-2); font-size: var(--fs-small); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-links h4 { margin: 12px 0 2px; font: 500 var(--fs-small)/1 var(--sans); color: var(--ink-2); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-links ul { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-link { padding: 6px 0; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: none; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-linkhead { display: flex; align-items: baseline; gap: 8px; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-chip { padding: 0; border: 0; border-radius: 0; font-size: var(--fs-small); color: var(--ink-2); white-space: nowrap; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-intent { overflow-wrap: anywhere; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-choices { display: grid; gap: 6px; margin: 0 0 8px; padding: 0; border: 0; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-choice { display: flex; align-items: baseline; gap: 8px; }
+
+/* The confirming dialog is the settings window's dialog. */
+html .pj-modal {
+  position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center;
+  padding: 16px; background: light-dark(rgba(20, 23, 26, 0.35), rgba(0, 0, 0, 0.55));
+}
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-dialog {
+  display: flex; flex-direction: column; width: min(34em, 100%); max-height: min(90vh, 100%);
+  border: 1px solid var(--rule-strong); border-radius: var(--r);
+  background: var(--ground); color: var(--ink); box-shadow: var(--shadow-menu);
+}
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-dialog header { flex: none; display: flex; align-items: center; min-height: var(--h-bar); padding: 0 16px; border: 0; border-bottom: 1px solid var(--rule); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-dialog h2 { margin: 0; font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); color: var(--ink); }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-modal-main { padding: 12px 16px; overflow: auto; }
+:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-dialog footer { flex: none; display: flex; justify-content: flex-end; gap: 8px; padding: 10px 16px; border: 0; border-top: 1px solid var(--rule); }
 
 /* ------------------------------------------------------------------- phone */
 /* .wide shows only above 640px and .narrow only at or below it. */

@@ -1,0 +1,6 @@
+/* The ember reference page: which header state shows for the route. Nothing
+   here is part of the theme. */
+.pj-header .ed-edit { display: none; }
+body[data-route=rename] .pj-header .ed-idle { display: none; }
+body[data-route=rename] .pj-header .ed-edit { display: inline-flex; }
+body[data-route=rename] .pj-header input.ed-edit { display: block; }

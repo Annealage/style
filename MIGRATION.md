@@ -151,7 +151,7 @@ Removed:
 
 New, with no earlier equivalent: `.lamp`, `.readout` and `.val`, `.pline`, `.paper`, `.menuwrap` and `.menu`, `.disc`, `dl.fl`, `.dt` (the selectable table), `.hpin`, `.rhead`, `.cmd`, `.crumbs`, `.stageline`, `.prodtabs`, `.vsep`, `.vtab.second`, `.zoom`, and everything in `pages.css` beyond the five names above.
 
-Newly covered from annealage-ember, which the old theme left to `agent.css`: `details.thinking`, `details.toolgroup`, `.turnerrors`, `.chathistory`, `.contextchip`, `.author`, `.setrow`, `.setmodels`, `.loginflow`, `details.more`. The theme now lays the whole pane out itself, so a page still links `agent.css` first but no longer depends on it.
+Newly covered from annealage-ember, which the old theme left to `agent.css`: `details.thinking`, `details.toolgroup`, `.turnerrors`, `.chathistory`, `.contextchip`, `.author`, `.setrow`, `.setmodels`, `.loginflow`, `details.more`, `#toast`, `#err` and every `pj-*` class of `project.js`. The theme now lays the whole pane out itself, so a page still links `agent.css` first but no longer depends on it.
 
 ## What each product's port has to touch
 

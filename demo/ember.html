@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" data-product="loom">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember views, Annealage style reference</title>
+<!-- The workbench with annealage-ember's project views as a product page links
+     them: ember's real agent.css and project.css (copies in assets/ember/)
+     come before the theme, which has to win over both. The project header,
+     History, the "Send to" bar, the confirming dialog, the toast, the error
+     line and the settings window are all ember's markup.
+     #project (default)  #rename  #dialog  #settings    ?product=  ?theme=light|dark  ?ember=0 drops both ember sheets -->
+<script src="../scheme.js"></script>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="assets/ember/agent.css" data-ember>
+<link rel="stylesheet" href="assets/ember/project.css" data-ember>
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="demo.css">
+<link rel="stylesheet" href="ember.css">
+</head>
+<body class="panel-open" data-routes="project rename dialog settings" data-default="project">
+<div class="wb" data-side="review" data-layout="split">
+
+  <header class="titlebar">
+    <div class="tb-left">
+      <a class="mark" href="list.html" title="Projects"><picture><source data-mark-dark srcset="../marks/loom-weave-dark.svg" media="(prefers-color-scheme: dark)"><img data-mark src="../marks/loom-weave.svg" alt="" width="640" height="512"></picture></a>
+      <span class="prod" data-prod>Annealage Loom</span>
+      <span class="tsep"></span>
+      <div id="projectHeader" class="pj-header">
+        <div class="pj-titlerow">
+          <strong class="pj-title ed-idle">RP2040 Stepper Controller</strong>
+          <input class="pj-nameedit ed-edit" type="text" aria-label="Project title" value="RP2040 Stepper Controller">
+          <button type="button" class="pj-btn pj-quiet ed-idle">Rename</button>
+          <button type="button" class="pj-btn pj-quiet ed-idle">Change id</button>
+          <button type="button" class="pj-btn ed-edit">Save</button>
+          <button type="button" class="pj-btn pj-quiet ed-edit">Cancel</button>
+        </div>
+        <div class="pj-banner"></div>
+        <div class="pj-error" role="alert"></div>
+      </div>
+    </div>
+    <button class="cmd" type="button"><svg class="ico"><use href="../icons.svg#i-search"/></svg><span>Search or run a command</span><kbd>Ctrl K</kbd></button>
+    <div class="tb-right">
+      <span class="conn" data-state="live">Live</span>
+      <button class="btn quiet" id="pauseBtn" type="button" aria-pressed="false" title="Pause live updates"><svg class="ico"><use href="../icons.svg#i-pause"/></svg><span class="lbl" data-label>Pause</span></button>
+      <span class="gap"></span>
+      <div class="seg icons" role="group" aria-label="Layout focus">
+        <button type="button" aria-pressed="false" data-layout-set="drawing" aria-label="Drawing" title="Drawing"><svg class="ico"><use href="../icons.svg#i-lay-drawing"/></svg></button>
+        <button type="button" aria-pressed="true" data-layout-set="split" aria-label="Split" title="Split"><svg class="ico"><use href="../icons.svg#i-lay-split"/></svg></button>
+        <button type="button" aria-pressed="false" data-layout-set="agent" aria-label="Agent" title="Agent"><svg class="ico"><use href="../icons.svg#i-lay-agent"/></svg></button>
+      </div>
+      <span class="gap"></span>
+      <button class="btn icon" id="panelBtn" type="button" aria-pressed="true" aria-label="Review inspector" title="Review inspector"><svg class="ico"><use href="../icons.svg#i-review"/></svg></button>
+      <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="../icons.svg#i-auto"/></svg></button>
+      <button class="btn icon" type="button" aria-label="Settings" title="Settings"><svg class="ico"><use href="../icons.svg#i-settings"/></svg></button>
+    </div>
+  </header>
+
+  <nav id="tabbar" aria-label="Panes"><button type="button" class="on">Drawing</button><button type="button">History</button><button type="button">Agent</button></nav>
+
+  <div class="vhead" role="tablist" aria-label="Views">
+    <button class="vtab" type="button" aria-current="page">Schematic</button>
+    <button class="vtab second" type="button">History</button>
+  </div>
+
+  <main class="view" aria-label="Schematic, sheet CAN">
+    <div class="canvas">
+      <span class="hud hud--tl">CAN, sheet 5 of 6</span>
+      <div class="demo-sheetwrap"><div class="demo-sheet paper"><img src="assets/sheet-can-large.png" alt="CAN sheet"></div></div>
+    </div>
+  </main>
+
+  <aside class="inspector" id="review" aria-label="History">
+    <div class="ihead"><h2>History</h2><button class="btn icon sm" type="button" data-panel-close aria-label="Hide history"><svg class="ico"><use href="../icons.svg#i-x"/></svg></button></div>
+    <div class="iscroll">
+      <div class="pj-lineage">
+        <div class="pj-bar"><h3 class="pj-lineage-title">Send to</h3>
+          <div class="pj-menuwrap"><button type="button" class="pj-btn pj-send" aria-haspopup="menu" aria-expanded="true">Send to…</button>
+            <div class="pj-menu" role="menu"><button type="button" role="menuitem" class="pj-menuitem" data-product="trace">Annealage Trace</button><button type="button" role="menuitem" class="pj-menuitem" data-product="mesh">Annealage Mesh</button><button type="button" role="menuitem" class="pj-menuitem" disabled title="Canvas has no import yet">Annealage Canvas</button></div></div>
+          <span class="pj-revnote">Sends the latest revision.</span></div>
+        <div class="pj-error" role="alert"></div>
+        <div class="pj-banner"></div>
+        <div class="pj-result" role="status"><a class="pj-name" href="#">RP2040 review</a><span class="pj-state">Sent</span><span class="pj-hint">Opened in Trace as rev 2.</span><button type="button" class="pj-btn pj-sm pj-quiet">Dismiss</button></div>
+        <section class="pj-links pj-derived"><h4>Derived from</h4><ul><li class="pj-link" data-project="rp2040_req"><div class="pj-linkhead"><a class="pj-name" href="#">RP2040 requirements</a><span class="pj-chip">Annealage Loom</span><span class="pj-chip pj-relation">Requirements</span><span class="pj-state">Current</span></div><div class="pj-meta"><span>Updated 10 Nov</span><span class="pj-intent">Motor current limit raised to 1.5 A.</span></div></li></ul></section>
+      </div>
+      <div class="pj-history">
+        <div class="pj-bar"><span class="pj-now">Now at 4 commits</span><button type="button" class="pj-btn pj-refresh">Refresh</button></div>
+        <div class="pj-banner"><div class="pj-conflict" role="alert"><p>The project changed after you opened this: <b>3</b> newer commits are on the latest revision.</p><p class="pj-actions"><button type="button" class="pj-btn">Reload</button><button type="button" class="pj-btn pj-quiet">Dismiss</button></p></div></div>
+        <div class="pj-error" role="alert"></div>
+        <div class="pj-notice" role="status">Showing the 6 most recent commits.</div>
+        <div class="pj-list">
+          <section class="pj-group"><header><span class="pj-grouplabel">Agent turn 4</span><span class="pj-count">2 commits</span><button type="button" class="pj-btn pj-sm">Restore to before</button></header>
+            <div class="pj-commit"><div class="pj-commithead"><span class="pj-subject">Move C45 to 3V3 and remove R19, R20</span><button type="button" class="pj-btn pj-sm pj-quiet">Send to…</button><button type="button" class="pj-btn pj-sm pj-quiet" aria-expanded="true">Hide diff</button></div>
+              <div class="pj-meta"><span class="pj-author pj-author-agent">Agent</span><span>2 min ago</span><code>a41c9e2</code><span>circuit.py</span></div>
+              <pre class="pj-diff"><span class="pj-d-file">diff --git a/circuit.py b/circuit.py</span>
+<span class="pj-d-hunk">@@ -41,7 +41,6 @@ def can_sheet():</span>
+ U10 = Part("Interface_CAN_LIN", "MCP2562FD-E-SN")
+<span class="pj-d-del">-C45["2"] += V5</span>
+<span class="pj-d-add">+C45["2"] += V3V3</span>
+<span class="pj-d-del">-R19 = Part("Device", "R", value="10k")</span>
+ U10["VIO"] += V3V3</pre></div>
+            <div class="pj-commit"><div class="pj-commithead"><span class="pj-subject">Resolve comment 3 on J7</span><button type="button" class="pj-btn pj-sm pj-quiet" aria-expanded="false">Diff</button></div>
+              <div class="pj-meta"><span class="pj-author pj-author-agent">Agent</span><span>3 min ago</span><code>7be10f3</code><span>comments.json</span></div></div></section>
+          <section class="pj-group"><header><span class="pj-grouplabel">Your edit</span><span class="pj-count">1 commit</span></header>
+            <div class="pj-commit"><div class="pj-commithead"><span class="pj-subject">Rename the project to a title long enough to wrap in a narrow inspector without pushing anything out</span><button type="button" class="pj-btn pj-sm pj-quiet" aria-expanded="false">Diff</button></div>
+              <div class="pj-meta"><span class="pj-author pj-author-human">andrew</span><span>yesterday</span><code>0c33d17</code></div></div></section>
+        </div>
+        <button type="button" class="pj-btn pj-more">Load older commits</button>
+      </div>
+      <div class="pj-projects">
+        <div class="pj-error" role="alert"></div>
+        <div class="pj-cards"><article class="pj-card" data-project="rp2040_stepper"><header><a class="pj-name" href="#">RP2040 Stepper Controller</a><code>rp2040_stepper</code><span class="pj-state">Open</span></header><div class="pj-meta"><span>6 sheets</span><span>Last change: move C45</span></div><button type="button" class="pj-btn pj-sm pj-quiet">Change id</button></article>
+          <article class="pj-card" data-project="thermostat"><header><span class="pj-name">Thermostat</span><code>thermostat</code></header><div class="pj-error">This project could not be read.</div></article></div>
+      </div>
+    </div>
+  </aside>
+
+      <aside id="chat" aria-label="Agent" data-pending="0">
+        <header><h1>Agent</h1><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
+          <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b id="chatWorkingTime"></b></span>
+          <span class="spacer"></span>
+          <span id="connIndicator" class="conn" data-state="live">Live</span>
+          <button id="sessionStart" type="button" class="hdrbtn primary">Start session</button>
+        </header>
+        <div id="chatBanner" class="chatbanner" data-kind="info"><span id="chatBannerText">No session yet. Start one to let the agent drive this screen.</span><button id="chatBannerClose" type="button" aria-label="Dismiss">&times;</button></div>
+        <div id="chatLog" aria-live="polite"><button class="chathistory" type="button">Beginning of conversation</button></div>
+        <div class="side">
+          <div id="chatPending"></div>
+          <div id="chatComposer">
+            <div id="chatAttachStrip" class="attachstrip" hidden></div>
+            <div id="chatComposerRow"><input id="chatFileInput" type="file" multiple hidden>
+              <button id="chatAttachBtn" type="button" class="attachbtn" aria-label="Attach an image"><svg class="ico"><use href="../icons.svg#i-attach"/></svg></button>
+              <textarea id="chatInput" rows="2" aria-label="Message" placeholder="Message the agent"></textarea>
+              <div class="chatbtns"><button id="chatInterrupt" type="button" disabled>Interrupt</button><button id="chatSend" type="button" class="primary">Send</button></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+  <footer class="statusbar">
+    <span class="conn" data-state="live">Live</span>
+    <span>Agent <b>Ready</b></span>
+  </footer>
+</div>
+
+<section data-view="dialog" hidden>
+  <div class="pj-modal"><div class="pj-dialog" role="dialog" aria-modal="true" aria-labelledby="ed-dialog-title">
+    <header><h2 id="ed-dialog-title">Restore to before Agent turn 4?</h2></header>
+    <div class="pj-modal-main"><div class="pj-modal-body"><p>The project goes back to how it was before Agent turn 4, as a new commit by you, so nothing is lost and you can restore past this too.</p><p class="pj-hint">This undoes 2 commits:</p><ul><li>Move C45 to 3V3 and remove R19, R20 (Agent)</li><li>Resolve comment 3 on J7 (Agent)</li></ul></div><div class="pj-error" role="alert">The project changed after you opened this, so it will not be restored as shown. Reload, then choose again.</div></div>
+    <footer><button type="button" class="pj-btn pj-quiet">Cancel</button><button type="button" class="pj-btn pj-danger">Restore to before</button></footer>
+  </div></div>
+</section>
+
+<section data-view="settings" hidden>
+  <div id="settingsModal" class="modal">
+    <div class="setpanel" role="dialog" aria-label="Settings">
+      <header><h2>Settings</h2><button class="setclose" type="button" aria-label="Close">&times;</button></header>
+      <div class="setwarn">The saved settings could not be read; defaults are shown.</div>
+      <div class="setbody">
+        <section class="setmodels"><h3>Models and providers</h3><p class="sethelp">Which model each kind of work uses.</p><p class="setnote">Changes apply to the next session.</p>
+          <h4>Profile</h4>
+          <div class="setrow" data-key="model"><label class="setlabel" for="set-model">model</label><select id="set-model" class="setinput"><option>backend default</option><option>Other…</option></select><input id="set-custom-model" class="setinput" type="text" value="anthropic/claude-sonnet" aria-label="Custom model"><div class="setnote">Set in this project.</div><div class="sethelp">The model the main agent uses.</div></div></section>
+        <section><h3>Agent</h3>
+          <div class="setrow" data-key="max_turns"><label class="setlabel" for="set-max">max_turns</label><input id="set-max" class="setinput" type="number" value="40"><div class="setnote">Default.</div><div class="sethelp">Stop a turn after this many tool calls.</div></div>
+          <div class="setrow" data-key="auto_build"><label class="setlabel" for="set-auto">auto_build</label><input id="set-auto" class="setinput" type="checkbox" checked><div class="sethelp">Rebuild after every edit.</div></div>
+          <div class="setrow" data-key="locked"><label class="setlabel" for="set-locked">sandbox</label><input id="set-locked" class="setinput" type="text" value="project" disabled><div class="setnote">Set by the host; not editable here.</div></div></section>
+        <section class="loginsection"><h3>Provider sign-in</h3><div class="loginflow"><span>Open the link and paste the code it gives you.</span><a class="loginlink" href="#">https://example.com/device</a><input class="setinput" type="text" placeholder="Code" aria-label="Code"></div></section>
+        <section><h3>Diagnostics</h3><div class="diagblock"><div class="diagrow"><span class="diagkey">Backend</span><span class="diagval">omp 0.9.4</span></div><div class="diagrow"><span class="diagkey">Session</span><span class="diagval">2026-11-10T10-40-52Z_01a0dd4d</span></div></div></section>
+        <section><h3>Agent log</h3><div class="loglist">
+          <div class="logrow"><div class="loghead"><span class="logname">Agent</span><span class="logpath">~/.omp/agent/logs/agent.log</span><button class="logbtn" type="button">Hide</button></div><div class="logopts"><span>Last 64 KiB</span><label class="check"><input type="checkbox">Debug lines</label></div><pre class="logtail">10:40:52 session started
+10:41:03 turn 1 end_turn</pre></div>
+          <div class="logrow"><div class="loghead"><span class="logname">Backend</span><span class="logpath">~/.omp/agent/logs/backend.log</span><button class="logbtn" type="button">Show</button></div></div>
+          <div class="lognote">Logs are read from this machine and are not uploaded.</div></div></section>
+      </div>
+      <footer><span class="setstatus">Nothing changed.</span><button type="button" class="primary">Save</button></footer>
+    </div>
+  </div>
+</section>
+
+<div id="toast" role="status"></div>
+<div id="err" role="alert"></div>
+
+<script type="module" src="demo.js"></script>
+<script type="module" src="ember.js"></script>
+</body>
+</html>

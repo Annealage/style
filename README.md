@@ -124,6 +124,8 @@ Each component's markup is in the comment above its rules.
 **Agent pane and settings** (annealage-ember's markup)
 - `#chat` with its header (`.agentstatus`, `.chatwho`, `.chatusage`, `.working`, `.conn`, `.hdrbtn`, `details.more`), `.chatbanner[data-kind]`, `#chatLog` (`.turn`, `.msg.user`, `.msg.assistant`, `.msg.action`, `.segments`, `.text`, `details.thinking`, `details.toolgroup`, `details.toolcard`, `pre.toolinput`, `pre.toolresult`, `.turnerrors`, `.chathistory`, `.attachthumbs`, `.contextchip`), `.side`, `.chathint`, `#chatPending` with `.permcard`, and `#chatComposer` (`.chatmodelrow`, `.attachstrip`, `.attachchip`, `#chatComposerRow`, `.attachbtn`, `#chatInput`, `.chatbtns`).
 - `.modal` and `.setpanel` with `.setwarn`, `.setbody`, `.setrow`, `.setlabel`, `.setinput`, `.setnote`, `.sethelp`, `.diagrow`, `.logrow`, `.logtail`, `.loginflow`.
+- `#toast` (class `ok` or `err`) and `#err`, which ember's `ui.js` writes: a floating message row with a lamp.
+- The project views `project.js` builds, all `pj-*` classes: `.pj-header`, `.pj-history`, `.pj-lineage`, `.pj-projects` and the `.pj-modal` dialog. The theme draws their look and layout; `demo/ember.html` shows them under ember's real `agent.css` and `project.css`.
 
 **Review** (a product that runs a review rather than a chat)
 - `section.console` with `.chead` and `.cbody`, `ol.steps` of `li.step[data-state]`, `pre.log`.
