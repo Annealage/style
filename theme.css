@@ -978,12 +978,30 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 #chat > header .conn { order: 4; padding: 0 4px; font-size: var(--fs-small); }
 #chat > header::after, .chead::after { content: ""; order: 7; flex-basis: 100%; height: 0; }
 #chat > header .working, .chead .working { order: 8; }
-#chat .chatusage {
-  order: 9; margin-left: auto;
-  height: 20px; padding: 0 6px; margin-bottom: 8px; border-radius: var(--r-xs);
+/* Usage is a row of readouts, context and cost, each a .readout (a .val and a
+   .lg) that chat.js hides while its figure is unknown:
+   <span class="chatusage"><span class="readout" data-usage="context">…</span><span class="readout" data-usage="cost">…</span></span>
+   The wrapper takes no space when every readout is hidden. An older one-string
+   .chatusage (text, no readouts) is drawn as one boxed readout. */
+#chat .chatusage { order: 9; margin-left: auto; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+#chat .chatusage:has(> .readout):not(:has(> .readout:not([hidden]))) { display: none; }
+#chat .chatusage:not(:has(> .readout)) {
+  height: 20px; padding: 0 6px; border-radius: var(--r-xs);
   background: var(--well); box-shadow: inset 0 0 0 1px var(--rule);
   font: 400 var(--fs-small)/20px var(--sans); font-variant-numeric: tabular-nums; color: var(--ink);
 }
+/* Pane layout the chat page (embed.render_agent_page) relies on, scoped to #chat:
+   a log that keeps some height, a pending area and tool inputs that cap, a
+   composer that wraps on a very narrow pane, and More showing a paused agent
+   by the held state of its summary rather than by injected text. */
+#chat #chatLog { min-height: 20vh; }
+#chat #chatPending { max-height: 50vh; }
+#chat #chatPending .permcard pre.toolinput { max-height: 16vh; overflow: auto; }
+#chat .more > summary { list-style: none; }
+#chat .more[open] > summary, #chat .more:has(#pauseBtn[aria-pressed=true]) > summary { background: var(--press); color: var(--ink); }
+#chat #chatComposerRow textarea { min-width: 0; }
+@media (max-width: 420px) { #chat > header .conn { font-size: 0; } }
+@media (max-width: 520px) { #chat > header .chatusage { order: 10; flex: 1 1 100%; justify-content: flex-start; margin-left: 0; padding-left: 0; } }
 /* The agent's state: a lamp and a word. .agentstatus[data-state=ready|idle|connecting|unavailable]
    (the class is doubled so these outrank agent.css's pill wherever the element sits). */
 .agentstatus.agentstatus {
