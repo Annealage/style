@@ -871,6 +871,17 @@ body:not(.panel-open) .colgrip[data-grip=insp], .wb[data-layout=agent] .colgrip,
 body:not(.panel-open) .wb[data-insp=left] .half:first-child > .vhead { padding-left: var(--gutter); }
 .half > .stage { flex: 1; }
 .half > :is(pre, ol).src { flex: 1; border-block: 0; }
+.half[data-preview] .previewbar :is(b, span) { white-space: nowrap; }
+/* Between 900 and 1200px the tree and the agent leave the view under 540px, too narrow for two
+   halves side by side, so the halves stack (editor over screen), the handle goes and the command
+   field narrows to leave the title bar's controls room. */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .canvas.split.even { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+  .half ~ .half { border-left: 0; border-top: 1px solid var(--rule); }
+  .colgrip[data-grip=split] { display: none; }
+  .titlebar .cmd { width: 150px; }
+  .titlebar .cmd kbd { display: none; }
+}
 .stage > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
 
 /* A layer list: .layergroup headings, then label.layerrow each holding a
@@ -1895,7 +1906,9 @@ html .pj-modal {
   /* A split view's halves are panes of their own: the tab bar shows one, and the view
      itself goes when none of its halves is the one showing. */
   .canvas.split.even { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
-  .half ~ .half { border-left: 0; }
+  .half ~ .half { border-left: 0; border-top: 0; }
+  .half[data-preview] .previewbar { flex-wrap: wrap; gap: 0 10px; padding-block: 4px; }
+  .wb[data-insp=left] .inspector .ihead [data-panel-close] { display: none; }
   .view:has(.half):not(:has(.half:not([style*="none"]))) { display: none; }
   .wb[data-insp=left] .inspector > .ihead, body:not(.panel-open) .wb[data-insp=left] .half:first-child > .vhead { padding-left: 12px; }
   .wb[data-insp=left] .inspector .tree { --tree-in: 9px; }
