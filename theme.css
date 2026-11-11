@@ -171,10 +171,13 @@ input[type=checkbox]:indeterminate::after { content: ""; width: 7px; height: 1.5
 input[type=radio]:checked { border-color: var(--ink); }
 input[type=radio]:checked::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
 input[type=checkbox]:disabled, input[type=radio]:disabled { opacity: 0.5; cursor: default; }
-input[type=checkbox].switch { width: 24px; height: 14px; border: 0; border-radius: 7px; background: var(--rule-strong); position: relative; display: inline-block; }
-input[type=checkbox].switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 10px; height: 10px; margin: 0; border: 0; border-radius: 50%; background: var(--ground); transform: none; }
-input[type=checkbox].switch:checked { background: var(--ink); }
-input[type=checkbox].switch:checked::after { left: 12px; }
+/* The toggle: 36 x 20. Off is an outlined track with a quiet thumb (ring and thumb
+   in --ink-3, which holds 3:1 on ground, well and field); on is solid ink with a
+   ground thumb. Focus is the global ring; disabled is the 50% above. */
+input[type=checkbox].switch { width: 36px; height: 20px; border: 0; border-radius: 10px; background: var(--field); box-shadow: inset 0 0 0 1.5px var(--ink-3); position: relative; display: inline-block; }
+input[type=checkbox].switch::after { content: ""; position: absolute; top: 4px; left: 4px; width: 12px; height: 12px; margin: 0; border: 0; border-radius: 50%; background: var(--ink-3); transform: none; }
+input[type=checkbox].switch:checked { background: var(--ink); box-shadow: none; }
+input[type=checkbox].switch:checked::after { left: 20px; background: var(--ground); }
 .check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
 .check .hint { margin-left: auto; color: var(--ink-3); }
 input[type=range] { accent-color: var(--ink); }
