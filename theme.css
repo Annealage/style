@@ -872,15 +872,25 @@ body:not(.panel-open) .wb[data-insp=left] .half:first-child > .vhead { padding-l
 .half > .stage { flex: 1; }
 .half > :is(pre, ol).src { flex: 1; border-block: 0; }
 .half[data-preview] .previewbar :is(b, span) { white-space: nowrap; }
-/* Between 900 and 1200px the tree and the agent leave the view under 540px, too narrow for two
-   halves side by side, so the halves stack (editor over screen), the handle goes and the command
-   field narrows to leave the title bar's controls room. */
+/* Between 900 and 1280px the tree and the agent, both open, leave the view under 620px, too narrow
+   for two halves side by side, so the halves stack (editor over screen) and the handle goes. With
+   either column closed there is room and they stay side by side. Between 900 and 1200px the left
+   layout's command field also narrows, to leave the title bar's controls room, and under 1000px it is its icon. */
+@media (min-width: 901px) and (max-width: 1280px) {
+  body.panel-open .wb[data-insp=left]:not([data-layout=drawing]) .canvas.split.even { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+  body.panel-open .wb[data-insp=left]:not([data-layout=drawing]) .half ~ .half { border-left: 0; border-top: 1px solid var(--rule); }
+  body.panel-open .wb[data-insp=left]:not([data-layout=drawing]) .colgrip[data-grip=split] { display: none; }
+}
 @media (min-width: 901px) and (max-width: 1200px) {
-  .canvas.split.even { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
-  .half ~ .half { border-left: 0; border-top: 1px solid var(--rule); }
-  .colgrip[data-grip=split] { display: none; }
-  .titlebar .cmd { width: 150px; }
-  .titlebar .cmd kbd { display: none; }
+  .wb[data-insp=left] .titlebar .cmd { width: 150px; }
+  .wb[data-insp=left] .titlebar .cmd kbd { display: none; }
+}
+/* Under 1000px the left layout's command field is its icon, as on a phone, so the bar's controls fit. */
+@media (min-width: 901px) and (max-width: 1000px) {
+  .wb[data-insp=left] .titlebar .cmd { width: var(--ctl); padding: 0; justify-content: center; border-color: transparent; background: none; color: var(--ink-2); }
+  .wb[data-insp=left] .titlebar .cmd:hover { background: var(--hover); color: var(--ink); }
+  .wb[data-insp=left] .titlebar .cmd > :is(span, kbd) { display: none; }
+}
 }
 .stage > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
 
