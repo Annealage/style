@@ -136,7 +136,10 @@ const CANVAS = [
     ['merge', ['light', 'dark']], ['deleted', ['light']], ['saving', ['light']], ['paused', ['light']], ['error', ['light']],
     ['menu', ['light', 'dark']], ['rename', ['light']], ['newfile', ['light']], ['newfolder', ['light']], ['delete', ['light']], ['discard', ['light']],
     ['empty', ['light']], ['loading', ['light']],
-  ].flatMap(([state, schemes]) => schemes.map((s) => canvasShot(state, s))),
+    ['forcedelete', ['light']], ['toast', ['light']], ['screenerror', ['light']], ['pausefail', ['light']], ['signoutfail', ['light']],
+    ['bootfail', ['light']], ['viewonly,menu', ['light'], 'viewonly-menu'],
+    ['connecting', ['light'], null, { conform: { reason: 'before the project answers the window holds one Connecting line and no pane heads', expect: { '.wb': { gridTemplateColumns: CANVAS_COLS }, '.vhead': 'absent' } } }],
+  ].flatMap(([state, schemes, name, extra]) => schemes.map((s) => canvasShot(state, s, { ...(name ? { name: `workbench-canvas-${name}-${s}`, file: `workbench-canvas-${name}-${s}` } : {}), ...extra }))),
   // The frame: tree closed, tree and split dragged, layout focus, keyboard focus on the split handle.
   canvasShot('', 'light', { name: 'workbench-canvas-tree-closed-light', file: 'workbench-canvas-tree-closed-light', state: click('#panelBtn'), conform: canvasConform(['0px', null, '400px'], 'the file tree toggle closes the left column; the editor and screen take its width') }),
   canvasShot('', 'light', { name: 'workbench-canvas-tree-wide-light', file: 'workbench-canvas-tree-wide-light', state: gripBy('insp', 8, 'ArrowRight'), conform: canvasConform(['388px', null, '400px'], 'file tree column dragged (8 steps of the handle) from 260px to 388px') }),
@@ -144,10 +147,17 @@ const CANVAS = [
   canvasShot('', 'light', { name: 'workbench-canvas-split-focus-light', file: 'workbench-canvas-split-focus-light', state: gripBy('split', 0, 'ArrowRight') }),
   canvasShot('', 'light', { name: 'workbench-canvas-layout-drawing-light', file: 'workbench-canvas-layout-drawing-light', state: click('[data-layout-set="drawing"]'), conform: canvasConform(['260px', null, '0px'], 'layout focus "drawing" closes the agent column; the tree keeps its width') }),
   canvasShot('', 'light', { name: 'workbench-canvas-layout-agent-light', file: 'workbench-canvas-layout-agent-light', state: click('[data-layout-set="agent"]'), conform: { reason: 'layout focus "agent" gives the agent column the whole window and collapses the tree and the view, so no pane head is drawn', expect: { '.wb': { gridTemplateColumns: ['0px', '0px', null] }, '.vhead': 'absent' } } }),
+  // Between 900 and 1200px wide the halves stack (editor over screen).
+  ...['light', 'dark'].map((s) => ref(`workbench-canvas-narrow-${s}`, `workbench.html?product=canvas&theme=${s}`, s, 1100, 800, 'workbench', { conform: canvasConform() })),
+  ref('workbench-canvas-narrow-capture-light', 'workbench.html?product=canvas&theme=light&state=capture', 'light', 1000, 700, 'workbench', { conform: canvasConform() }),
   // Phone: the tab bar is Files, Editor, Screen, Agent; one pane at a time.
   ref('workbench-canvas-phone', 'workbench.html?product=canvas&theme=light', 'light', 400, 860, 'workbench', { conform: canvasPhone('files') }),
   ...['files', 'editor', 'screen', 'agent'].flatMap((t) => ['light', 'dark'].filter((s) => !(t === 'files' && s === 'light')).map((s) =>
     ref(`workbench-canvas-phone-${t}-${s}`, `workbench.html?product=canvas&theme=${s}`, s, 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: canvasPhone(t) }))),
+  // A hosted view-only session on a phone: the title bar drops the account controls, the review bar wraps.
+  ...['files', 'editor', 'screen'].flatMap((t) => ['light', 'dark'].map((s) =>
+    ref(`workbench-canvas-phone-viewonly-${t}-${s}`, `workbench.html?product=canvas&theme=${s}&state=viewonly`, s, 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: canvasPhone(t) }))),
+  ref('workbench-canvas-phone-standalone-agent-light', 'workbench.html?product=canvas&theme=light&state=standalone', 'light', 400, 860, 'workbench', { state: click('#tabbar [data-tab="agent"]'), conform: canvasPhone('agent') }),
   ...['editor', 'screen'].map((t) => ref(`workbench-canvas-phone-capture-${t}-light`, 'workbench.html?product=canvas&theme=light&state=capture', 'light', 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: canvasPhone(t) })),
 ];
 

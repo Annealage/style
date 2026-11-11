@@ -47,9 +47,9 @@
     <div data-product-slot>
       <template data-for-product="canvas">
         <div class="tb-right">
-          <a class="btn quiet" href="settings.html#security" data-only="hosted" hidden>Account</a>
-          <button class="btn quiet" type="button" data-only="hosted" title="Sign out of Canvas" hidden>Sign out</button>
-          <span class="gap" data-only="hosted" hidden></span>
+          <a class="btn quiet wide" href="settings.html#security" data-only="hosted" hidden>Account</a>
+          <button class="btn quiet wide" type="button" data-only="hosted" title="Sign out of Canvas" hidden>Sign out</button>
+          <span class="gap wide" data-only="hosted" hidden></span>
           <span class="state" data-kind="good" id="runState">Running</span>
           <span class="gap"></span>
           <button class="btn" id="pauseBtn" type="button" aria-pressed="false" title="Pause the agent"><svg class="ico"><use href="../icons.svg#i-pause"/></svg><span class="lbl" data-label>Pause agent</span></button>
@@ -522,9 +522,12 @@ content: NUT_SLOT = 5.7</pre>
            standalone  Studio with no agent: no chat, Capture and Export and the agent focus disabled
            merge deleted saving    the editor's conflict view, deleted-file message, saving marks
            paused error            the run state in the title bar (error adds the status bar's last error)
-           menu rename newfile newfolder delete    the tree's context menu and its prompts
+           menu rename newfile newfolder delete    the tree's context menu (viewonly,menu: every item disabled) and its prompts
            discard     closing a tab with unsaved edits
            empty loading    a project with no files, and the tree while it loads
+           forcedelete toast    the force-delete row after a 409 (a folder with files), the menu's error toast
+           screenerror bootfail connecting    the screen's own error line, the error row above the status bar, the whole-window Connecting line
+           pausefail signoutfail    the floating failure messages (#err)
          ?confirm=1 opens the first confirmation (confirm-demo.js), here the discard prompt. -->
     <template data-for-product="canvas">
       <main class="view" aria-label="Editor and screen">
@@ -532,9 +535,9 @@ content: NUT_SLOT = 5.7</pre>
 
           <section class="half ed" id="editorHalf" aria-label="Editor">
             <div class="vhead" role="tablist" aria-label="Open files">
-              <div class="vtab" role="tab" aria-selected="true" aria-current="page" data-file="thermostat.py"><button class="vname mono" type="button">thermostat.py</button><span class="dirty" role="img" aria-label="Unsaved changes" title="Unsaved changes"></span><button class="btn icon sm x" type="button" aria-label="Close thermostat.py" title="Close" data-confirm='{"title":"Discard changes to thermostat.py?","detail":"Your edits to this file are not saved.","action":"Discard changes","danger":true}' data-confirm-into="#editConfirm"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button></div>
-              <div class="vtab" role="tab" aria-selected="false" data-file="widgets.py"><button class="vname mono" type="button">widgets.py</button><button class="btn icon sm x" type="button" aria-label="Close widgets.py" title="Close"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button></div>
-              <div class="vtab" role="tab" aria-selected="false" data-file="main.py"><button class="vname mono" type="button">main.py</button><button class="btn icon sm x" type="button" aria-label="Close main.py" title="Close"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button></div>
+              <div class="vtab" role="presentation" aria-current="page" data-file="thermostat.py"><button class="vname mono" type="button" role="tab" aria-selected="true">thermostat.py</button><span class="dirty" role="img" aria-label="Unsaved changes" title="Unsaved changes"></span><button class="btn icon sm x" type="button" aria-label="Close thermostat.py" title="Close" data-confirm='{"title":"Discard changes to thermostat.py?","detail":"Your edits to this file are not saved.","action":"Discard changes","danger":true}' data-confirm-into="#editConfirm"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button></div>
+              <div class="vtab" role="presentation" data-file="widgets.py"><button class="vname mono" type="button" role="tab" aria-selected="false">widgets.py</button><button class="btn icon sm x" type="button" aria-label="Close widgets.py" title="Close"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button></div>
+              <div class="vtab" role="presentation" data-file="main.py"><button class="vname mono" type="button" role="tab" aria-selected="false">main.py</button><button class="btn icon sm x" type="button" aria-label="Close main.py" title="Close"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button></div>
             </div>
             <div id="editConfirm"></div>
             <div class="edmsg" id="msgChanged" data-hide="viewonly merge deleted empty">
@@ -586,7 +589,7 @@ content: NUT_SLOT = 5.7</pre>
                 <li><code>    show(t)</code></li>
               </ol>
                 </section>
-                <section aria-label="Theirs"><h3>Theirs</h3>
+                <section aria-label="Theirs, read-only"><h3>Theirs <span class="hint">read-only</span></h3>
                   <ol class="src" aria-label="thermostat.py, theirs" tabindex="0">
                 <li><code><span class="tok-keyword">def</span> <span class="tok-defname">nudge</span>(step):</code></li>
                 <li><code>    <span class="tok-keyword">global</span> t</code></li>
@@ -612,6 +615,10 @@ content: NUT_SLOT = 5.7</pre>
               </div>
             </div>
             <div class="previewbar" role="status"><b>Capture <span class="mono">14:32</span></b><span id="roLine" hidden>Read-only</span><button class="btn sm" type="button" id="pinTool" aria-pressed="true">Pin</button><button class="btn sm" type="button" id="boxTool" aria-pressed="false">Rectangle</button><button class="btn sm" type="button">Back to live</button></div>
+            <div class="edmsg" id="screenError" hidden>
+              <p class="notice notice--danger"><span>The screen could not be reached.</span></p>
+              <div class="acts"><button class="btn sm quiet" type="button">Reload</button></div>
+            </div>
             <div class="stage">
               <div class="demo-screen" role="img" aria-label="The thermostat screen, 480 by 320">
                 <div class="rowz"><span>Thermostat</span><span>14:32</span></div><div class="big">21.5°</div><div class="rowz"><span class="key">−</span><span>Target 22.0°</span><span class="key">+</span></div>
@@ -629,9 +636,9 @@ content: NUT_SLOT = 5.7</pre>
             </div>
             <nav class="subtabs" aria-label="Live screen and captures">
               <button class="subtab" type="button" id="liveTab" aria-current="page">Live</button>
-              <button class="subtab" type="button" data-capture><span class="mono">14:32</span></button>
-              <button class="subtab" type="button"><span class="mono">14:18</span></button>
-              <button class="subtab" type="button"><span class="mono">13:57</span></button>
+              <button class="subtab" type="button" data-capture data-hide="standalone"><span class="mono">14:32</span></button>
+              <button class="subtab" type="button" data-hide="standalone"><span class="mono">14:18</span></button>
+              <button class="subtab" type="button" data-hide="standalone"><span class="mono">13:57</span></button>
               <div class="right"><span class="zoom"><button class="btn icon sm" type="button" aria-label="Zoom out"><svg class="ico"><use href="../icons.svg#i-minus"/></svg></button><span class="mono">100%</span><button class="btn icon sm" type="button" aria-label="Zoom in"><svg class="ico"><use href="../icons.svg#i-plus"/></svg></button></span></div>
             </nav>
           </section>
@@ -639,6 +646,13 @@ content: NUT_SLOT = 5.7</pre>
         </div>
       </main>
 
+      <p class="empty connecting" id="connecting" hidden>Connecting to the harness</p>
+      <div class="errrow" id="bootError" role="alert" hidden>
+        <p class="notice notice--danger"><span>The harness did not answer. Check that it is running.</span></p>
+        <button class="btn sm quiet" type="button">Retry</button>
+      </div>
+      <div id="toast" role="status"></div>
+      <div id="err" role="alert"></div>
       <aside class="inspector" id="files" aria-label="Files">
         <div class="ihead"><h2>Files</h2><button class="btn icon sm" type="button" data-panel-close aria-label="Hide the file tree" title="Hide"><svg class="ico"><use href="../icons.svg#i-x"/></svg></button></div>
         <div class="iscroll">
@@ -667,7 +681,7 @@ content: NUT_SLOT = 5.7</pre>
             <li class="tin" id="treeInput" hidden><form id="treeForm"><input class="input mono" id="treeName" type="text" value="widgets.py" spellcheck="false" autocomplete="off" aria-label="New name"></form><p class="hint">Enter renames, Escape cancels</p></li>
             <li class="tin" id="treeConfirm" hidden></li>
           </ul>
-          <p class="empty" id="treeEmpty" hidden>No files yet. Add one with New file, from the menu on a folder.</p>
+          <p class="empty" id="treeEmpty" hidden>No files yet. <button class="linkish" type="button">New file</button></p>
           <p class="empty" id="treeLoading" hidden>Loading files</p>
         </div>
         <span class="menu at" id="ctxMenu" role="menu" aria-label="widgets.py" hidden>
@@ -676,6 +690,7 @@ content: NUT_SLOT = 5.7</pre>
           <hr>
           <button type="button" role="menuitem">New file</button>
           <button type="button" role="menuitem">New folder</button>
+          <button type="button" id="ctxForce" hidden data-confirm='{"title":"Delete assets and everything in it","detail":"It holds 3 files.","action":"Delete all","danger":true}' data-confirm-into="#treeConfirm">Delete all</button>
         </span>
       </aside>
 
@@ -708,7 +723,7 @@ content: NUT_SLOT = 5.7</pre>
       </template>
 
       <footer class="statusbar">
-        <span class="conn" data-state="live">Live</span>
+        <span class="conn" data-state="live" id="statusConn">Live</span>
         <span>Harness <span class="ok" id="harnessState">running</span></span>
         <span id="lastError" hidden><span class="state" data-kind="bad">Last error</span><b>ImportError: no module named widgets</b></span>
         <span id="readOnlyNote" hidden>Read-only</span>

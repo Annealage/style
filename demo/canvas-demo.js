@@ -46,20 +46,25 @@ function draw() {
     on($("#readOnlyNote"), true);
     $$(".dirty").forEach((d) => { d.hidden = true; });
     setFileState("", "Read-only");
-    const why = "You have view-only access, so you cannot add to this capture";
+    const why = "This project is view only";
     disable($("#pinTool"), why);
     disable($("#boxTool"), why);
     $("#pinTool").setAttribute("aria-pressed", "false");
-    disable($("#pauseBtn"), "Only an editor can pause the agent");
+    disable($("#pauseBtn"), "Pausing isn't available in a view-only session");
+    // A capture writes a snapshot into the project; Export only reads it, so it stays enabled.
+    disable($("#captureBtn"), why);
+    // The tree's menu is read-only too: every item is shown, none can act.
+    for (const item of $$("#ctxMenu [role=menuitem]")) disable(item, why);
   }
 
   // ---- Standalone Studio: no agent, no snapshots, no export.
   if (has("standalone")) {
     $("#chat").replaceWith($("#chatNone").content.cloneNode(true));
-    disable($("#captureBtn"), "Snapshots are not available in standalone Studio");
-    disable($("#exportBtn"), "Export is not available in standalone Studio");
-    disable($('[data-layout-set="agent"]'), "Standalone Studio has no agent");
-    disable($("#pauseBtn"), "Standalone Studio has no agent to pause");
+    const why = "Needs a managed project";
+    disable($("#captureBtn"), why);
+    disable($("#exportBtn"), why);
+    disable($('[data-layout-set="agent"]'), why);
+    disable($("#pauseBtn"), why);
   }
 
   // ---- The editor.
@@ -142,12 +147,47 @@ function draw() {
     for (const el of $$("#editorHalf > .subtabs, #savedNote, #unsavedNote")) el.hidden = true;
   }
 
+  // ---- Failures: the pane's own error line, the floating messages, the whole-window states.
+  if (has("screenerror")) {
+    on($("#screenError"), true);
+    $(".demo-screen").hidden = true;
+    $(".stage .hud").hidden = true;
+  }
+  if (has("toast")) {
+    const toast = $("#toast");
+    toast.className = "err";
+    toast.textContent = "Couldn't rename widgets.py. theme.py already exists.";
+  }
+  if (has("pausefail")) $("#err").textContent = "Couldn't pause the agent. The harness answered with an error.";
+  if (has("signoutfail")) { states.add("hosted"); $$("[data-only~=hosted]").forEach((el) => { el.hidden = false; }); $("#err").textContent = "Couldn't sign out. Try again."; }
+  if (has("connecting") || has("bootfail")) {
+    const conn = $("#statusConn");
+    conn.dataset.state = has("connecting") ? "connecting" : "down";
+    conn.textContent = has("connecting") ? "Connecting" : "Disconnected";
+  }
+  if (has("connecting")) {
+    for (const el of $$(".inspector, .view, #chat")) el.hidden = true;
+    on($("#connecting"), true);
+  }
+  if (has("bootfail")) {
+    on($("#bootError"), true);
+    const harness = $("#harnessState");
+    harness.classList.remove("ok");
+    harness.textContent = "stopped";
+  }
+
   // ---- Confirmations (confirm.js), opened as a click on the button would.
   const open = (button) => {
     const opts = JSON.parse(button.dataset.confirm);
     opts.into = $(button.dataset.confirmInto);
     return confirmRow(button, opts);
   };
+  if (has("forcedelete")) {
+    const holder = $("#treeConfirm");
+    $("#fileTree > li:nth-child(2)").after(holder);
+    holder.hidden = false;
+    open($("#ctxForce"));
+  }
   if (has("delete")) {
     const target = row("widgets.py");
     const holder = $("#treeConfirm");
