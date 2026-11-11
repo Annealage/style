@@ -57,7 +57,7 @@
     </div>
   </header>
 
-  <nav id="tabbar" aria-label="Panes"><button type="button" class="on">Drawing</button><button type="button">Review</button><button type="button">Agent</button></nav>
+  <nav id="tabbar" role="tablist" aria-label="Panes"><button type="button" role="tab" aria-selected="true" data-tab="drawing" data-target=".view">Drawing</button><button type="button" role="tab" aria-selected="false" data-tab="review" data-target=".inspector:not(#timeline)">Review</button><button type="button" role="tab" aria-selected="false" data-tab="agent" data-target="#chat, .console">Agent</button></nav>
 
   <div data-product-slot>
 
@@ -608,6 +608,7 @@ content: NUT_SLOT = 5.7</pre>
 
   </div>
 </div>
+<script src="../frame.js" data-auto></script>
 <script type="module" src="demo.js"></script>
 <script type="module" src="confirm-demo.js"></script>
 </body>

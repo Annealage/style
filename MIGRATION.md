@@ -76,7 +76,7 @@ status  status  status  status         24px
 - **`#chat`** is a flex column: header, banner, log, then `.side` (hint, pending approval, composer) at the bottom. `.side` used to be a right-hand column of the docked console.
 - **`.console`** (Trace's run) takes the same column; `.cbody` stacks the steps over the log.
 - **The status bar** has gaps between items, no divider lines. Wrap a label in `.k` and a value in `<b>`.
-- **Phone** (900px and below) is as before: one pane at a time from `#tabbar`, through annealage-ember's `layout.js`. A `.vhead` that is a child of `.wb` hides with the view.
+- **Phone** (900px and below) is as before: one pane at a time from `#tabbar`, now through `frame.js` (annealage-ember's `layout.js` is not needed; the tab bar is `role="tablist"` with `aria-selected` tabs, each `button[data-tab][data-target]`). `frame.js` also drives the layout focus and the Panel button. A `.vhead` that is a child of `.wb` hides with the view.
 
 ### Title bar
 

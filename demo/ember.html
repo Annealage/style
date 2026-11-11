@@ -56,7 +56,7 @@
     </div>
   </header>
 
-  <nav id="tabbar" aria-label="Panes"><button type="button" class="on">Drawing</button><button type="button">History</button><button type="button">Agent</button></nav>
+  <nav id="tabbar" role="tablist" aria-label="Panes"><button type="button" role="tab" aria-selected="true" data-tab="drawing" data-target=".view">Drawing</button><button type="button" role="tab" aria-selected="false" data-tab="history" data-target=".inspector">History</button><button type="button" role="tab" aria-selected="false" data-tab="agent" data-target="#chat">Agent</button></nav>
 
   <div class="vhead" role="tablist" aria-label="Views">
     <button class="vtab" type="button" aria-current="page">Schematic</button>
@@ -180,6 +180,7 @@
 <div id="toast" role="status"></div>
 <div id="err" role="alert"></div>
 
+<script src="../frame.js" data-auto></script>
 <script type="module" src="demo.js"></script>
 <script type="module" src="ember.js"></script>
 </body>

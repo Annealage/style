@@ -110,16 +110,6 @@ document.addEventListener("click", (e) => {
   closeMenus(wrap);
   if (wrap) trigger.setAttribute("aria-expanded", String(wrap.toggleAttribute("data-open")));
 
-  // Layout focus and the inspector.
-  const lay = e.target.closest("[data-layout-set]");
-  if (lay) {
-    document.querySelector(".wb").dataset.layout = lay.dataset.layoutSet;
-    for (const b of $$("[data-layout-set]")) b.setAttribute("aria-pressed", String(b === lay));
-  }
-  if (e.target.closest("#panelBtn, [data-panel-close]")) {
-    const open = body.classList.toggle("panel-open");
-    document.getElementById("panelBtn")?.setAttribute("aria-pressed", String(open));
-  }
   // Inspector tabs: data-side switches #review and #timeline, aria-controls switches .ipane.
   const tab = e.target.closest(".ptabs button");
   if (tab?.dataset.side) {
@@ -153,20 +143,8 @@ document.addEventListener("change", (e) => {
   if (e.target.name === "stage") for (const out of $$("[data-stage-out]")) out.textContent = e.target.value;
 });
 
-// ---- At 900px and below the agent layer's layout.js shows one pane at a time from
-// #tabbar, hiding the others with an inline display:none. This stands in for it.
-const tabbar = document.getElementById("tabbar");
-const narrow = window.matchMedia("(max-width: 900px)");
-function showPane(i) {
-  const panes = [".view", ".inspector:not(#timeline)", "#chat, .console"].map((sel) => document.querySelector(sel));
-  [...tabbar.children].forEach((b, n) => b.classList.toggle("on", n === i));
-  panes.forEach((pane, n) => { if (pane) pane.style.display = narrow.matches && n !== i ? "none" : ""; });
-}
-if (tabbar) {
-  tabbar.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) showPane([...tabbar.children].indexOf(b)); });
-  narrow.addEventListener("change", () => showPane(0));
-  showPane(0);
-}
+// The frame (layout focus, Panel button, phone tab bar, column resizers) is
+// ../frame.js, loaded by the page.
 
 // ---- States the query string can ask for.
 const wb = document.querySelector(".wb");

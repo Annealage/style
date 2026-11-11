@@ -10,6 +10,7 @@ The look is **Hairline + plate**. Everything sits on one surface divided by 1px 
 - `theme.css`: base, controls, lamps, markers, readouts, menus, tables, the workbench frame (title bar, view tabs, tool rail, well, inspector, agent pane, status bar), the timeline, findings, the run console, and the agent chat and settings window that annealage-ember's `chat.js` and `settings.js` build.
 - `pages.css`: what sits outside the workbench frame. The project register and tiles, a guided flow with its step spine and pinned footer, the settings or account layout, the drop zone.
 - `scheme.js`: light and dark follow the OS unless the user picks one, remembered per origin in localStorage under `annealage.scheme`. It sets `<html data-theme>`, keeps the marks' `<picture>` sources in step, drives any `<button data-scheme-toggle>` (System, Light, Dark), and fires `schemechange` on `<html>` (detail `{scheme, choice}`) on every effective change. `window.annealageScheme` has `choice()`, `get()` and `set('light'|'dark'|null)`.
+- `frame.js`: the page frame's driver (layout focus, the Panel button, the phone tab bar, column resizers). See "The frame driver" below.
 - `icons.svg`: a sprite of 16px stroke icons with round joins, used as `<svg class="ico"><use href="icons.svg#i-pin"/></svg>`.
 - `fonts/`: Instrument Sans (400, 500, 600) and Red Hat Mono (400, 500), latin and latin-ext, under the SIL Open Font License (`fonts/OFL-InstrumentSans.txt`, `fonts/OFL-RedHatMono.txt`).
 - `marks/`: the parent mark and the product marks, each with a `-dark` variant. They are exported from the brand repo and used as they are, never redrawn or recoloured.
@@ -45,6 +46,19 @@ A page with a signed-in name sets `--chat-you: "andrew"` on `#chat` to label its
 
 Things only one product draws stay in that product's stylesheet: Mesh's scene, Loom's sheet overlays beyond pins, a table's column template (`.dt.parts { --cols: … }`).
 
+### The frame driver
+
+Load `frame.js` as a classic script at the end of `<body>`. With `data-auto` (`<script src=".../frame.js" data-auto></script>`) it starts once the page has parsed and takes the tab bar from the markup; without it, call `annealageFrame({ tabs })` after building the DOM. It does nothing, and does not throw, on a page with no `.wb`, no title-bar seg, no inspector or no tab bar. Its markup hooks, all inside `.wb`:
+
+- `.wb[data-layout="drawing|split|agent"]` and buttons `[data-layout-set="…"]` (in a `.seg`): a click sets the attribute and `aria-pressed` on the set.
+- `#panelBtn`: toggles `body.panel-open` and its own `aria-pressed`. `[data-panel-close]` closes the panel. The panel starts open, whatever the viewport, until the user closes it. The theme hides `#panelBtn` at 900px and below.
+- `#tabbar`: `role="tablist"` with `button[role=tab][data-tab=id][data-target=selector]`, the first selected (`aria-selected`). At 900px and below the selected tab's target is shown and the others get an inline `display:none`; crossing the breakpoint clears them. `annealageFrame({ tabs: [{ id, label, target }] })` fills `#tabbar` instead of reading it.
+- Two drag handles, `div.colgrip` with `role="separator"`, are inserted before `.inspector` and `#chat, .console`. The widths are limited to 240 to 560px (inspector) and 320 to 720px (agent), and the view keeps 320px as the window narrows. Left and Right move a focused handle 16px, Home and End go to the limits, a double-click resets it. They are hidden at 900px and below and while their pane is closed.
+
+It keeps two settings in `localStorage` per origin and per product (`<html data-product>`, else `platform`), and only after the user changes something: `annealage.frame.<product>` (`{layout, insp, chat}`) and `annealage.frame.<product>.panel` (`"open"` or `"closed"`). The widths are written as `--insp-w-user` and `--chat-w-user` on `.wb`, which the theme reads while that column is open; with nothing stored no property is written, so a product's own `--insp-w` and `--chat-w` stay the defaults.
+
+`annealageFrame(options)` returns, and keeps as `annealageFrame.current`: `layout()`, `setLayout(v)`, `widths()` and `setWidths({insp, chat})` (pixels, or `null` for the theme's default; clamped), `panelOpen()`, `setPanelOpen(b)`, `isNarrow()`, `activeTab()`, `activateTab(id)`, `reset()` (removes both stored keys and goes back to the markup) and `destroy()`. A `framechange` event fires on `.wb` after each change, detail `{layout, insp, chat, panelOpen, activeTab}`: a canvas or WebGL view resizes on it. Options are `root`, `storage`, `product` and `tabs`. `inert`, focus rescue and `visualViewport` handling stay with the product.
+
 ### Canvas and WebGL colours
 
 Canvas and WebGL code that needs a token colour should resolve it through an element rather than read the custom property. `getComputedStyle(root).getPropertyValue('--pin')` returns the unresolved `light-dark(...)` text. Instead, set `probe.style.color = 'var(--pin)'` on a hidden element and read `getComputedStyle(probe).color`. A module script doesn't wait for stylesheets, so wait for the `<link rel=stylesheet>` loads before the first read, or the colours come out as the inherited text colour. Redraw on scheme.js's `schemechange` event, which covers both the OS changing and the user's choice. `--hover`, `--press` and `--temper-wash` are translucent, so composite them over the surface beneath if the scene needs an opaque value.
@@ -59,7 +73,7 @@ A CodeMirror 6 theme takes the same tokens: a `HighlightStyle` mapping keywords 
 
 ## What a product ships
 
-`runtime-files.txt` is the one list of what a product serves and packages: one path or directory per line, no globs (fonts are the directory). Static routes, wheel `force-include`, Canvas's copy list and Trace's `Containerfile` read it; `demo/`, `tools/` and the `*.md` files are not on it. `frame.js` and `palette.js` are listed before the library has them (the frame helper and the palette script land with later tickets); `runtime-pending.txt` names those two, and `tools/bump-style.sh` and the existence check skip any path named there. Once both files exist, `runtime-pending.txt` is deleted.
+`runtime-files.txt` is the one list of what a product serves and packages: one path or directory per line, no globs (fonts are the directory). Static routes, wheel `force-include`, Canvas's copy list and Trace's `Containerfile` read it; `demo/`, `tools/` and the `*.md` files are not on it. `palette.js` is listed before the library has it (the palette script lands with a later ticket); `runtime-pending.txt` names it, and `tools/bump-style.sh` and the existence check skip any path named there. Once it exists, `runtime-pending.txt` is deleted.
 
 `tools/bump-style.sh` is a template: copy it to `scripts/bump-style.sh` in a product. `scripts/bump-style.sh [sha-or-tag]` fetches `lib/style`, checks out the ref detached, refuses a ref that is not on `origin/main` or a submodule with changes of its own, checks the runtime list exists, stages the gitlink and prints the log between the old and new pin. It never commits.
 
@@ -119,7 +133,7 @@ Each component's markup is in the comment above its rules.
 - The selectable grid table `.dt` with `.dt-bulk`, `.dt-head`, `.dt-row[aria-selected]`, `.dt-detail`, the expander `.exp`, and the cell roles `.dt-main`, `.dt-sub`, `.dt-state`, `.dt-act`. It stacks at 640px.
 
 **Workbench frame**
-- `.wb` with `data-rail=none`, `data-console=none`, `data-layout=drawing|split|agent`, `data-side=review|timeline`, `data-preview`; `body.panel-open` shows the inspector; `--insp-w` and `--chat-w` set the pane widths.
+- `.wb` with `data-rail=none`, `data-console=none`, `data-layout=drawing|split|agent`, `data-side=review|timeline`, `data-preview`; `body.panel-open` shows the inspector; `--insp-w` and `--chat-w` set the pane widths; `frame.js` drives the layout, the Panel button, the phone tab bar and the `.colgrip` drag handles.
 - Title bar: `.titlebar` with `.tb-left`, `.mark`, `.prod`, `.tsep`, `.crumbs` or `.doc`, `.stageline` and `.stagebar`, `.cmd`, `.tb-right`, `.prodtabs`.
 - View tabs: `.vhead` with `.vtab`, `.vsep`, `.vtab.second`, `.meta`, `.right`.
 - Tool rail: `.rail` with `.tool` and its shortcut `.k`.
