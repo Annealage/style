@@ -149,6 +149,8 @@ document.addEventListener("change", (e) => {
 // ---- States the query string can ask for.
 const wb = document.querySelector(".wb");
 if (wb && q.get("preview")) wb.dataset.preview = "";
+// ?cmd=none: a title bar without the command field (its right-hand controls stay at the right edge).
+if (q.get("cmd") === "none") document.querySelector(".titlebar > .cmd")?.remove();
 for (const box of $$("[data-indeterminate]")) box.indeterminate = true;
 for (const s of $$(".swatch[data-c]")) s.style.background = s.dataset.c;
 

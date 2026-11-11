@@ -148,7 +148,7 @@ One-off setup: `npm --prefix tools ci` (from a product: `npm --prefix lib/style/
 
 ```sh
 tools/shot --preset smoke                      # the reference pages, one per page shape, light, desktop
-tools/shot --preset full --conform             # all 25 reference shots, pixel diff and structural check
+tools/shot --preset full --conform             # every reference shot, pixel diff and structural check
 tools/shot --table tools/shots/loom.example.mjs --base http://127.0.0.1:18765 --preset full --conform
 tools/shot --update-baseline                   # accept the shots (after review)
 tools/shot --derive-conformance                # rewrite tools/conformance.json 'expected'
@@ -220,7 +220,7 @@ Each component's markup is in the comment above its rules.
 
 **Workbench frame**
 - `.wb` with `data-rail=none`, `data-console=none`, `data-layout=drawing|split|agent`, `data-side=review|timeline`, `data-preview`; `body.panel-open` shows the inspector; `--insp-w` and `--chat-w` set the pane widths; `frame.js` drives the layout, the Panel button, the phone tab bar and the `.colgrip` drag handles.
-- Title bar: `.titlebar` with `.tb-left`, `.mark`, `.prod`, `.tsep`, `.crumbs` or `.doc`, `.stageline` and `.stagebar`, `.cmd`, `.tb-right`, `.prodtabs`.
+- Title bar: `.titlebar` with `.tb-left`, `.mark`, `.prod`, `.tsep`, `.crumbs` or `.doc`, `.stageline` and `.stagebar`, `.cmd`, `.tb-right`, `.prodtabs`. `.cmd` is optional: without it the bar is two columns, so `.tb-right` (scheme toggle, account menu) stays at the right edge and `.tb-left` at the left, on a `.page` and a `.wb`, at every width. `list.html` and `settings.html` have no `.cmd`; `workbench.html?cmd=none` is the workbench specimen (`workbench-nocmd-*` shots).
 - View tabs: `.vhead` with `.vtab`, `.vsep`, `.vtab.second`, `.meta`, `.right`.
 - Tool rail: `.rail` with `.tool` and its shortcut `.k`.
 - View: `.view`, `.canvas`, `.hud` (`--tl`, `--tr`, `--bl`, `--br`), `.subtabs` and `.subtab`, `.zoom`, `.previewbar`.

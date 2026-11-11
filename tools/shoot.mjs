@@ -109,6 +109,10 @@ export const SHOTS_REFERENCE = [
   wb('trace', 'light'), wb('trace', 'dark'),
   wb('canvas', 'light'), wb('canvas', 'dark'),
   wb('mesh', 'light'), wb('mesh', 'dark'),
+  // A title bar without .cmd keeps its right controls at the right edge (?cmd=none removes the field).
+  ref('workbench-nocmd-light', 'workbench.html?product=loom&theme=light&cmd=none', 'light', 1600, 1000, 'workbench'),
+  ref('workbench-nocmd-dark', 'workbench.html?product=loom&theme=dark&cmd=none', 'dark', 1600, 1000, 'workbench'),
+  ref('workbench-nocmd-phone', 'workbench.html?product=loom&theme=light&cmd=none', 'light', 400, 860, 'workbench'),
   ref('workbench-loom-phone', 'workbench.html?product=loom&theme=light', 'light', 400, 860, 'workbench'),
   ref('flow-upload-light', 'flow.html?theme=light#upload', 'light', 1440, 1000, 'flow'),
   ref('flow-datasheets-light', 'flow.html?theme=light#datasheets', 'light', 1440, 1000, 'flow'),

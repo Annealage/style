@@ -551,7 +551,8 @@ body:not(.panel-open) .colgrip[data-grip=insp], .wb[data-layout=agent] .colgrip,
      <button class="cmd">        the command field, centred
      <div class="tb-right"> .conn, buttons, .seg, [data-scheme-toggle] </div>
    Without .tb-left the children simply run left to right and .tb-right is
-   pushed to the end, as before. */
+   pushed to the end, as before. Without .cmd the grid has two columns, the left
+   cluster and .tb-right, so the right controls stay at the right edge. */
 .titlebar {
   grid-area: title;
   display: flex; align-items: center; gap: 0; min-width: 0; height: var(--h-bar);
@@ -560,6 +561,7 @@ body:not(.panel-open) .colgrip[data-grip=insp], .wb[data-layout=agent] .colgrip,
   white-space: nowrap;
 }
 .titlebar:has(> .tb-left) { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; }
+.titlebar:has(> .tb-left):not(:has(> .cmd)) { grid-template-columns: minmax(0, 1fr) auto; }
 .tb-left { display: flex; align-items: center; height: 100%; min-width: max-content; }
 .tb-right { margin-left: auto; display: flex; align-items: center; justify-content: flex-end; gap: 2px; min-width: 0; }
 .tb-right .gap { width: 10px; flex: none; }
