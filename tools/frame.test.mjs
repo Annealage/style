@@ -74,6 +74,7 @@ class El {
   removeChild(c) { c.remove(); return c; }
   remove() { if (this.parentNode) { this.parentNode.children = this.parentNode.children.filter((c) => c !== this); this.parentNode = null; } }
   contains(n) { for (; n; n = n.parentNode) if (n === this) return true; return false; }
+  getBoundingClientRect() { return this.rect || { left: 0, top: 0, width: 0, height: 0 }; }
   matches(sel) {
     return parse(sel).some((c) =>
       (!c.tag || c.tag === this.tag) &&
@@ -119,7 +120,7 @@ const BROKEN = {
 // A page: .wb with a title-bar seg, #panelBtn, #tabbar, .view, .inspector and #chat, and a
 // fresh script context. Options turn parts off. `wide` is the window width the
 // computed grid is worked out from (null: no layout to measure).
-function page({ product = "loom", inspector = true, chat = true, seg = true, panelBtn = true, tabbar = true, bodyOpen = true, narrow = false, wide = null, storage = new FakeStorage(), auto = false, wb = true, tabs = "markup", localStorageThrows = false } = {}) {
+function page({ product = "loom", inspector = true, chat = true, seg = true, panelBtn = true, tabbar = true, bodyOpen = true, narrow = false, wide = null, storage = new FakeStorage(), auto = false, wb = true, tabs = "markup", localStorageThrows = false, left = false, split = false, hostWidth = 900 } = {}) {
   const doc = new El(null, "document");
   const make = (tag, attrs = {}, parent = null) => {
     const e = new El(doc, tag);
@@ -129,7 +130,7 @@ function page({ product = "loom", inspector = true, chat = true, seg = true, pan
   };
   const html = make("html", product ? { "data-product": product } : {}, doc);
   const body = make("body", { class: bodyOpen ? "panel-open" : "" }, html);
-  const root = wb ? make("div", { class: "wb", "data-layout": "split" }, body) : null;
+  const root = wb ? make("div", { class: "wb", "data-layout": "split", ...(left ? { "data-insp": "left" } : {}) }, body) : null;
   const els = { html, body, root };
   if (root) {
     const bar = make("header", { class: "titlebar" }, root);
@@ -147,6 +148,12 @@ function page({ product = "loom", inspector = true, chat = true, seg = true, pan
       }
     }
     els.view = make("main", { class: "view" }, root);
+    if (split) {
+      els.host = make("div", { class: "canvas split even" }, els.view);
+      els.host.rect = { left: 260, top: 0, width: hostWidth, height: 600 };
+      els.half_a = make("section", { class: "half" }, els.host);
+      els.half_b = make("section", { class: "half" }, els.host);
+    }
     if (inspector) els.inspector = make("aside", { class: "inspector" }, root);
     if (chat) els.chat = make("aside", { id: "chat" }, root);
   }
@@ -167,13 +174,15 @@ function page({ product = "loom", inspector = true, chat = true, seg = true, pan
     requestAnimationFrame: (f) => queue.push(f),
     addEventListener: (t, fn) => (winListeners[t] ||= []).push(fn),
     removeEventListener: (t, fn) => { winListeners[t] = (winListeners[t] || []).filter((f) => f !== fn); },
-    // The grid frame.js measures: rail 48, then view, inspector, agent pane, as the theme would give them.
+    // The grid frame.js measures: rail 48, then view, inspector, agent pane, as the theme would give them
+    // (inspector, view, agent pane with the inspector on the left, and no rail).
     getComputedStyle: (el) => {
       if (wide === null || el !== root) return { gridTemplateColumns: "" };
       const user = (k, def) => { const v = parseFloat(root.style.getPropertyValue(k)); return Number.isFinite(v) ? v : def; };
       const insp = body.classList.contains("panel-open") ? user("--insp-w-user", 300) : 0;
       const layout = root.getAttribute("data-layout");
       const chatW = layout === "drawing" ? 0 : user("--chat-w-user", 400);
+      if (left) return { gridTemplateColumns: `${insp}px ${wide - insp - chatW}px ${chatW}px` };
       return { gridTemplateColumns: `48px ${wide - 48 - insp - chatW}px ${insp}px ${chatW}px` };
     },
   };
@@ -568,4 +577,238 @@ test("destroy() removes the handles, listeners and inline widths", () => {
   assert.equal(p.mq.listeners.length, 0);
   p.els.set_agent.click();
   assert.equal(p.root.getAttribute("data-layout"), "split");
+});
+
+// ---- The inspector on the left (data-insp="left") and the split between two halves.
+
+test("left inspector: the handle sits after the pane, a pointer drag to the right widens it", () => {
+  const p = page({ left: true, wide: 1600 });
+  const f = p.init();
+  const g = grip(p, "insp");
+  assert.equal(p.root.children[p.root.children.indexOf(g) - 1], p.els.inspector, "right after the inspector");
+  assert.equal(grip(p, "chat").nextSibling, p.els.chat, "the agent pane's handle stays before its pane");
+  assert.equal(g.getAttribute("aria-label"), "Resize the left pane");
+  p.fire(g, "pointerdown", { clientX: 300, pointerId: 1 });
+  p.fire(g, "pointermove", { clientX: 380 });
+  p.flush();
+  assert.equal(p.root.style.getPropertyValue("--insp-w-user"), "380px");
+  p.fire(g, "pointermove", { clientX: 5000 });
+  p.flush();
+  assert.equal(p.root.style.getPropertyValue("--insp-w-user"), "560px");
+  p.fire(g, "pointermove", { clientX: -5000 });
+  p.flush();
+  assert.equal(p.root.style.getPropertyValue("--insp-w-user"), "240px");
+  p.fire(g, "pointerup", {});
+  assert.equal(f.widths().insp, 240);
+  assert.deepEqual(JSON.parse(p.stored()), { layout: "split", insp: 240 });
+});
+
+test("left inspector: Right grows, Left shrinks, Home and End go to the limits, double-click resets", () => {
+  const p = page({ left: true, wide: 1600 });
+  const f = p.init();
+  const g = grip(p, "insp");
+  p.fire(g, "keydown", { key: "ArrowRight" });
+  assert.equal(f.widths().insp, 316);
+  assert.equal(g.getAttribute("aria-valuenow"), "316");
+  p.fire(g, "keydown", { key: "ArrowLeft" });
+  p.fire(g, "keydown", { key: "ArrowLeft" });
+  assert.equal(f.widths().insp, 284);
+  p.fire(g, "keydown", { key: "Home" });
+  assert.equal(f.widths().insp, 240);
+  p.fire(g, "keydown", { key: "End" });
+  assert.equal(f.widths().insp, 560);
+  assert.equal(p.fire(g, "keydown", { key: "ArrowUp" }), true, "other keys are left alone");
+  p.fire(g, "dblclick");
+  assert.equal(f.widths().insp, null);
+  assert.equal(p.root.style.getPropertyValue("--insp-w-user"), "");
+});
+
+test("left inspector: the view keeps 320px, measured on three columns with no rail", () => {
+  const stored = new FakeStorage({ "annealage.frame.loom": JSON.stringify({ insp: 560, chat: 600 }) });
+  const wide = page({ left: true, wide: 1600, storage: stored });
+  wide.init();
+  assert.equal(wide.root.style.getPropertyValue("--insp-w-user"), "560px");
+  assert.equal(wide.root.style.getPropertyValue("--chat-w-user"), "600px");
+  // 1200 shared by inspector, view and agent: the agent pane gives way first, not below its default.
+  const mid = page({ left: true, wide: 1200, storage: stored });
+  mid.init();
+  assert.equal(mid.root.style.getPropertyValue("--chat-w-user"), "400px");
+  assert.equal(mid.root.style.getPropertyValue("--insp-w-user"), "480px");
+  // The same widths on a page with the rail leave the rail out of the sum.
+  const rail = page({ wide: 1200, storage: stored });
+  rail.init();
+  assert.equal(rail.root.style.getPropertyValue("--chat-w-user"), "400px");
+  assert.equal(rail.root.style.getPropertyValue("--insp-w-user"), "432px");
+});
+
+test("left inspector: closed it takes no inline width, and the layout focus closes the agent column", () => {
+  const p = page({ left: true, wide: 1600 });
+  const f = p.init();
+  f.setWidths({ insp: 420, chat: 560 });
+  p.els.panelBtn.click();
+  assert.equal(p.root.style.getPropertyValue("--insp-w-user"), "");
+  assert.equal(p.root.style.getPropertyValue("--chat-w-user"), "560px");
+  p.els.panelBtn.click();
+  p.els.set_drawing.click();
+  assert.equal(p.root.style.getPropertyValue("--chat-w-user"), "");
+  assert.equal(p.root.style.getPropertyValue("--insp-w-user"), "420px");
+  p.els.set_agent.click();
+  assert.equal(p.root.style.getPropertyValue("--insp-w-user"), "");
+});
+
+test("split: one handle between the halves, a separator with a range, none without a split", () => {
+  const p = page({ split: true });
+  const f = p.init();
+  const g = grip(p, "split");
+  assert.equal(g.parentNode, p.els.host);
+  assert.equal(g.nextSibling, p.els.half_b);
+  assert.equal(g.getAttribute("role"), "separator");
+  assert.equal(g.getAttribute("aria-orientation"), "vertical");
+  assert.equal(g.getAttribute("tabindex"), "0");
+  assert.equal(g.getAttribute("aria-valuemin"), "27", "each half keeps 240px of 900");
+  assert.equal(g.getAttribute("aria-valuemax"), "73");
+  assert.equal(g.getAttribute("aria-valuenow"), "50");
+  assert.equal(f.split(), null);
+  const q = page();
+  const h = q.init();
+  assert.equal(grip(q, "split"), null);
+  assert.equal(h.split(), null);
+  h.setSplit(0.4);
+  assert.equal(h.split(), null, "a page with no split keeps none");
+  assert.equal(q.stored(), null);
+  assert.equal(q.storage.writes, 0);
+});
+
+test("split: keys move 16px of the host, Home and End go to the limits, double-click resets", () => {
+  const p = page({ split: true });
+  const f = p.init();
+  const g = grip(p, "split");
+  p.fire(g, "keydown", { key: "ArrowRight" });
+  assert.ok(Math.abs(f.split() - (0.5 + 16 / 900)) < 1e-3);
+  assert.equal(p.root.style.getPropertyValue("--split-user"), `${Math.round((0.5 + 16 / 900) * 10000) / 100}%`);
+  p.fire(g, "keydown", { key: "ArrowLeft" });
+  p.fire(g, "keydown", { key: "ArrowLeft" });
+  assert.ok(Math.abs(f.split() - (0.5 - 16 / 900)) < 1e-3);
+  p.fire(g, "keydown", { key: "Home" });
+  assert.ok(Math.abs(f.split() - 240 / 900) < 1e-3);
+  p.fire(g, "keydown", { key: "End" });
+  assert.ok(Math.abs(f.split() - (1 - 240 / 900)) < 1e-3);
+  assert.equal(g.getAttribute("aria-valuenow"), "73");
+  assert.equal(p.fire(g, "keydown", { key: "x" }), true);
+  assert.deepEqual(Object.keys(JSON.parse(p.stored())).sort(), ["layout", "split"]);
+  p.fire(g, "dblclick");
+  assert.equal(f.split(), null);
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "");
+  assert.deepEqual(JSON.parse(p.stored()), { layout: "split" });
+});
+
+test("split: a pointer drag moves the seam by the pointer, clamped, and stores on release", () => {
+  const p = page({ split: true });
+  const f = p.init();
+  const g = grip(p, "split");
+  p.fire(g, "pointerdown", { clientX: 710, pointerId: 1 });
+  assert.equal(g.hasAttribute("data-dragging"), true);
+  p.fire(g, "pointermove", { clientX: 800 }); // 90px of 900
+  p.flush();
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "60%");
+  p.fire(g, "pointermove", { clientX: -4000 });
+  p.flush();
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "26.67%");
+  p.fire(g, "pointermove", { clientX: 9000 });
+  p.flush();
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "73.33%");
+  assert.equal(p.stored(), null, "nothing stored while dragging");
+  p.fire(g, "pointerup", {});
+  assert.equal(g.hasAttribute("data-dragging"), false);
+  assert.ok(Math.abs(f.split() - (1 - 240 / 900)) < 1e-3);
+  assert.equal(JSON.parse(p.stored()).split, f.split());
+  p.fire(g, "lostpointercapture", {});
+  assert.equal(p.storage.writes, 1, "a stray lostpointercapture changes nothing");
+});
+
+test("split: restored from storage and clamped, kept as stored when the window is small", () => {
+  const stored = new FakeStorage({ "annealage.frame.loom": JSON.stringify({ split: 0.35 }) });
+  const p = page({ split: true, storage: stored });
+  const f = p.init();
+  assert.equal(f.split(), 0.35);
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "35%");
+  const wild = page({ split: true, storage: new FakeStorage({ "annealage.frame.loom": JSON.stringify({ split: 5 }) }) });
+  assert.equal(wild.init().split(), 0.8, "clamped to the stored range");
+  assert.equal(wild.root.style.getPropertyValue("--split-user"), "73.33%", "and to what 900px can hold");
+  const small = page({ split: true, hostWidth: 400, storage: new FakeStorage({ "annealage.frame.loom": JSON.stringify({ split: 0.2 }) }) });
+  const g = small.init();
+  assert.equal(g.split(), 0.2);
+  assert.equal(small.root.style.getPropertyValue("--split-user"), "50%", "400px holds two halves of 240 only if they are equal");
+  const nosplit = page({ storage: new FakeStorage({ "annealage.frame.loom": JSON.stringify({ split: 0.3 }) }) });
+  assert.equal(nosplit.init().split(), null);
+  assert.equal(nosplit.root.style.getPropertyValue("--split-user"), "");
+});
+
+test("split: not applied at 900px and below or in the agent layout, and back after", () => {
+  const p = page({ split: true, wide: 1600 });
+  const f = p.init();
+  f.setSplit(0.4);
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "40%");
+  p.setNarrow(true);
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "");
+  assert.equal(f.split(), 0.4);
+  p.setNarrow(false);
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "40%");
+  p.els.set_agent.click();
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "");
+  p.els.set_split.click();
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "40%");
+});
+
+test("split: setSplit clamps, null clears, and the share rides in framechange; the column widths are untouched", () => {
+  const p = page({ split: true, wide: 1600 });
+  const f = p.init();
+  f.setSplit(0.05);
+  assert.equal(f.split(), 0.2);
+  f.setSplit(0.9);
+  assert.equal(f.split(), 0.8);
+  f.setSplit(0.45);
+  assert.deepEqual(plain(p.events.at(-1)), { layout: "split", insp: null, chat: null, split: 0.45, panelOpen: true, activeTab: "drawing" });
+  assert.deepEqual(plain(f.widths()), { insp: null, chat: null });
+  f.setSplit(null);
+  assert.equal(f.split(), null);
+  f.setSplit(NaN);
+  assert.equal(f.split(), null);
+  f.setWidths({ insp: 400 });
+  f.setSplit(0.3);
+  assert.deepEqual(JSON.parse(p.stored()), { layout: "split", insp: 400, split: 0.3 });
+});
+
+test("split: reset() and destroy() forget it, and destroy removes the handle", () => {
+  const p = page({ split: true, wide: 1600 });
+  const f = p.init();
+  f.setSplit(0.4);
+  f.reset();
+  assert.equal(f.split(), null);
+  assert.equal(p.stored(), null);
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "");
+  f.setSplit(0.4);
+  f.destroy();
+  assert.equal(grip(p, "split"), null);
+  assert.equal(p.root.style.getPropertyValue("--split-user"), "");
+});
+
+test("a layout button that is aria-disabled does nothing", () => {
+  const p = page();
+  const f = p.init();
+  p.els.set_agent.setAttribute("aria-disabled", "true");
+  p.els.set_agent.click();
+  assert.equal(f.layout(), "split");
+  assert.equal(p.stored(), null);
+  p.els.set_drawing.click();
+  assert.equal(f.layout(), "drawing");
+});
+
+test("a page with no split or left inspector writes and reports what it did before", () => {
+  const p = page({ wide: 1600 });
+  const f = p.init();
+  f.setWidths({ insp: 400 });
+  assert.deepEqual(JSON.parse(p.stored()), { layout: "split", insp: 400 });
+  assert.equal("split" in p.events.at(-1), false);
+  assert.equal(p.root.querySelector("[data-grip=split]"), null);
 });
