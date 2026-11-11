@@ -227,6 +227,10 @@ export const SHOTS_REFERENCE = [
   ]),
   ...['review', 'agent'].flatMap((t) => ['light', 'dark'].map((s) =>
     ref(`workbench-phone-tab-${t}-${s}`, `workbench.html?product=loom&theme=${s}`, s, 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: PHONE_TAB }))),
+  // The compact status bar on a phone: the connection and the approval alert stay; tapping the alert opens the Agent tab.
+  ref('workbench-loom-phone-dark', 'workbench.html?product=loom&theme=dark', 'dark', 400, 860, 'workbench'),
+  ...['light', 'dark'].map((s) =>
+    ref(`workbench-phone-alert-${s}`, `workbench.html?product=loom&theme=${s}`, s, 400, 860, 'workbench', { state: click('.statusbar .alert'), conform: PHONE_TAB })),
   // Workspace overview (H7): the overview, the file tree and the send status of the hosted front door. ?state= picks a state (overview.html's comment lists them).
   ...[
     ['overview-list', '', 'overview', ['light', 'dark']],

@@ -1127,7 +1127,8 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 /* -------------------------------------------------------------- status bar */
 /* <footer class="statusbar"><span class="conn" data-state="live">Live</span><span>Agent <b>Ready</b></span>
      <button class="alert">Approval needed: Write</button><span class="push">Build <span class="ok">ok</span> <b>14:32</b></span><span>Cost <b>$0.41</b></span></footer>
-   Labels in the sans, values (<b>) in mono. .push starts the right-hand group. */
+   Labels in the sans, values (<b>) in mono. .push starts the right-hand group.
+   At 900px and below only .conn and .alert remain. */
 .statusbar {
   grid-area: status;
   display: flex; align-items: center; gap: 16px; min-width: 0; height: var(--h-status); padding: 0 12px;
@@ -1854,10 +1855,16 @@ html .pj-modal {
 @media (max-width: 900px) {
   .wb, .wb:has(> .vhead), .wb[data-rail=none], .wb[data-layout], .wb[data-insp=left], .wb[data-insp=left]:has(> .vhead), .wb[data-insp=left][data-layout=agent] {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: var(--h-bar) 40px auto minmax(0, 1fr);
-    grid-template-areas: "title" "panes" "tabs" "main";
+    grid-template-rows: var(--h-bar) 40px auto minmax(0, 1fr) auto;
+    grid-template-areas: "title" "panes" "tabs" "main" "status";
   }
-  .wb > .statusbar, #panelBtn, .colgrip { display: none; }
+  #panelBtn, .colgrip { display: none; }
+  /* The status bar stays, compact: the connection and the approval alert (which
+     frame.js turns into a jump to the Agent tab), so a pending approval is
+     reachable from any pane. Everything else in it is dropped. */
+  .wb > .statusbar > :not(.conn, .alert) { display: none; }
+  .wb > .statusbar { gap: 12px; }
+  .wb > .statusbar .alert { margin-left: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .titlebar:has(> .tb-left) { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
   .titlebar:has(> .tb-left):has(> .cmd) { grid-template-columns: minmax(0, 1fr) auto auto; }
   .tb-left { min-width: 0; }

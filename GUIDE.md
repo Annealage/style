@@ -49,7 +49,7 @@ Dark is graphite, not black. Ground is `#16191C`, the well is darker and the fie
 | Secondary text | `--ink-2` | labels, legends, secondary tabs |
 | Third level | `--ink-3` | placeholders, coordinates beside a name. Not on the well or on a wash. |
 | Product identity | `--temper`, `--temper-text`, `--temper-wash` | the active tab underline, the selected pin or row, the current step, the focus ring, the agent-working line |
-| Needs you | `--ember` | the Allow button of a pending approval and the status bar alert that jumps to it |
+| Needs you | `--ember` | the Allow button of a pending approval and the status bar alert that jumps to it (on a phone the status bar keeps only this alert and the connection lamp, so the approval is reachable from any tab) |
 | Good | `--quench` | ok, done, covered, connected, verified |
 | Bad | `--danger` | errors, defects, Deny, Delete |
 | Caution | `--warn` | warnings, candidates, unconfirmed |

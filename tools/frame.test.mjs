@@ -390,6 +390,33 @@ test("tab click at 900px and below shows one pane and clears the others' inline 
   assert.equal(f.activeTab(), "agent");
 });
 
+test("the status bar's approval alert shows the Agent pane at 900px and below, and does nothing wide", () => {
+  const p = page({ narrow: true });
+  const bar = new El(p.doc, "footer");
+  bar.className = "statusbar";
+  p.root.appendChild(bar);
+  const alert = new El(p.doc, "button");
+  alert.className = "alert";
+  bar.appendChild(alert);
+  const f = p.init();
+  assert.equal(p.els.chat.style.display, "none");
+  alert.click();
+  assert.equal(f.activeTab(), "agent");
+  assert.equal(p.els.chat.style.display, "");
+  assert.equal(p.els.view.style.display, "none");
+  assert.equal(p.els.tab_agent.getAttribute("aria-selected"), "true");
+
+  const w = page();
+  const wbar = new El(w.doc, "footer");
+  w.root.appendChild(wbar);
+  const walert = new El(w.doc, "button");
+  walert.className = "alert";
+  wbar.appendChild(walert);
+  const wf = w.init();
+  walert.click();
+  assert.equal(wf.activeTab(), "drawing");
+});
+
 test("tab click at wide widths records the tab but hides no pane", () => {
   const p = page();
   const f = p.init();

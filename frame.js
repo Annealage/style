@@ -491,6 +491,12 @@
       if (t.closest("[data-panel-close]")) return setPanelOpen(false);
       var tab = t.closest("[data-tab]");
       if (tab && tabbar && tabbar.contains(tab)) activateTab(tab.getAttribute("data-tab"));
+      // The status bar's approval alert, where one pane shows at a time: show the Agent pane.
+      if (t.closest(".alert") && isNarrow()) {
+        var chat = doc.querySelector("#chat");
+        var agent = tabs.filter(function (x) { return x.target && chat && doc.querySelector(x.target) === chat; })[0];
+        if (agent) activateTab(agent.id);
+      }
     }
     var onResize = function () { schedule(); };
     var onNarrow = function () { applyTabs(); fit(); emit(); };
