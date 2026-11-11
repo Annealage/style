@@ -22,7 +22,7 @@ The look is **Hairline + plate**. Everything sits on one surface divided by 1px 
   - `list.html`: the project register (`#list`, `#tiles`).
   - `settings.html`: an account page (`#overview`, `#usage`, `#security`, `#workspaces`, `#danger`).
   - Each takes `?product=loom|trace|canvas|mesh|pod|none` and `?theme=light|dark`, and has the scheme button. `demo/shots/` holds screenshots of all of them; `tools/shoot.mjs` retakes them.
-- `runtime-files.txt`: what a product serves and ships (see "What a product ships"). `tools/shoot.mjs` is the port gate runner (see "Checking a port"), `tools/shot` the headless command over it with baselines and a structural check, `tools/check` the static check (see "Automated checks"); `tools/bump-style.sh` is the pin-bump template.
+- `runtime-files.txt`: what a product serves and ships (see "What a product ships"). `tools/shoot.mjs` is the port gate runner (see "Checking a port"), `tools/shot` the headless command over it with baselines and a structural check, `tools/check` the static check (see "Automated checks"); `tools/bump-style.sh` is the pin-bump template and `tools/vendor-style.sh` the copy script for a public product (see "Vendoring into a public product").
 - `tools/contrast.py`: reads `tokens.css` and checks every text token against every surface the theme puts it on, in both schemes and for every product. Run it after changing a colour; it exits non-zero on a failure.
 
 ## Using it in a product
@@ -98,6 +98,25 @@ A CodeMirror 6 theme takes the same tokens: a `HighlightStyle` mapping keywords 
 `runtime-files.txt` is the one list of what a product serves and packages: one path or directory per line, no globs (fonts are the directory). Static routes, wheel `force-include`, Canvas's copy list and Trace's `Containerfile` read it; `demo/`, `tools/` and the `*.md` files are not on it.
 
 `tools/bump-style.sh` is a template: copy it to `scripts/bump-style.sh` in a product. `scripts/bump-style.sh [sha-or-tag]` fetches `lib/style`, checks out the ref detached, refuses a ref that is not on `origin/main` or a submodule with changes of its own, checks the runtime list exists, stages the gitlink and prints the log between the old and new pin. It never commits.
+
+### Vendoring into a public product
+
+This repo is private, so a product whose source is public cannot pin it as a submodule. It vendors instead: `tools/vendor-style.sh` copies the files in `runtime-files.txt` into the product's tree, and an update from style is one command. Run it from a style checkout (not a copy of it):
+
+```sh
+tools/vendor-style.sh ../mesh/src/mesh/static/style            # vendor HEAD
+tools/vendor-style.sh ../mesh/src/mesh/static/style --ref 8580d9a
+tools/vendor-style.sh ../mesh/src/mesh/static/style --dry-run  # print the plan, change nothing
+tools/vendor-style.sh ../mesh/src/mesh/static/style --check    # for the product's CI
+```
+
+- **What it copies.** Exactly what `runtime-files.txt` lists at the ref (a directory is every file under it), read from git, not the working tree, plus `LICENSE` and the `OFL-*.txt` beside any font. It never copies `demo/`, `tools/` or the `*.md` files, and refuses a list that names them. `runtime-files.txt` is the only list; `bump-style.sh` reads the same one.
+- **What it refuses.** A ref that is not an ancestor of `origin/main` (it fetches first when it can; the default ref is `HEAD`, so push to style `main` before vendoring), and a style checkout with uncommitted or untracked changes. A refused run writes nothing.
+- **Removal.** `<dest>/VENDORED.json` records the source repo, the commit, the commit's date (UTC, so a repeat run is a no-op) and the sha256 of every vendored file. The next run deletes the files the old manifest lists that the list no longer does, and any directory that leaves empty. Files in the destination that the manifest never listed are left alone.
+- **`--check`.** Needs no network. It exits non-zero if a vendored file was edited or is missing, if a file was added to the destination by hand, if `VENDORED.json` disagrees with the blob at its commit, or if the commit is not an ancestor of the local `origin/main`. With `--ref` it also fails unless the destination was vendored from exactly that commit. Run it in the product's tests so nobody edits vendored files in place: change style, then vendor again.
+- **Leaving paths out.** `<dest>/../vendor-style.exclude`, if present, is one path per line (a file or a directory; blank lines and `#` comments allowed), for what that product does not need, for example `marks/pod-slab.svg`. Excluded paths are neither copied nor listed, and are removed if an earlier run vendored them; `LICENSE` cannot be excluded. A line that matches nothing is warned about. Commit the file with the product.
+
+Vendor into a directory of its own and commit the result, `VENDORED.json` included. The licence files travel with the copy, so the PolyForm and OFL terms in "Licence" below still apply to it.
 
 ## Checking a port
 
