@@ -26,9 +26,12 @@ SCHEMES = ["light", "dark"]
 PLAIN = [["ground"], ["well"], ["field"], ["ground", "hover"], ["field", "hover"]]
 ON_WELL = [["well", "hover"]]
 WASHED = [["ground", "temper-wash"], ["ground", "press"], ["ground", "temper-wash", "hover"]]
+# An editor sits on the field, so its selection and its search matches are the wash over the field
+# (Canvas's source editor; the .src block's ::selection and mark).
+ON_FIELD_WASH = [["field", "temper-wash"]]
 TEXT = [
-    ("ink", PLAIN + ON_WELL + WASHED),
-    ("ink-2", PLAIN + ON_WELL + WASHED),
+    ("ink", PLAIN + ON_WELL + WASHED + ON_FIELD_WASH),
+    ("ink-2", PLAIN + ON_WELL + WASHED + ON_FIELD_WASH),
     ("ink-3", PLAIN),
     ("temper-text", [["ground"], ["field"], ["ground", "hover"], ["ground", "temper-wash"]]),
     ("quench", [["ground"], ["field"], ["well"], ["ground", "hover"], ["ground", "temper-wash"]]),
@@ -41,12 +44,12 @@ TEXT = [
     ("ground", [["ink"]]),            # a primary button
     ("paper-ink", [["paper"]]),       # a marker's number on an outlined pin
     # Source code (.src, .tok-*): syntax colour is data styling inside a mono block.
-    ("syn-keyword", PLAIN + ON_WELL + WASHED),
-    ("syn-def", PLAIN + ON_WELL + WASHED),
-    ("syn-meta", PLAIN + ON_WELL + WASHED),
+    ("syn-keyword", PLAIN + ON_WELL + WASHED + ON_FIELD_WASH),
+    ("syn-def", PLAIN + ON_WELL + WASHED + ON_FIELD_WASH),
+    ("syn-meta", PLAIN + ON_WELL + WASHED + ON_FIELD_WASH),
     ("syn-comment", PLAIN),
-    ("syn-string", PLAIN + ON_WELL + [["ground", "temper-wash"]]),
-    ("syn-number", PLAIN + ON_WELL + [["ground", "temper-wash"]]),
+    ("syn-string", PLAIN + ON_WELL + [["ground", "temper-wash"]] + ON_FIELD_WASH),
+    ("syn-number", PLAIN + ON_WELL + [["ground", "temper-wash"]] + ON_FIELD_WASH),
     ("syn-invalid", [["ground"], ["field"], ["well"], ["ground", "hover"], ["ground", "temper-wash"]]),
 ]
 LINES = [  # 3:1
