@@ -11,6 +11,7 @@ The look is **Hairline + plate**. Everything sits on one surface divided by 1px 
 - `pages.css`: what sits outside the workbench frame. The project register and tiles, a guided flow with its step spine and pinned footer, the settings or account layout, the drop zone.
 - `scheme.js`: light and dark follow the OS unless the user picks one, remembered per origin in localStorage under `annealage.scheme`. It sets `<html data-theme>`, keeps the marks' `<picture>` sources in step, drives any `<button data-scheme-toggle>` (System, Light, Dark), and fires `schemechange` on `<html>` (detail `{scheme, choice}`) on every effective change. `window.annealageScheme` has `choice()`, `get()` and `set('light'|'dark'|null)`.
 - `frame.js`: the page frame's driver (layout focus, the Panel button, the phone tab bar, column resizers). See "The frame driver" below.
+- `palette.js`: the command palette behind the title bar's `.cmd` field, and the registry products put their commands in. See "The command palette" below.
 - `icons.svg`: a sprite of 16px stroke icons with round joins, used as `<svg class="ico"><use href="icons.svg#i-pin"/></svg>`.
 - `fonts/`: Instrument Sans (400, 500, 600) and Red Hat Mono (400, 500), latin and latin-ext, under the SIL Open Font License (`fonts/OFL-InstrumentSans.txt`, `fonts/OFL-RedHatMono.txt`).
 - `marks/`: the parent mark and the product marks, each with a `-dark` variant. They are exported from the brand repo and used as they are, never redrawn or recoloured.
@@ -59,6 +60,27 @@ It keeps two settings in `localStorage` per origin and per product (`<html data-
 
 `annealageFrame(options)` returns, and keeps as `annealageFrame.current`: `layout()`, `setLayout(v)`, `widths()` and `setWidths({insp, chat})` (pixels, or `null` for the theme's default; clamped), `panelOpen()`, `setPanelOpen(b)`, `isNarrow()`, `activeTab()`, `activateTab(id)`, `reset()` (removes both stored keys and goes back to the markup) and `destroy()`. A `framechange` event fires on `.wb` after each change, detail `{layout, insp, chat, panelOpen, activeTab}`: a canvas or WebGL view resizes on it. Options are `root`, `storage`, `product` and `tabs`. `inert`, focus rescue and `visualViewport` handling stay with the product.
 
+### The command palette
+
+`palette.js` is a classic script with no dependencies and one global, `annealagePalette`. It draws the box the title bar's `.cmd` button opens: a search input over a list of commands, grouped by label, in the menu's family (1px `--rule-strong`, `--shadow-menu`, no dimming, no animation). It is built on first open and is not drawn until then. A page that loads no `palette.js` draws no `.cmd`; a page that loads it and registers nothing opens a palette with one line, "No commands here". Nothing in it depends on ember.
+
+```js
+const off = annealagePalette.register([
+  { id: "sheet.4", title: "Go to sheet 4", group: "Sheets", keywords: ["page"], hint: "Power supply", shortcut: "G 4",
+    enabled: () => hasDesign, disabledReason: "Open a design first", run: () => openSheet(4) },
+]);
+off();                                   // unregister those commands
+```
+
+- A command is `{ id, title, run }` and, optionally, `group`, `keywords` (array or string), `hint`, `shortcut` (one string, drawn as a `kbd`), `icon` (the `href` of a `<use>`, such as `"/style/icons.svg#i-sheet"`), `enabled` (function or boolean, asked every time the palette opens) and `disabledReason`. A disabled command is shown with its reason as the hint and does not run (rule 11). Titles, hints and groups are set as text, never as HTML. An id registered again replaces the earlier command; a command without `id`, `title` or `run` is skipped with a console warning.
+- Register what is true now and unregister what stops being true (sheets, views, steps): the list is read each time the palette opens, and redrawn at once if the registry changes while it is open (a `palettechange` event fires on `document`). One command per target for now; there is no second level.
+- `run` is called after the palette has closed and focus is back on the element that had it, so a command can open a menu or a confirm row there. A `run` that throws or rejects is logged with `console.error` and nothing else; showing the failure is the product's job.
+- `annealagePalette.open({ query, opener })`, `.close()` and `.isOpen()` are for a product that binds its own keys. `open` takes an optional starting query and the element to give focus back to.
+- Keys: Ctrl K and Cmd K open it and close it. Up, Down, Home and End move, Enter runs, Escape and Tab close. The chord is ignored when focus is inside a `[data-palette-ignore]` container, so give that attribute to anything that uses Ctrl K itself (a CodeMirror editor, the agent composer), and when an earlier handler has called `preventDefault` on it. Clicking a `.cmd` button opens it as well.
+- Typing matches case-insensitively and every word must match. A word ranks best at the start of the title, then at the start of a word in the title, then anywhere in the title, then as a subsequence of the title, then in `keywords` or `group`. Ties keep registration order; an empty query lists everything in registration order.
+- `.cmd`'s key label ("Ctrl K" or "Cmd K") is set by the script, so markup can carry either. At 900px and below the theme turns `.cmd` into its icon, so give the button `aria-label="Search or run a command"`; the palette opens full width under the bar at 640px and below.
+- The palette is one box that counts as a menu in the box count. Its markup is documented at the top of its rules in `theme.css`; `.palette-box.static` draws it in the page flow for a specimen (`demo/components.html`).
+
 ### Canvas and WebGL colours
 
 Canvas and WebGL code that needs a token colour should resolve it through an element rather than read the custom property. `getComputedStyle(root).getPropertyValue('--pin')` returns the unresolved `light-dark(...)` text. Instead, set `probe.style.color = 'var(--pin)'` on a hidden element and read `getComputedStyle(probe).color`. A module script doesn't wait for stylesheets, so wait for the `<link rel=stylesheet>` loads before the first read, or the colours come out as the inherited text colour. Redraw on scheme.js's `schemechange` event, which covers both the OS changing and the user's choice. `--hover`, `--press` and `--temper-wash` are translucent, so composite them over the surface beneath if the scene needs an opaque value.
@@ -73,7 +95,7 @@ A CodeMirror 6 theme takes the same tokens: a `HighlightStyle` mapping keywords 
 
 ## What a product ships
 
-`runtime-files.txt` is the one list of what a product serves and packages: one path or directory per line, no globs (fonts are the directory). Static routes, wheel `force-include`, Canvas's copy list and Trace's `Containerfile` read it; `demo/`, `tools/` and the `*.md` files are not on it. `palette.js` is listed before the library has it (the palette script lands with a later ticket); `runtime-pending.txt` names it, and `tools/bump-style.sh` and the existence check skip any path named there. Once it exists, `runtime-pending.txt` is deleted.
+`runtime-files.txt` is the one list of what a product serves and packages: one path or directory per line, no globs (fonts are the directory). Static routes, wheel `force-include`, Canvas's copy list and Trace's `Containerfile` read it; `demo/`, `tools/` and the `*.md` files are not on it.
 
 `tools/bump-style.sh` is a template: copy it to `scripts/bump-style.sh` in a product. `scripts/bump-style.sh [sha-or-tag]` fetches `lib/style`, checks out the ref detached, refuses a ref that is not on `origin/main` or a submodule with changes of its own, checks the runtime list exists, stages the gitlink and prints the log between the old and new pin. It never commits.
 
@@ -154,7 +176,7 @@ Each component's markup is in the comment above its rules.
 
 **Controls** (`theme.css`)
 - Buttons: `.btn` with `.quiet`, `.primary`, `.danger`, `.icon`, `.sm`, `.edge`; `aria-pressed=true` or `.on` for a held state; `.btn.ember` for Allow; `.hdrbtn` in a pane header; `.linkish` for a text link that is a button.
-- Fields: `.input` (on an input, select or textarea), `.inputwrap`, the command field `.cmd`, `kbd`.
+- Fields: `.input` (on an input, select or textarea), `.inputwrap`, the command field `.cmd` and its palette (`.palette`, `.palette-box`, `.palette-input`, `.palette-list`, `.palette-group`, `.palette-row`, `.palette-title`, `.palette-hint`, `.palette-empty`), `kbd`.
 - Checkboxes and radios are styled wherever they are; `input.switch` is a toggle; `label.check` lays one out with its text.
 - `.seg` (segmented control, `.icons`, `.sm`), `.chips` and `.chip`, the count `.n`, the label `.tag`.
 - `[data-scheme-toggle]`, the scheme button.

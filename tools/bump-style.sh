@@ -8,7 +8,7 @@
 # detached. It must be an ancestor of origin/main: style `main` is the only
 # branch products pin from, so a local-only commit is refused. Every path in
 # runtime-files.txt must exist at the new commit, except those listed in
-# runtime-pending.txt (frame.js and palette.js until the library ships them).
+# runtime-pending.txt (a file the library does not ship yet, if it has one).
 # Nothing is committed.
 set -euo pipefail
 

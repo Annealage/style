@@ -120,6 +120,7 @@ Don't use one for a value that already sits in a table or a field list, in the s
 | Name and value pairs | a field list (label column in ink-2, value column) | a bulleted list, or a sentence joined with middle dots |
 | A state | lamp and word | a pill, a badge, an icon alone |
 | A few headline figures | readouts, with a proportional bar if they are parts of a whole | a dot-separated string |
+| Run any action from the keyboard, or find a command by name | the command field in the title bar, which opens the palette (`palette.js`; a menu-family box that counts as a menu) | a second search box in the page, or a shortcut with no list to learn it from |
 | Progress through fixed stages | the step spine (guided flow) or the stage line (workbench top bar) | bordered step buttons, a "locked" badge |
 | Help | one line under the title | a note box, a banner, a paragraph |
 | A caveat or limit | a disclosure, or a field list beside the action | a left-ruled callout |
