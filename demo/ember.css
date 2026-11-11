@@ -4,3 +4,15 @@
 body[data-route=rename] .pj-header .ed-idle { display: none; }
 body[data-route=rename] .pj-header .ed-edit { display: inline-flex; }
 body[data-route=rename] .pj-header input.ed-edit { display: block; }
+
+/* At phone width the bar has no room for the product name beside the project's own buttons:
+   the name goes, the title shrinks, and the rename form takes the bar (the command field and
+   the right-hand buttons wait until it closes). */
+@media (max-width: 640px) {
+  .titlebar .prod { display: none; }
+  .tb-left, #projectHeader, .pj-titlerow { min-width: 0; }
+  .pj-titlerow > .pj-btn { flex: none; }
+  .pj-nameedit { min-width: 0; flex: 1 1 auto; }
+  body[data-route=rename] .titlebar > .cmd, body[data-route=rename] .titlebar > .tb-right { display: none; }
+  body[data-route=rename] .titlebar:has(> .tb-left):has(> .cmd) { grid-template-columns: minmax(0, 1fr); }
+}

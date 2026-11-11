@@ -119,3 +119,6 @@
 .skp .line { stroke: var(--sketch); stroke-width: 2.5; }
 .skp.p1 { background: var(--mv-part-1); } .skp.p2 { background: var(--mv-part-2); } .skp.p3 { background: var(--mv-part-3); } .skp.p4 { background: var(--mv-part-4); }
 .skp.p5 { background: var(--mv-part-5); } .skp.p6 { background: var(--mv-part-6); } .skp.p7 { background: var(--mv-part-7); } .skp.p8 { background: var(--mv-part-8); }
+
+/* The theme hides .tsep at 900px and below; the reference page's title bar keeps its name apart from the tabs. */
+@media (max-width: 900px) { .spec-top .prod { margin-right: 10px; } }

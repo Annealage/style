@@ -31,7 +31,7 @@
 // palette is open; the list is redrawn by itself.
 //
 // Keys: Ctrl K and Cmd K open it (and close it when open). Inside, Up and Down
-// move (wrapping), Home and End jump, Enter runs, Escape closes, Tab closes. The
+// move (wrapping), Home and End jump, Enter runs (on a disabled row it says why it cannot), Escape closes, Tab closes. The
 // chord is left alone when focus is inside [data-palette-ignore] (an editor or
 // the agent composer that uses Ctrl K itself) and when an earlier handler has
 // already called preventDefault on it. Clicking a .cmd button opens it too.
@@ -303,7 +303,12 @@
   function fail(id, err) { warn("command " + id + " failed", err); }
   function runActive() {
     var cur = st && st.active >= 0 ? st.rows[st.active] : null;
-    if (!cur || cur.item.disabled) return;
+    if (!cur) return;
+    if (cur.item.disabled) {
+      // Say why it did not run, to everyone: the reason is the row's hint, and the live region reads it out.
+      live.textContent = cur.item.cmd.title + ": " + (cur.item.cmd.disabledReason || cur.item.cmd.hint || "Not available now");
+      return;
+    }
     var cmd = cur.item.cmd;
     close();
     try {

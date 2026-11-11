@@ -1,5 +1,4 @@
-// The ember reference page's switches: #rename shows the toast as an error and
-// the persistent error line, #project shows an ok toast, the dialog and the
+// The ember reference page's switches: #rename shows the error once, as the toast, #project shows an ok toast, the dialog and the
 // settings window have neither; ?ember=0 removes ember's own two stylesheets
 // to show the page as it reads once ember has none (demo.js sets the route).
 const q = new URLSearchParams(location.search);
@@ -11,8 +10,8 @@ const LONG = "Could not rename the project: the id rp2040_stepper_controller_rev
 function apply() {
   const route = document.body.dataset.route;
   toast.className = route === "project" ? "ok" : "err";
-  toast.textContent = route === "project" ? "Restored to before turn 4" : route === "rename" ? "Could not rename the project." : "";
-  err.textContent = route === "rename" ? LONG : "";
+  toast.textContent = route === "project" ? "Restored to before turn 4" : route === "rename" ? LONG : "";
+  err.textContent = "";
 }
 window.addEventListener("hashchange", apply);
 apply();

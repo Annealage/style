@@ -624,7 +624,7 @@ body:not(.panel-open) .colgrip[data-grip=insp], .wb[data-layout=agent] .colgrip,
 .palette-group { padding: 8px 8px 4px; color: var(--ink-2); font-size: var(--fs-small); font-weight: 500; }
 .palette-group:first-child { padding-top: 4px; }
 .palette-row {
-  display: flex; align-items: center; gap: 8px; height: var(--ctl); padding: 0 8px;
+  display: flex; align-items: center; gap: 8px; min-height: var(--ctl); padding: 0 8px;
   border-radius: var(--r-sm); color: var(--ink); cursor: default;
 }
 .palette-row[aria-selected=true] { background: var(--press); }
@@ -635,6 +635,9 @@ body:not(.panel-open) .colgrip[data-grip=insp], .wb[data-layout=agent] .colgrip,
 .palette-title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .palette-hint { flex: 0 1 auto; max-width: 45%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-3); font-size: var(--fs-small); }
 .palette-row > kbd { flex: none; }
+/* A disabled row shows its whole reason, wrapped, so the row can be taller than --ctl. */
+.palette-row[aria-disabled=true] { padding-block: 4px; }
+.palette-row[aria-disabled=true] .palette-hint { max-width: 60%; overflow: visible; text-overflow: clip; white-space: normal; text-align: right; }
 .palette-empty { padding: 8px; color: var(--ink-3); }
 @media (max-width: 640px) {
   .palette-box:not(.static) { top: var(--h-bar); width: 100%; border-width: 0 0 1px; border-radius: 0 0 var(--r) var(--r); }
@@ -1261,7 +1264,7 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 .confirm .disc-body { padding-bottom: 4px; font-size: var(--fs-small); overflow-wrap: anywhere; }
 .confirm dl.fl { --fl-label: 72px; margin: 8px 0 0; font-size: var(--fs-small); }
 .confirm .cacts { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0 0 -10px; }
-.confirm .cacts .btn:last-child { margin-right: -10px; }
+.confirm .cacts .btn.quiet:last-child { margin-right: -10px; }
 .dt-detail > .confirm { margin: 4px 0 0; }
 .row > .confirm { grid-column: 2 / -1; margin: 6px 0 0; }
 
@@ -1510,19 +1513,19 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
    --ink-3, not slanted: no italic is shipped, and a synthesised one looks
    worse than a level change. A search match in an editor is
    <mark>, the current one mark[aria-current]; a selection is the temper wash. */
-.src {
+pre.src, ol.src {
   margin: 0; padding: 6px 0; overflow: auto; tab-size: 4;
   border-block: 1px solid var(--rule); background: var(--field); color: var(--ink);
   font: 400 var(--fs-small)/var(--lh-ui) var(--mono); font-synthesis-weight: none; font-variant-numeric: tabular-nums;
 }
 pre.src { padding: 6px 12px; white-space: pre; }
-.src code { padding: 0; background: none; font: inherit; white-space: pre; }
+:is(pre, ol).src code { padding: 0; background: none; font: inherit; white-space: pre; }
 ol.src { counter-reset: line; }
 ol.src > li { counter-increment: line; display: grid; grid-template-columns: 4ch minmax(0, 1fr); gap: 0 12px; padding: 0 12px; }
 ol.src > li::before { content: counter(line); text-align: right; color: var(--ink-3); user-select: none; }
-.src ::selection { background: var(--temper-wash); color: inherit; }
-.src mark { background: var(--temper-wash); color: inherit; }
-.src mark[aria-current] { outline: 1.5px solid var(--temper-text); outline-offset: 0; }
+:is(pre, ol).src ::selection { background: var(--temper-wash); color: inherit; }
+:is(pre, ol).src mark { background: var(--temper-wash); color: inherit; }
+:is(pre, ol).src mark[aria-current] { outline: 1.5px solid var(--temper-text); outline-offset: 0; }
 .tok-keyword { color: var(--syn-keyword); font-weight: 500; }
 .tok-defname { color: var(--syn-def); font-weight: 600; font-synthesis-weight: none; }
 .tok-builtin, .tok-decorator { color: var(--syn-meta); }
