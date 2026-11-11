@@ -21,7 +21,7 @@ The look is **Hairline + plate**. Everything sits on one surface divided by 1px 
   - `list.html`: the project register (`#list`, `#tiles`).
   - `settings.html`: an account page (`#overview`, `#usage`, `#security`, `#workspaces`, `#danger`).
   - Each takes `?product=loom|trace|canvas|mesh|pod|none` and `?theme=light|dark`, and has the scheme button. `demo/shots/` holds screenshots of all of them; `tools/shoot.mjs` retakes them.
-- `runtime-files.txt`: what a product serves and ships (see "What a product ships"). `tools/shoot.mjs` is the port gate tool (see "Checking a port"); `tools/bump-style.sh` is the pin-bump template.
+- `runtime-files.txt`: what a product serves and ships (see "What a product ships"). `tools/shoot.mjs` is the port gate runner (see "Checking a port"), `tools/shot` the headless command over it with baselines and a structural check, `tools/check` the static check (see "Automated checks"); `tools/bump-style.sh` is the pin-bump template.
 - `tools/contrast.py`: reads `tokens.css` and checks every text token against every surface the theme puts it on, in both schemes and for every product. Run it after changing a colour; it exits non-zero on a failure.
 
 ## Using it in a product
@@ -91,7 +91,52 @@ await shoot(browser, { base: 'http://127.0.0.1:18765', shots: table.shots, allow
 
 The result is `{ ok, shots, stale, text }` and `text` is also printed. A shot is clean only if it became ready (20 s limit, then `ready: false`), logged no console error, made no request that failed, answered 4xx/5xx or left the origin, and shows no old look: a computed `font-family` containing Chivo, or a stylesheet reference to `var(--chrome`, `--panel`, `--view`, `--rule-2`, `--code`, `--font` or `--console-h`. A table's `allow` list (`{ match, reason }`) lets a known refusal through, for instance the agent socket in a no-backend run; allowed items are listed per shot. `ok` is true when every shot is clean, so the gate needs no judgement; an agent then reads the PNGs beside `demo/shots/`. PNGs from an earlier run are deleted before shooting, and any left in the folder from a renamed entry are listed as `stale`.
 
-Bumping a product's pin without porting it reports the same faults (old markup under the new theme), which is the point of the probe. Board and 3D views need WebGL: run the browser under the viewer's SwiftShader launcher (`scripts/webgl-browser.sh`) and pass `{ webgl: true }`; entries marked `webgl: true` are otherwise skipped with a note rather than shot blank. Pixel diffs and baselines are not part of the gate.
+Bumping a product's pin without porting it reports the same faults (old markup under the new theme), which is the point of the probe. Board and 3D views need WebGL: run the browser under the viewer's SwiftShader launcher (`scripts/webgl-browser.sh`) and pass `{ webgl: true }`; entries marked `webgl: true` are otherwise skipped with a note rather than shot blank. The same runner and tables also run headless from the command line, with baselines and a structural check: see "Automated checks".
+
+## Automated checks
+
+Three tiers; an agent or a CI job runs them and reads pass or fail, not a picture.
+
+1. **Fast, every commit** (seconds): `python3 tools/contrast.py`, `node --test tools/`, and `tools/check <product dir>` (static, no browser).
+2. **Shots, per change to a screen** (under 30 s): `tools/shot --preset smoke`.
+3. **Gate, before a merge** (minutes): `tools/shot --preset full --conform`, then the review agent's pass over the PNGs.
+
+One-off setup: `npm --prefix tools ci` (from a product: `npm --prefix lib/style/tools ci`). It installs `playwright-core` (pinned to the Chromium in `~/.cache/ms-playwright`), `pixelmatch` and `pngjs`, for these tools only; nothing under `tools/` ships (`runtime-files.txt`). Everything below is run as `tools/shot`, or `lib/style/tools/shot` from a product.
+
+### `tools/shot`
+
+```sh
+tools/shot --preset smoke                      # the reference pages, one per page shape, light, desktop
+tools/shot --preset full --conform             # all 25 reference shots, pixel diff and structural check
+tools/shot --table tools/shots/loom.example.mjs --base http://127.0.0.1:18765 --preset full --conform
+tools/shot --update-baseline                   # accept the shots (after review)
+tools/shot --derive-conformance                # rewrite tools/conformance.json 'expected'
+```
+
+`--table` is `reference` (the library's own pages, served by the tool itself, so no server is needed) or a table module, the same format `shoot()` takes in an omp cell (`tools/shots/loom.example.mjs`); `--base` is the running product. It exits 0 when clean, 1 when a shot is not clean, differs from its baseline or fails conformance, 2 on a usage error. `tools/shot --help` lists the rest. Shots are deterministic by construction (fresh context, device scale 1, animations and transitions zeroed through a constructed stylesheet, reduced motion emulated, UTC and en-US), and two runs of the reference pages give byte-identical PNGs.
+
+- **Baselines.** Accepted PNGs live in the product (`<product>/shots/accepted/<name>-<scheme>-<w>.png`; the table's `baseline` or `--baseline` names the directory) and for the reference pages in `demo/shots/`. They are written only by `--update-baseline`, which refuses unless the report is clean, and the commit that changes one says why. A missing baseline fails with its path; a changed shot fails and writes `<name>.diff.png` beside the new shot; a baseline no entry produces is reported as an orphan (`--update-baseline` removes it). Compare is pixelmatch at colour distance 0.02 (renders are deterministic, and 0.1 misses a one-token change of the ground) with 0.1 per cent of pixels allowed to differ; an entry may set `tolerance` only with a `toleranceReason`. `--no-compare` shoots and reports without comparing.
+- **Masks.** An entry's `mask` lists CSS selectors of regions that change by design (a clock, a run time, a thumbnail); they are hidden in the shot, so baseline and run agree. Give a masked element a fixed size, or mask its container. `clock` freezes `Date` for a page that shows the time.
+- **Presets.** `full` is every entry as the table defines it (the gate: both schemes and both widths for a product table). `smoke` takes the first entry of each `shape` (an entry with no `shape` is its own shape), light, first desktop viewport, and skips `webgl` entries.
+- **Structural conformance** (`--conform`). For each entry with a `shape` (`workbench`, `flow`, `list`, `settings`, `components`) the tool reads computed style for a fixed list of selectors (body font, `.wb` columns, `.titlebar`, `.vhead`, `.statusbar`, `.btn`, `.input`, `.card`) and the colour tokens (`--ground`, `--well`, ink, rules, state colours, and the product's temper from `data-product`), and compares them with `tools/conformance.json`, tolerance 1 px, per scheme and for desktop and phone. A difference is reported as selector, property, expected, got. A value that differs between two viewports of the same class (a fluid column, a height that follows the window) is not asserted. `conform: false` on an entry leaves it out; say why in a comment. The check list is data in the JSON file; its `expected` section is generated, so after a library change run `tools/shot --derive-conformance` and commit the diff with the change.
+- **Not run in smoke or by default:** WebGL scenes (`webgl: true` entries are skipped with a note unless `--webgl` and a browser with WebGL).
+
+### `tools/check`
+
+`tools/check [dir] [--style <dir>] [--rules a,b] [--json]` reads a product tree without a browser and reports `file:line: [rule] message`: `old-look` (old tokens, Chivo), `inline-style` (a `style=""` attribute in markup, templates, or markup built in a script), `hex` (a hex colour outside the exceptions in `tools/conformance.json` `check`; hex in a `data-*` attribute is data), `confirm` (a `confirm()` call; use `confirm.js`), `emdash` (an em dash in a string or in markup text) and `runtime-files` (every path in `runtime-files.txt` exists, in `--style`, `lib/style` or the tree itself). A vendored library directory (one that holds `runtime-files.txt`) is not scanned. A line, or the line above it, with `check-ok` and a reason is skipped. Exit 0 clean, 1 findings.
+
+### Wiring a product
+
+Run the fast tier from the product's own test command, and the gate before a merge:
+
+```sh
+npm --prefix lib/style/tools ci
+lib/style/tools/check .
+lib/style/tools/shot --table tests/shots.mjs --base http://127.0.0.1:$PORT --preset smoke --conform    # per change
+lib/style/tools/shot --table tests/shots.mjs --base http://127.0.0.1:$PORT --preset full --conform     # before a merge
+```
+
+The table sets `baseline: '../shots/accepted'` (relative to the table file) and `shape` on each entry; a product with an unavoidable refusal or 404 in its test run lists it under `allow` with a reason.
 
 ## The rules the theme keeps
 
