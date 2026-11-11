@@ -361,6 +361,27 @@ resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre><div class="pa
 </section>
 
 <section class="spec-sec">
+  <h2>Source, axes, sketch</h2>
+  <p class="lede">Colours drawn by products with no component of their own. Source is ink level and weight with two hues (strings and numbers); the axes are the CAD convention, muted; the sketch stroke is one value in both schemes with a casing.</p>
+  <div class="spec-grid">
+    <h3>Source <code>pre.src, ol.src</code><code>.tok-keyword .tok-defname .tok-builtin .tok-decorator .tok-number .tok-string .tok-comment</code></h3>
+    <div class="spec-col spec-wide">
+      <ol class="src"><li><code><span class="tok-comment"># Transceiver on 3V3 VIO</span></code></li><li><code><span class="tok-decorator">@sheet</span>("CAN")</code></li><li><code><span class="tok-keyword">def</span> <span class="tok-defname">can_sheet</span>(v3v3, gnd):</code></li><li><code>    u10 = <span class="tok-builtin">Part</span>(<span class="tok-string">"Interface_CAN_LIN"</span>, <span class="tok-string">"MCP2562FD-E-SN"</span>)</code></li><li><code>    u10[<span class="tok-string">"VIO"</span>] += v3v3</code></li><li><code>    c45 = <span class="tok-builtin">Part</span>(<span class="tok-string">"Device"</span>, <span class="tok-string">"C"</span>, value=<span class="tok-number">100e-9</span>)</code></li><li><code>    <span class="tok-keyword">return</span> u10, c45</code></li></ol>
+      <div class="spec-ground"><pre class="src"><code><span class="tok-keyword">for</span> ref <span class="tok-keyword">in</span> (<span class="tok-string">"R19"</span>, <span class="tok-string">"R20"</span>):
+    <span class="tok-builtin">print</span>(ref, <span class="tok-number">10_000</span>)  <span class="tok-comment"># on the ground</span></code></pre></div>
+      <pre class="src"><code><span class="tok-keyword">class</span> <span class="tok-defname">Shroud</span>:
+    wall = <mark><span class="tok-number">2.4</span></mark>   <span class="tok-comment"># search match</span>
+    brace = <mark aria-current="true"><span class="tok-number">8</span></mark>   <span class="tok-comment"># current match</span>
+    <span class="sel">clip = <span class="tok-string">"snap"</span></span>   <span class="tok-comment"># selected</span></code></pre>
+    </div>
+    <h3>Scene axes <code>--mv-axis-x --mv-axis-y --mv-axis-z</code></h3>
+    <div class="spec-well spec-axes"><svg viewBox="0 0 200 110" aria-hidden="true"><line class="ax x" x1="30" y1="80" x2="150" y2="80"/><line class="ax y" x1="30" y1="80" x2="30" y2="14"/><line class="ax z" x1="30" y1="80" x2="82" y2="48"/><text class="axl x" x="154" y="84">X</text><text class="axl y" x="26" y="10">Y</text><text class="axl z" x="86" y="46">Z</text></svg></div>
+    <h3>Sketch stroke <code>--sketch --sketch-halo</code></h3>
+    <div class="spec-row spec-sketch"><svg class="skp p1" viewBox="0 0 64 40" aria-hidden="true"><path class="halo" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/><path class="line" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/></svg><svg class="skp p2" viewBox="0 0 64 40" aria-hidden="true"><path class="halo" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/><path class="line" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/></svg><svg class="skp p3" viewBox="0 0 64 40" aria-hidden="true"><path class="halo" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/><path class="line" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/></svg><svg class="skp p4" viewBox="0 0 64 40" aria-hidden="true"><path class="halo" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/><path class="line" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/></svg><svg class="skp p5" viewBox="0 0 64 40" aria-hidden="true"><path class="halo" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/><path class="line" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/></svg><svg class="skp p6" viewBox="0 0 64 40" aria-hidden="true"><path class="halo" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/><path class="line" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/></svg><svg class="skp p7" viewBox="0 0 64 40" aria-hidden="true"><path class="halo" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/><path class="line" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/></svg><svg class="skp p8" viewBox="0 0 64 40" aria-hidden="true"><path class="halo" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/><path class="line" d="M6 30 C18 6 30 36 40 16 S54 10 58 8"/></svg></div>
+  </div>
+</section>
+
+<section class="spec-sec">
   <h2>Confirm</h2>
   <p class="lede">The page's own confirmation, in place of the browser's confirm(). Opened next to the control that asked by <code>confirm.js</code>; the control is disabled while it is open. The solid ink button is a spend, danger text is a destructive action, and neither is ember, so an agent approval can still be the view's one ember element.</p>
   <div class="spec-grid">

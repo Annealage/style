@@ -51,7 +51,7 @@ The greys no longer lean towards the product. Every `data-product` block now set
 | `--ink`, `--ink-2`, `--ink-3` | same names | `--ink-2` and `--ink-3` are slightly different greys. `--ink-3` must not sit on a wash or a pressed tone; the theme steps it up there. |
 | `--ember`, `--on-ember`, `--quench`, `--danger`, `--warn`, `--sheet-danger`, `--sheet-warn`, `--pin`, `--pin-selected`, `--callout`, `--measure`, `--mono` | unchanged | |
 
-New tokens: `--well`, `--press`, `--paper`, `--paper-under`, `--paper-ink`, `--on-temper`, `--focus`, `--shadow-menu`, `--cut`, the type scale (`--fs-micro`, `--fs-small`, `--fs-ui`, `--fs-read`, `--fs-title`, `--fs-figure`, `--lh-ui`, `--lh-read`, `--lh-title`), the heights (`--h-bar` 40, `--h-tabs` 34, `--h-pane` 36, `--h-row` 36, `--h-status` 24), `--gutter` 40 and the spacing steps `--s-1` to `--s-5` (4, 8, 12, 16, 24).
+New tokens: `--mv-axis-x`, `--mv-axis-y`, `--mv-axis-z`, `--sketch`, `--sketch-halo`, `--syn-keyword`, `--syn-def`, `--syn-meta`, `--syn-comment`, `--syn-string`, `--syn-number`, `--syn-invalid` (scene axes, the sketch stroke and its casing, source highlighting), `--well`, `--press`, `--paper`, `--paper-under`, `--paper-ink`, `--on-temper`, `--focus`, `--shadow-menu`, `--cut`, the type scale (`--fs-micro`, `--fs-small`, `--fs-ui`, `--fs-read`, `--fs-title`, `--fs-figure`, `--lh-ui`, `--lh-read`, `--lh-title`), the heights (`--h-bar` 40, `--h-tabs` 34, `--h-pane` 36, `--h-row` 36, `--h-status` 24), `--gutter` 40 and the spacing steps `--s-1` to `--s-5` (4, 8, 12, 16, 24).
 
 Gone with no replacement: `--console-h` (the agent pane is a column now; see below).
 

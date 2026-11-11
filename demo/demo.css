@@ -102,3 +102,20 @@
   .dt.ctx .dt-row > * { display: revert; }
   .dt.ctx .dt-head { display: grid; }
 }
+
+/* ------------------------------------- source, axes and sketch specimens */
+.spec-ground { padding: 6px 12px; }
+.spec-ground .src { background: none; border: 0; padding: 0; }
+.src .sel { background: var(--temper-wash); }
+.spec-axes { width: 320px; height: 150px; flex-direction: row; justify-content: center; }
+.spec-axes svg { width: 100%; height: 100%; }
+.ax { stroke-width: 2; stroke-linecap: round; }
+.ax.x { stroke: var(--mv-axis-x); } .ax.y { stroke: var(--mv-axis-y); } .ax.z { stroke: var(--mv-axis-z); }
+.axl { font: 500 11px/1 var(--sans); }
+.axl.x { fill: var(--mv-axis-x); } .axl.y { fill: var(--mv-axis-y); } .axl.z { fill: var(--mv-axis-z); }
+.skp { width: 96px; height: 60px; }
+.skp .halo, .skp .line { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.skp .halo { stroke: var(--sketch-halo); stroke-width: 5; }
+.skp .line { stroke: var(--sketch); stroke-width: 2.5; }
+.skp.p1 { background: var(--mv-part-1); } .skp.p2 { background: var(--mv-part-2); } .skp.p3 { background: var(--mv-part-3); } .skp.p4 { background: var(--mv-part-4); }
+.skp.p5 { background: var(--mv-part-5); } .skp.p6 { background: var(--mv-part-6); } .skp.p7 { background: var(--mv-part-7); } .skp.p8 { background: var(--mv-part-8); }

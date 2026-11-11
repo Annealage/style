@@ -40,10 +40,27 @@ TEXT = [
     ("on-pin", [["pin"]]),
     ("ground", [["ink"]]),            # a primary button
     ("paper-ink", [["paper"]]),       # a marker's number on an outlined pin
+    # Source code (.src, .tok-*): syntax colour is data styling inside a mono block.
+    ("syn-keyword", PLAIN + ON_WELL + WASHED),
+    ("syn-def", PLAIN + ON_WELL + WASHED),
+    ("syn-meta", PLAIN + ON_WELL + WASHED),
+    ("syn-comment", PLAIN),
+    ("syn-string", PLAIN + ON_WELL + [["ground", "temper-wash"]]),
+    ("syn-number", PLAIN + ON_WELL + [["ground", "temper-wash"]]),
+    ("syn-invalid", [["ground"], ["field"], ["well"], ["ground", "hover"], ["ground", "temper-wash"]]),
 ]
 LINES = [  # 3:1
     ("temper-text", [["ground"], ["field"], ["well"]]),
     ("focus", [["ground"], ["field"], ["well"]]),
+    # Scene axes, drawn on the well.
+    ("mv-axis-x", [["well"]]),
+    ("mv-axis-y", [["well"]]),
+    ("mv-axis-z", [["well"]]),
+    # The sketch stroke is one value in both schemes and is baked into an image,
+    # so it carries a casing: a surface only needs one of the two at 3:1, and the
+    # stroke must stand out from its own casing.
+    ("sketch", [["sketch-halo"]]),
+    (("sketch", "sketch-halo"), [["well"]] + [[f"mv-part-{n}"] for n in range(1, 9)]),
 ]
 
 
@@ -129,9 +146,10 @@ def main():
                         base = resolve(tokens, stack[0], scheme)
                         for layer in stack[1:]:
                             base = over(resolve(tokens, layer, scheme), base)
-                        fg = over(resolve(tokens, text, scheme), base)
-                        r = ratio(fg, base)
-                        row = (r, need, product or "platform", scheme, text, " + ".join(stack))
+                        # A tuple is a stroke with a casing: the better of the two counts.
+                        names = text if isinstance(text, tuple) else (text,)
+                        r = max(ratio(over(resolve(tokens, n, scheme), base), base) for n in names)
+                        row = (r, need, product or "platform", scheme, "/".join(names), " + ".join(stack))
                         rows.append(row)
                         if r < need:
                             failures.append(row)

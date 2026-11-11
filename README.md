@@ -49,6 +49,14 @@ Things only one product draws stay in that product's stylesheet: Mesh's scene, L
 
 Canvas and WebGL code that needs a token colour should resolve it through an element rather than read the custom property. `getComputedStyle(root).getPropertyValue('--pin')` returns the unresolved `light-dark(...)` text. Instead, set `probe.style.color = 'var(--pin)'` on a hidden element and read `getComputedStyle(probe).color`. A module script doesn't wait for stylesheets, so wait for the `<link rel=stylesheet>` loads before the first read, or the colours come out as the inherited text colour. Redraw on scheme.js's `schemechange` event, which covers both the OS changing and the user's choice. `--hover`, `--press` and `--temper-wash` are translucent, so composite them over the surface beneath if the scene needs an opaque value.
 
+Scene and editor colours have tokens too, so no product keeps literals for them:
+
+- `--mv-axis-x`, `--mv-axis-y`, `--mv-axis-z`: the scene axes (lines, 3:1 on `--well`).
+- `--sketch` and `--sketch-halo`: the sketch stroke over a scene. One value in both schemes, because it is baked into the image the agent reads. No single colour reaches 3:1 on both wells and every part, so draw the halo wider, under the stroke; `tools/contrast.py` checks that one of the two reaches 3:1 on every surface.
+- `--syn-keyword`, `--syn-def`, `--syn-meta`, `--syn-comment`, `--syn-string`, `--syn-number`, `--syn-invalid`: source highlighting. `pre.src` and `ol.src` with Loom's `tok-*` classes need no product CSS. Red Hat Mono's heaviest weight is 500, so use `font-weight: 500` for keywords and `600` (which renders as 500) for a definition name, with `font-synthesis-weight: none`.
+
+A CodeMirror 6 theme takes the same tokens: a `HighlightStyle` mapping keywords to `{ color: 'var(--syn-keyword)', fontWeight: 500 }`, definition names to `var(--syn-def)` at 600, strings to `var(--syn-string)`, numbers and constants to `var(--syn-number)`, comments to `var(--syn-comment)`, decorators and builtins to `var(--syn-meta)` and invalid text to `var(--syn-invalid)`. The selection is `var(--temper-wash)` (ink stays on it at AA), a search match is `var(--temper-wash)` too, and the current match is outlined 1.5px in `var(--temper-text)`. Do not mix temper at 25 to 65% into the selection: it falls under 4.5:1 in dark.
+
 ## What a product ships
 
 `runtime-files.txt` is the one list of what a product serves and packages: one path or directory per line, no globs (fonts are the directory). Static routes, wheel `force-include`, Canvas's copy list and Trace's `Containerfile` read it; `demo/`, `tools/` and the `*.md` files are not on it. `frame.js` and `palette.js` are listed before the library has them (the frame helper and the palette script land with later tickets); `runtime-pending.txt` names those two, and `tools/bump-style.sh` and the existence check skip any path named there. Once both files exist, `runtime-pending.txt` is deleted.

@@ -1423,6 +1423,39 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 .setpanel > footer button.primary:hover:not(:disabled) { background: color-mix(in srgb, var(--ink) 86%, var(--ground)); }
 .setpanel > footer button:disabled { opacity: 0.5; cursor: default; }
 
+/* ------------------------------------------------------------ source code */
+/* A block of source: <pre class="src"><code>…</code></pre>, or one numbered
+   line per item: <ol class="src"><li><code>…</code></li>…</ol>. Colour comes
+   from the --syn-* tokens through the classes Loom's pyhl.js writes
+   (.tok-keyword .tok-builtin .tok-decorator .tok-number .tok-string
+   .tok-comment .tok-defname), so a product needs no CSS of its own. It reads
+   in any product because it is ink level and weight first and only strings
+   and numbers carry a hue. Red Hat Mono has no weight above 500, so the 600
+   of a definition name renders as 500 (no synthesised bold). A comment is
+   --ink-3, not slanted: no italic is shipped, and a synthesised one looks
+   worse than a level change. A search match in an editor is
+   <mark>, the current one mark[aria-current]; a selection is the temper wash. */
+.src {
+  margin: 0; padding: 6px 0; overflow: auto; tab-size: 4;
+  border-block: 1px solid var(--rule); background: var(--field); color: var(--ink);
+  font: 400 var(--fs-small)/var(--lh-ui) var(--mono); font-synthesis-weight: none; font-variant-numeric: tabular-nums;
+}
+pre.src { padding: 6px 12px; white-space: pre; }
+.src code { padding: 0; background: none; font: inherit; white-space: pre; }
+ol.src { counter-reset: line; }
+ol.src > li { counter-increment: line; display: grid; grid-template-columns: 4ch minmax(0, 1fr); gap: 0 12px; padding: 0 12px; }
+ol.src > li::before { content: counter(line); text-align: right; color: var(--ink-3); user-select: none; }
+.src ::selection { background: var(--temper-wash); color: inherit; }
+.src mark { background: var(--temper-wash); color: inherit; }
+.src mark[aria-current] { outline: 1.5px solid var(--temper-text); outline-offset: 0; }
+.tok-keyword { color: var(--syn-keyword); font-weight: 500; }
+.tok-defname { color: var(--syn-def); font-weight: 600; font-synthesis-weight: none; }
+.tok-builtin, .tok-decorator { color: var(--syn-meta); }
+.tok-number { color: var(--syn-number); }
+.tok-string { color: var(--syn-string); }
+.tok-comment { color: var(--syn-comment); }
+.tok-invalid { color: var(--syn-invalid); }
+
 /* ------------------------------------------- project views (project.js) */
 /* annealage-ember's project.js builds the title bar's project name and Rename,
    the History pane, the "Send to" lineage bar, the project list and the

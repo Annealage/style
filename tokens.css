@@ -110,6 +110,38 @@
   --mv-grid: light-dark(#E4E6E5, #181B1E);
   --mv-grid-2: light-dark(#D2D6D5, #252A2E);
 
+  /* The three scene axes, X, Y, Z as red, green, blue (the CAD convention
+     users read without a legend), muted to the part family's range and 3:1 on
+     --well. X is a raspberry, clear of --danger and --ember. Lines only. */
+  --mv-axis-x: light-dark(#A8405C, #E07A93);
+  --mv-axis-y: light-dark(#3A7A4C, #6DBE84);
+  --mv-axis-z: light-dark(#3A62AD, #7C9CEB);
+
+  /* The sketch stroke drawn over a scene (Mesh), baked into the image the
+     agent reads, so it is one value in both schemes. No single colour keeps 3:1
+     on both wells and every part (the best possible is about 2.3:1), so the
+     stroke is a dark magenta, 3:1 or better on the light well and parts, with a
+     white casing that carries the dark ones: every surface has one of the two
+     at 3:1 or better (worst case 3.11:1, the stroke on the light parts 4 and
+     6), and the stroke is 8.5:1 on its casing. The overlay draws the casing
+     wider, under the stroke. tools/contrast.py checks the pair. */
+  --sketch: #8F0A74;
+  --sketch-halo: #FFFFFF;
+
+  /* Source code (.src and Loom's .tok-* classes; Canvas's editor takes the same
+     tokens). Syntax colour is data styling inside a mono block, so it is mostly
+     ink level and weight: keyword 500, definition name 600, comment --ink-3,
+     decorator and builtin --ink-2. Strings and numbers are the only hues, two
+     muted ones (a sage and a mauve) kept clear of every product's temper, of
+     quench and of ember; both are 4.5:1 on ground, field and well. */
+  --syn-keyword: var(--ink);
+  --syn-def: var(--ink);
+  --syn-meta: var(--ink-2);
+  --syn-comment: var(--ink-3);
+  --syn-string: light-dark(#3E6B4B, #86B793);
+  --syn-number: light-dark(#8C4764, #D08FA9);
+  --syn-invalid: var(--danger);
+
   /* Type. Instrument Sans for the interface, Red Hat Mono for data only (refs,
      part numbers, coordinates, paths, counts, costs), with tabular numerals. */
   --sans: 'Instrument Sans', system-ui, sans-serif;
