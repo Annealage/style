@@ -110,7 +110,7 @@ document.addEventListener("click", (e) => {
   closeMenus(wrap);
   if (wrap) trigger.setAttribute("aria-expanded", String(wrap.toggleAttribute("data-open")));
 
-  // Inspector tabs: data-side switches #review and #timeline, aria-controls switches .ipane.
+  // Inspector tabs: data-side switches the inspector pane, aria-controls switches .ipane.
   const tab = e.target.closest(".ptabs button");
   if (tab?.dataset.side) {
     document.querySelector(".wb").dataset.side = tab.dataset.side;
@@ -148,7 +148,6 @@ document.addEventListener("change", (e) => {
 
 // ---- States the query string can ask for.
 const wb = document.querySelector(".wb");
-if (wb && q.get("side") === "timeline") wb.dataset.side = "timeline";
 if (wb && q.get("preview")) wb.dataset.preview = "";
 for (const box of $$("[data-indeterminate]")) box.indeterminate = true;
 for (const s of $$(".swatch[data-c]")) s.style.background = s.dataset.c;

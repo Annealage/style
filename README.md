@@ -208,7 +208,7 @@ Each component's markup is in the comment above its rules.
 - A view's own panel: `.canvas.split` with `aside.vpanel` beside a `.stage`, holding `.chips`, `.layerlist` and `.layerrow`, `.slider`, `.query`, `.qmeta`, `.qacts`, `.results` and `.hit`.
 - Pins: SVG `g.pin` (`.model`, `.resolved`, `.is-selected`, `.ring`), `.pindraft`, the HTML `.hpin` for a paper sheet, and the floating `form.composer`.
 - Inspector: `.inspector`, `.ihead`, `.ptabs`, `.ipane`, `.iscroll`, `.toggles`, `details.sec` and `.secbody`, `.row` with `.rhead` (`.is-selected`), `.ifoot`.
-- Timeline: `.tl` and `.ev` with `.node--msg`, `--build`, `--ev`, `--wait`, `--now`; `.ebody`, `.eh`, `.eq`, `.ed`, `.chg`, `.rp`, `.eacts`, `form.restore`, `.is-preview`.
+- Timeline: `.tl` and `.ev` with `.node--msg`, `--build`, `--ev`, `--wait`, `--now`; `.ebody`, `.eh`, `.eq`, `.ed`, `.chg`, `.rp`, `.eacts`, `form.restore`, `.is-preview`. No product draws it today: Mesh's Timeline and restore are not built (Q25), so the reference pages no longer show it and a port does not add it.
 - Status bar: `.statusbar` with `.conn`, `.alert`, `.push`, `.k`, `b`, `.pv`.
 
 **Agent pane and settings** (annealage-ember's markup)

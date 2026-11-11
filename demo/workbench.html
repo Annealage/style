@@ -14,7 +14,7 @@
 </head>
 <!-- The workbench frame with each product's kind of content, and the agent
      pane's markup exactly as annealage-ember's chat.js builds it.
-     ?product=loom|trace|mesh|canvas|pod  ?theme=light|dark  ?side=timeline  ?preview=1 -->
+     ?product=loom|trace|mesh|canvas|pod  ?theme=light|dark  ?preview=1 -->
 <body class="panel-open">
 <div class="wb" data-side="review" data-layout="split">
 
@@ -27,13 +27,13 @@
         <template data-for-product="loom">
           <nav class="crumbs" aria-label="Project"><a href="list.html">Projects</a><span class="sep">/</span><span class="here">RP2040 Stepper Controller</span><button class="btn icon sm" type="button" aria-label="Rename project" title="Rename"><svg class="ico"><use href="../icons.svg#i-pencil"/></svg></button></nav>
           <span class="tsep"></span>
-          <div class="stageline" title="Requirements, architecture, circuit, sheet plan, schematic, floorplan, layout, done"><span>Schematic, <span class="hint">5 of 8</span></span><span class="stagebar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+          <div class="stageline" title="Requirements, architecture, circuit, sheet plan, schematic, board layout review, layout, done"><span>Schematic, <span class="hint">5 of 8</span></span><span class="stagebar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
         </template>
         <template data-for-product="trace">
           <nav class="crumbs" aria-label="Project"><a href="list.html">Projects</a><span class="sep">/</span><span class="here">rp2040</span><span class="rev mono">rev 1</span></nav>
         </template>
         <template data-for-product="mesh">
-          <span class="doc"><strong>dual-pci shroud</strong><code>~/cad/dual-pci/build</code></span>
+          <span class="doc"><strong title="~/cad/dual-pci">dual-pci</strong></span>
         </template>
         <template data-default>
           <span class="doc"><strong>thermostat</strong><code>ui/thermostat.py</code> <span class="tag">view only</span></span>
@@ -349,7 +349,7 @@ resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre>
     <!-- ======================================================== Mesh -->
     <template data-for-product="mesh">
       <div class="vhead">
-        <button class="vtab" type="button" aria-current="page"><code>build</code></button>
+        <button class="vtab" type="button" aria-current="page">Model</button>
         <div class="meta"><span><b>3</b> parts</span><span><b>60,496</b> triangles</span><span>rebuilt <b>14:26</b></span></div>
         <div class="right"><div class="seg sm" role="group" aria-label="Up axis"><button type="button" aria-pressed="true">Z-up</button><button type="button" aria-pressed="false">Y-up</button></div></div>
       </div>
@@ -364,7 +364,6 @@ resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre>
       </nav>
 
       <main class="view" aria-label="Model">
-        <div class="previewbar" role="status"><svg class="ico"><use href="../icons.svg#i-restore"/></svg><b>Previewing turn 2</b><span>before the brace move. Pins and callouts as they are now.</span><button class="btn" type="button" data-act="now">Back to now</button></div>
         <div class="canvas">
           <div class="demo-scene" aria-hidden="true">
             <svg viewBox="0 0 860 840" preserveAspectRatio="xMidYMid slice">
@@ -385,7 +384,7 @@ resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre>
       </main>
 
       <aside class="inspector" id="review" aria-label="Review">
-        <div class="ihead"><div class="ptabs" role="tablist" aria-label="Side panel"><button role="tab" type="button" data-side="review" aria-selected="true">Review</button><button role="tab" type="button" data-side="timeline" aria-selected="false">Timeline</button></div><span>2 pins, 1 callout</span></div>
+        <div class="ihead"><div class="ptabs" role="tablist" aria-label="Side panel"><button role="tab" type="button" data-side="review" aria-selected="true">Review</button></div><span>2 pins, 1 callout</span></div>
         <div class="iscroll">
           <details class="sec" open>
             <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Parts <span class="c">3</span></summary>
@@ -418,28 +417,6 @@ resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre>
           </details>
         </div>
         <div class="ifoot"><span><b>2 pins</b>, unsaved</span><button class="btn quiet" type="button">Clear all</button><button class="btn primary" type="button">Submit</button></div>
-      </aside>
-
-      <aside class="inspector" id="timeline" aria-label="Timeline">
-        <div class="ihead"><div class="ptabs" role="tablist" aria-label="Side panel"><button role="tab" type="button" data-side="review" aria-selected="false">Review</button><button role="tab" type="button" data-side="timeline" aria-selected="true">Timeline</button></div><span>3 restore points</span></div>
-        <div class="tlscroll">
-          <ol class="tl">
-            <li class="ev ck"><time>14:12</time><span class="node node--build"></span><div class="ebody"><p class="eh"><b>Session started</b></p><ul class="chg"><li>3 parts</li></ul><div class="eacts"><button class="btn sm" type="button" data-act="preview">Preview</button><button class="btn quiet sm" type="button">Restore…</button></div></div></li>
-            <li class="ev ck is-preview"><time>14:19</time><span class="node node--msg"></span><div class="ebody"><p class="eh"><b>You</b></p><p class="eq">Move the brace back 8 mm and take the side wall to 2.4 mm, see pins 1 and 2.</p>
-              <form class="restore" aria-label="Restore">
-                <h3>Restore to just before this message</h3>
-                <label><input type="radio" name="r" checked><span>Files and chat</span><small>The files go back, and the chat picks up from here.</small></label>
-                <label><input type="radio" name="r"><span>Files only</span><small>The agent is told what was put back.</small></label>
-                <label><input type="radio" name="r"><span>Chat only</span><small>Keep the files as they are now.</small></label>
-                <p class="note">Pins and callouts stay.</p>
-                <div class="racts"><button class="btn primary" type="button">Restore</button><button class="btn quiet" type="button" data-act="now">Cancel</button></div>
-              </form></div></li>
-            <li class="ev"><time>14:20</time><span class="node node--ev"></span><div class="ebody"><p class="eh"><b>Edit</b> <code>model.py</code></p><ul class="chg"><li><ins>+4</ins> <del>−2</del></li><li><code>WALL</code> 2.0 → 2.4</li></ul></div></li>
-            <li class="ev ck"><time>14:21</time><span class="node node--build"></span><div class="ebody"><p class="eh"><b>Rebuilt</b></p><ul class="chg"><li>60,496 tri</li></ul></div></li>
-            <li class="ev"><time>14:26</time><span class="node node--wait"></span><div class="ebody"><p class="eh"><b>Waiting on you</b> to allow a write</p></div></li>
-            <li class="ev"><time>now</time><span class="node node--now"></span><div class="ebody"><p class="eh"><b>Now</b></p></div></li>
-          </ol>
-        </div>
       </aside>
 
       <aside id="chat" aria-label="Agent" data-pending="1">
