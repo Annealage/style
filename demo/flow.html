@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en" data-product="trace">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guided setup, Annealage style reference</title>
+<script src="../scheme.js"></script>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="../pages.css">
+<link rel="stylesheet" href="demo.css">
+</head>
+<!-- A guided flow: Trace's setup, as a job sheet under the workbench's own bar.
+     #upload | #inventory | #datasheets | #review   ?product=  ?theme=light|dark  ?menus=0 -->
+<body data-routes="upload inventory datasheets review" data-default="upload">
+<div class="page">
+
+<header class="titlebar">
+  <div class="tb-left">
+    <a class="mark" href="list.html" title="Projects"><picture><source data-mark-dark srcset="../marks/trace-net-dark.svg" media="(prefers-color-scheme: dark)"><img data-mark src="../marks/trace-net.svg" alt="" width="640" height="512"></picture></a>
+    <span class="prod" data-prod>Annealage Trace</span>
+    <span class="tsep"></span>
+    <nav class="crumbs" aria-label="Project"><a href="list.html">Projects</a><span class="sep">/</span><span class="here">rp2040</span><span class="rev mono">rev 1</span></nav>
+  </div>
+  <button class="cmd" type="button"><svg class="ico"><use href="../icons.svg#i-search"/></svg><span>Search or run a command</span><kbd>Ctrl K</kbd></button>
+  <div class="tb-right">
+    <span class="conn wide" data-state="live">Live</span>
+    <span class="gap wide"></span>
+    <button class="btn" type="button" data-needs-import title="Leave setup for the workbench"><svg class="ico"><use href="../icons.svg#i-open"/></svg><span class="wide">Open design</span></button>
+    <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="../icons.svg#i-auto"/></svg></button>
+    <button class="btn icon" type="button" aria-label="Settings" title="Settings"><svg class="ico"><use href="../icons.svg#i-settings"/></svg></button>
+  </div>
+</header>
+
+<main class="flow">
+  <aside class="flowside" aria-label="Setup steps">
+    <h2 class="subhead">Setup</h2>
+    <ol class="flowsteps">
+      <li class="flowstep"><a href="#upload" data-route-link><span class="mk">1</span><span class="name">Upload<svg class="ico tick" aria-hidden="true"><use href="../icons.svg#i-check"/></svg></span><span class="detail">3 files</span></a></li>
+      <li class="flowstep"><a href="#inventory" data-route-link><span class="mk">2</span><span class="name"><span class="wide">Check inventory</span><span class="narrow">Inventory</span><svg class="ico tick" aria-hidden="true"><use href="../icons.svg#i-check"/></svg></span><span class="detail">25 parts, 50 nets</span></a></li>
+      <li class="flowstep"><a href="#datasheets" data-route-link><span class="mk">3</span><span class="name">Datasheets<svg class="ico tick" aria-hidden="true"><use href="../icons.svg#i-check"/></svg></span><span class="detail">7 gaps</span></a></li>
+      <li class="flowstep"><a href="#review" data-route-link><span class="mk">4</span><span class="name">Review<svg class="ico tick" aria-hidden="true"><use href="../icons.svg#i-check"/></svg></span><span class="detail">Not started</span></a></li>
+    </ol>
+    <div class="flowfacts" data-imported="yes">
+      <h2 class="subhead">Design</h2>
+      <div class="paper thumb"><img src="assets/sheet-mcu.png" alt="Schematic sheet preview"></div>
+      <dl class="fl">
+        <dt>Title</dt><dd>RP2040 Basic Support</dd>
+        <dt>Revision</dt><dd class="mono">1.0.3</dd>
+        <dt>Sheets</dt><dd class="mono">1</dd>
+        <dt>Parts</dt><dd class="mono">25</dd>
+        <dt>Nets</dt><dd class="mono">50</dd>
+        <dt>Format</dt><dd>KiCad <span class="mono">10.0.6</span></dd>
+      </dl>
+    </div>
+    <p class="flowfacts none" data-imported="no">The sheet preview and design facts appear here once the files are imported.</p>
+  </aside>
+
+  <div class="flowmain">
+
+    <!-- 1 Upload -->
+    <section class="flowview split" data-view="upload" aria-labelledby="h-upload">
+      <div class="flowscroll">
+        <header class="flowhead"><h1 id="h-upload">Upload</h1><p>Add the design files, and any private documents the review should be able to read.</p></header>
+        <label class="drop"><svg class="ico" aria-hidden="true"><use href="../icons.svg#i-upload"/></svg><span><span class="linkish">Choose</span> or drop files</span><input type="file" multiple></label>
+
+        <div class="dt staged" role="table" aria-label="Staged files">
+          <div class="dt-head" role="row"><span>Staged file</span><span>Type</span><span class="num">Size</span><span>Upload as</span><span></span></div>
+          <div class="dt-row" role="row">
+            <span class="mono dt-main"><svg class="ico" aria-hidden="true"><use href="../icons.svg#i-file"/></svg>rp2040.kicad_pro</span><span class="hint type">KiCad project</span><span class="mono num">4.1 KiB</span>
+            <span class="seg sm" role="radiogroup" aria-label="Upload rp2040.kicad_pro as"><button type="button" role="radio" aria-checked="true">Design</button><button type="button" role="radio" aria-checked="false">Private resource</button></span>
+            <button class="btn icon sm" type="button" aria-label="Remove rp2040.kicad_pro"><svg class="ico"><use href="../icons.svg#i-x"/></svg></button>
+          </div>
+          <div class="dt-row" role="row">
+            <span class="mono dt-main"><svg class="ico" aria-hidden="true"><use href="../icons.svg#i-file"/></svg>rp2040-basic.zip</span><span class="hint type">KiCad project</span><span class="mono num">212 KiB</span>
+            <span class="seg sm" role="radiogroup" aria-label="Upload rp2040-basic.zip as"><button type="button" role="radio" aria-checked="true">Design</button><button type="button" role="radio" aria-checked="false">Private resource</button></span>
+            <button class="btn icon sm" type="button" aria-label="Remove rp2040-basic.zip"><svg class="ico"><use href="../icons.svg#i-x"/></svg></button>
+          </div>
+          <div class="dt-row" role="row">
+            <span class="mono dt-main"><svg class="ico" aria-hidden="true"><use href="../icons.svg#i-file"/></svg>thermal-budget.pdf</span><span class="hint type">PDF, <span class="mono">11</span> pages</span><span class="mono num">1.2 MiB</span>
+            <span class="seg sm" role="radiogroup" aria-label="Upload thermal-budget.pdf as"><button type="button" role="radio" aria-checked="false">Design</button><button type="button" role="radio" aria-checked="true">Private resource</button></span>
+            <button class="btn icon sm" type="button" aria-label="Remove thermal-budget.pdf"><svg class="ico"><use href="../icons.svg#i-x"/></svg></button>
+          </div>
+        </div>
+        <p class="help">Private resources are visible to project viewers and are not shared with the datasheet library.</p>
+
+        <div class="discs">
+          <details class="disc"><summary>Limits and storage</summary><div class="disc-body">
+            <p>Design uploads: up to 128 MiB per file, 512 MiB expanded, 256 archive entries. Private resources: up to 32 MiB per file, 200 per project.</p>
+            <p>Unfinished files are kept in this browser so a reload recovers them. Clear the selection on a shared device.</p></div></details>
+          <details class="disc"><summary>Import options</summary><div class="disc-body"><p>Import options are not drawn on this reference page.</p></div></details>
+        </div>
+      </div>
+      <aside class="flowaside" aria-label="Accepted formats">
+        <h2 class="subhead">Accepted formats</h2>
+        <dl class="fl stack">
+          <dt>KiCad</dt><dd>The <span class="mono">.kicad_pro</span>, the root schematic and every referenced sheet.</dd>
+          <dt>Eagle</dt><dd>A <span class="mono">.sch</span>.</dd>
+          <dt>Altium</dt><dd>A <span class="mono">.SchDoc</span>, <span class="mono">.NET</span> or <span class="mono">.PcbDoc</span> for connectivity.</dd>
+          <dt>Also</dt><dd>A ZIP design pack, a BOM, a board or a schematic PDF.</dd>
+        </dl>
+      </aside>
+      <footer class="flowfoot"><span class="hint"><span class="mono">3</span> files staged, <span class="mono">1.4 MiB</span></span><span class="grow"></span><a class="btn primary" href="#inventory">Upload files</a></footer>
+    </section>
+
+    <!-- 2 Check inventory -->
+    <section class="flowview" data-view="inventory" aria-labelledby="h-inventory" hidden>
+      <div class="flowscroll">
+        <header class="flowhead"><h1 id="h-inventory">Check inventory</h1><p>Trace checks the imported parts against the datasheet library.</p></header>
+        <div class="ready">
+          <dl class="figs"><div><dt>Part groups checked</dt><dd>10</dd></div><div><dt>Parts</dt><dd>25</dd></div><div><dt>Nets</dt><dd>50</dd></div></dl>
+          <div class="ready-r"><span class="hint">Last checked</span><span class="mono">10 Nov 2026 10:35 UTC</span><button class="btn edge" type="button">Re-check</button></div>
+        </div>
+        <div class="dt inv" role="table" aria-label="Part groups">
+          <div class="dt-head" role="row"><span>MPN</span><span>Refs</span><span>Footprint</span><span class="num">Qty</span><span>Library</span></div>
+          <div class="dt-row" role="row"><span class="mono dt-main">RP2040</span><span class="mono dt-sub">U6</span><span class="mono hint">QFN-56-1EP_7x7mm</span><span class="mono num">1</span><span class="dt-state"><span class="lamp ok"></span>In library</span></div>
+          <div class="dt-row" role="row"><span class="mono dt-main">W25Q32JVSSIQ</span><span class="mono dt-sub">U5</span><span class="mono hint">SOIC-8_5.23x5.23mm</span><span class="mono num">1</span><span class="dt-state"><span class="lamp ok"></span>In library</span></div>
+          <div class="dt-row" role="row"><span class="mono dt-main">ABM8-272-T3</span><span class="mono dt-sub">Y1</span><span class="mono hint">Crystal_SMD_3225-4Pin</span><span class="mono num">1</span><span class="dt-state"><span class="lamp warn"></span>1 candidate</span></div>
+          <div class="dt-row" role="row"><span class="mono dt-main">CC0402BRNPO9BN6R0</span><span class="mono dt-sub">C29, C30</span><span class="mono hint">C_0402_1005Metric</span><span class="mono num">2</span><span class="dt-state"><span class="lamp none"></span>Not found</span></div>
+          <div class="dt-row" role="row"><span class="mono dt-main">CL05A104KA5NNNC</span><span class="mono dt-sub">C31, C33, C34, C35 <span class="more">+5</span></span><span class="mono hint">C_0402_1005Metric</span><span class="mono num">9</span><span class="dt-state"><span class="lamp none"></span>Not found</span></div>
+          <div class="dt-row" role="row"><span class="mono dt-main">CL10A105KA8NNNC</span><span class="mono dt-sub">C32, C37</span><span class="mono hint">C_0603_1608Metric</span><span class="mono num">2</span><span class="dt-state"><span class="lamp none"></span>Not found</span></div>
+          <div class="dt-row" role="row"><span class="mono dt-main">RC0402FR-0727RL</span><span class="mono dt-sub">R3, R4</span><span class="mono hint">R_0402_1005Metric</span><span class="mono num">2</span><span class="dt-state"><span class="lamp none"></span>Not found</span></div>
+          <div class="dt-row" role="row"><span class="mono dt-main">RC0402FR-071KL</span><span class="mono dt-sub">R5</span><span class="mono hint">R_0402_1005Metric</span><span class="mono num">1</span><span class="dt-state"><span class="lamp none"></span>Not found</span></div>
+          <div class="dt-row" role="row"><span class="mono dt-main">RC0402FR-0710KL</span><span class="mono dt-sub">R6, R36</span><span class="mono hint">R_0402_1005Metric</span><span class="mono num">2</span><span class="dt-state"><span class="lamp none"></span>Not found</span></div>
+          <div class="dt-row" role="row"><span class="mono dt-main">TS-1187A-B-A-B</span><span class="mono dt-sub">SW1</span><span class="mono hint">SW_SPST_TL3342</span><span class="mono num">1</span><span class="dt-state"><span class="lamp none"></span>Not found</span></div>
+        </div>
+      </div>
+      <footer class="flowfoot"><a class="btn" href="#upload">Back</a><span class="grow"></span><a class="btn primary" href="#datasheets">Continue</a></footer>
+    </section>
+
+    <!-- 3 Datasheets -->
+    <section class="flowview" data-view="datasheets" aria-labelledby="h-datasheets" hidden>
+      <div class="flowscroll">
+        <header class="flowhead"><h1 id="h-datasheets">Datasheets</h1><p>Gaps don't block the review. The agent assesses candidates and carries unresolved gaps into the report; a gap is not an exemption or proof of coverage.</p></header>
+        <div class="ready">
+          <dl class="figs">
+            <div><dt>Part groups</dt><dd>10</dd></div>
+            <div><dt><span class="lamp ok"></span>Covered or exempt</dt><dd>2</dd></div>
+            <div><dt><span class="lamp warn"></span>With candidates</dt><dd>1</dd></div>
+            <div><dt><span class="lamp none"></span>With gaps</dt><dd>7</dd></div>
+          </dl>
+          <div class="ready-r"><span class="hint">Last checked</span><span class="mono">10 Nov 2026 10:35 UTC</span><button class="btn edge" type="button">Re-check</button></div>
+          <div class="segbar" role="img" aria-label="2 covered, 1 with candidates, 7 with gaps"><i class="ok w2"></i><i class="warn w1"></i><i class="w7"></i></div>
+        </div>
+
+        <div class="dt parts" role="table" aria-label="Part groups and their datasheets">
+          <div class="dt-bulk" role="toolbar" aria-label="Actions for the selected part groups">
+            <input type="checkbox" aria-label="Select all part groups" data-indeterminate>
+            <strong><span class="mono">3</span> selected</strong>
+            <button class="btn" type="button">Request from Datum</button>
+            <button class="btn wide" type="button">Mark as not needing a datasheet</button>
+            <span class="grow"></span>
+            <button class="btn quiet edge" type="button">Clear</button>
+          </div>
+          <div class="dt-head" role="row"><span></span><span></span><span>MPN</span><span>Refs</span><span>Footprint</span><span class="num">Qty</span><span>Status</span><span>Datasheet</span><span></span></div>
+
+          <div class="dt-row" role="row">
+            <input type="checkbox" aria-label="Select RP2040"><button class="exp" type="button" aria-expanded="false" aria-label="Datasheet details"></button>
+            <span class="mono dt-main">RP2040</span><span class="mono dt-sub">U6</span><span class="mono hint">QFN-56-1EP_7x7mm</span><span class="mono num">1</span>
+            <span class="dt-state"><span class="lamp ok"></span>Covered</span>
+            <span class="src"><span class="hint">Datum</span> <span class="mono">rp2040-datasheet.pdf</span> <span class="hint"><span class="mono">647</span> pages</span></span>
+            <span class="dt-act"><button class="btn quiet" type="button">Open PDF</button><button class="btn icon" type="button" aria-label="More actions for RP2040"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+          </div>
+          <div class="dt-row" role="row">
+            <input type="checkbox" aria-label="Select W25Q32JVSSIQ"><button class="exp" type="button" aria-expanded="false" aria-label="Datasheet details"></button>
+            <span class="mono dt-main">W25Q32JVSSIQ</span><span class="mono dt-sub">U5</span><span class="mono hint">SOIC-8_5.23x5.23mm</span><span class="mono num">1</span>
+            <span class="dt-state"><span class="lamp ok"></span>Covered</span>
+            <span class="src"><span class="hint">Datum</span> <span class="mono">w25q32jv.pdf</span> <span class="hint"><span class="mono">90</span> pages</span></span>
+            <span class="dt-act"><button class="btn quiet" type="button">Open PDF</button><button class="btn icon" type="button" aria-label="More actions for W25Q32JVSSIQ"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+          </div>
+          <div class="dt-row is-open" role="row">
+            <input type="checkbox" aria-label="Select ABM8-272-T3"><button class="exp" type="button" aria-expanded="true" aria-label="Datasheet details"></button>
+            <span class="mono dt-main">ABM8-272-T3</span><span class="mono dt-sub">Y1</span><span class="mono hint">Crystal_SMD_3225-4Pin</span><span class="mono num">1</span>
+            <span class="dt-state"><span class="lamp warn"></span>1 candidate</span>
+            <span class="src"><span class="mono">abm8-272-t3.pdf</span> <span class="hint">identity not confirmed</span></span>
+            <span class="dt-act"><button class="btn" type="button">Confirm</button><button class="btn quiet" type="button">Reject</button><button class="btn icon" type="button" aria-label="More actions for ABM8-272-T3"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+          </div>
+          <div class="dt-detail" role="row">
+            <h3 class="subhead">Datasheet details</h3>
+            <dl class="fl cols2">
+              <dt>Candidate</dt><dd class="mono">abm8-272-t3.pdf</dd><dt>Source</dt><dd>Datum, shared library</dd>
+              <dt>Document</dt><dd>ABM8 series, ceramic SMD crystal</dd><dt>Pages</dt><dd class="mono">4</dd>
+              <dt>Matched on</dt><dd>MPN prefix <span class="mono">ABM8</span></dd><dt>Open question</dt><dd>The ordering code <span class="mono">-272-T3</span> is not listed in the document.</dd>
+            </dl>
+          </div>
+          <div class="dt-row" role="row" aria-selected="true">
+            <input type="checkbox" checked aria-label="Select CC0402BRNPO9BN6R0"><button class="exp" type="button" aria-expanded="false" aria-label="Datasheet details"></button>
+            <span class="mono dt-main">CC0402BRNPO9BN6R0</span><span class="mono dt-sub">C29, C30</span><span class="mono hint">C_0402_1005Metric</span><span class="mono num">2</span>
+            <span class="dt-state"><span class="lamp none"></span>No datasheet</span><span class="src quiet">None found</span>
+            <span class="dt-act"><button class="btn" type="button">Request from Datum</button><button class="btn icon" type="button" aria-label="More actions for CC0402BRNPO9BN6R0"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+          </div>
+          <div class="dt-row" role="row" aria-selected="true">
+            <input type="checkbox" checked aria-label="Select CL05A104KA5NNNC"><button class="exp" type="button" aria-expanded="false" aria-label="Datasheet details"></button>
+            <span class="mono dt-main">CL05A104KA5NNNC</span><span class="mono dt-sub" title="C31, C33, C34, C35, C36, C38, C39, C40, C41">C31, C33, C34, C35 <span class="more">+5</span></span><span class="mono hint">C_0402_1005Metric</span><span class="mono num">9</span>
+            <span class="dt-state"><span class="lamp none"></span>No datasheet</span><span class="src quiet">None found</span>
+            <span class="dt-act"><button class="btn" type="button">Request from Datum</button><button class="btn icon" type="button" aria-label="More actions for CL05A104KA5NNNC"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+          </div>
+          <div class="dt-row" role="row" aria-selected="true">
+            <input type="checkbox" checked aria-label="Select CL10A105KA8NNNC"><button class="exp" type="button" aria-expanded="false" aria-label="Datasheet details"></button>
+            <span class="mono dt-main">CL10A105KA8NNNC</span><span class="mono dt-sub">C32, C37</span><span class="mono hint">C_0603_1608Metric</span><span class="mono num">2</span>
+            <span class="dt-state"><span class="lamp none"></span>No datasheet</span><span class="src quiet">None found</span>
+            <span class="dt-act"><button class="btn" type="button">Request from Datum</button><button class="btn icon" type="button" aria-label="More actions for CL10A105KA8NNNC"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+          </div>
+          <div class="dt-row" role="row">
+            <input type="checkbox" aria-label="Select RC0402FR-0727RL"><button class="exp" type="button" aria-expanded="false" aria-label="Datasheet details"></button>
+            <span class="mono dt-main">RC0402FR-0727RL</span><span class="mono dt-sub">R3, R4</span><span class="mono hint">R_0402_1005Metric</span><span class="mono num">2</span>
+            <span class="dt-state"><span class="lamp none"></span>No datasheet</span><span class="src quiet">None found</span>
+            <span class="dt-act"><button class="btn" type="button">Request from Datum</button><button class="btn icon" type="button" aria-label="More actions for RC0402FR-0727RL"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+          </div>
+          <div class="dt-row" role="row">
+            <input type="checkbox" aria-label="Select RC0402FR-071KL"><button class="exp" type="button" aria-expanded="false" aria-label="Datasheet details"></button>
+            <span class="mono dt-main">RC0402FR-071KL</span><span class="mono dt-sub">R5</span><span class="mono hint">R_0402_1005Metric</span><span class="mono num">1</span>
+            <span class="dt-state"><span class="lamp none"></span>No datasheet</span><span class="src quiet">None found</span>
+            <span class="dt-act"><button class="btn" type="button">Request from Datum</button><button class="btn icon" type="button" aria-label="More actions for RC0402FR-071KL"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+          </div>
+          <div class="dt-row" role="row">
+            <input type="checkbox" aria-label="Select RC0402FR-0710KL"><button class="exp" type="button" aria-expanded="false" aria-label="Datasheet details"></button>
+            <span class="mono dt-main">RC0402FR-0710KL</span><span class="mono dt-sub">R6, R36</span><span class="mono hint">R_0402_1005Metric</span><span class="mono num">2</span>
+            <span class="dt-state"><span class="lamp none"></span>No datasheet</span><span class="src quiet">None found</span>
+            <span class="dt-act"><button class="btn" type="button">Request from Datum</button><button class="btn icon" type="button" aria-label="More actions for RC0402FR-0710KL"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+          </div>
+          <div class="dt-row" role="row">
+            <input type="checkbox" aria-label="Select TS-1187A-B-A-B"><button class="exp" type="button" aria-expanded="false" aria-label="Datasheet details"></button>
+            <span class="mono dt-main">TS-1187A-B-A-B</span><span class="mono dt-sub">SW1</span><span class="mono hint">SW_SPST_TL3342</span><span class="mono num">1</span>
+            <span class="dt-state"><span class="lamp none"></span>No datasheet</span><span class="src quiet">None found</span>
+            <span class="dt-act"><button class="btn" type="button">Request from Datum</button>
+              <span class="menuwrap" data-demo-open="datasheets"><button class="btn icon" type="button" data-menu aria-haspopup="menu" aria-expanded="false" aria-label="More actions for TS-1187A-B-A-B"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button>
+                <span class="menu" role="menu"><button type="button" role="menuitem">Request datasheet from Datum</button><button type="button" role="menuitem">Add shared datasheet</button><button type="button" role="menuitem">Use a private PDF</button><button type="button" role="menuitem">Mark as not needing a datasheet</button><hr><button type="button" role="menuitem">Datasheet details</button></span></span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <footer class="flowfoot"><a class="btn" href="#inventory">Back</a><span class="grow"></span><span class="hint wide"><span class="mono">7</span> gaps will be carried into the report</span><a class="btn primary" href="#review">Continue to review</a></footer>
+    </section>
+
+    <!-- 4 Review -->
+    <section class="flowview split" data-view="review" aria-labelledby="h-review" hidden>
+      <div class="flowscroll">
+        <header class="flowhead"><h1 id="h-review">Review</h1><p>No review has started. Choose how far this run goes.</p></header>
+        <h2 class="subhead">Stages <span class="end"><span class="lamp warn"></span>Quick is experimental, unvalidated</span></h2>
+        <div class="optlist" role="radiogroup" aria-label="Review stages">
+          <label class="opt"><input type="radio" name="stage" value="Quick" checked><span class="opt-name">Quick only</span><span class="opt-desc">Looks for the most serious issues. Continue to Detailed later.</span></label>
+          <label class="opt"><input type="radio" name="stage" value="Quick + Detailed"><span class="opt-name">Quick + Detailed</span><span class="opt-desc">Quick first, then continues automatically to broader checks.</span></label>
+        </div>
+        <h2 class="subhead">Project context <span class="note">optional</span></h2>
+        <p class="help">Nothing is included unless you select it. Selected content is sent to the review model, not the shared datasheet library.</p>
+        <div class="besides">
+          <div class="dt ctx" role="table" aria-label="Private resources">
+            <div class="dt-head" role="row"><span></span><span>Private resource</span><span class="num">Pages</span><span class="num">Size</span></div>
+            <label class="dt-row" role="row"><input type="checkbox" aria-label="Include thermal-budget.pdf"><span class="mono dt-main">thermal-budget.pdf</span><span class="mono num">11</span><span class="mono num">1.2 MiB</span></label>
+          </div>
+          <p class="sidenote">With resources selected, the review model can't use remote Datum tools. It can still read exact pages from frozen datasheets.</p>
+        </div>
+        <div class="discs"><details class="disc"><summary>Limits</summary><div class="disc-body"><p>Up to 32 files, 16 MiB each, 64 MiB in total. Accepted: <span class="mono">.txt .md .markdown .pdf</span></p></div></details></div>
+      </div>
+      <aside class="flowaside" aria-label="What will run">
+        <h2 class="subhead">What will run</h2>
+        <dl class="fl ruled">
+          <dt>Stage</dt><dd data-stage-out>Quick</dd>
+          <dt>Parts</dt><dd class="mono">25</dd>
+          <dt>Nets</dt><dd class="mono">50</dd>
+          <dt>Datasheets covered</dt><dd class="mono">2</dd>
+          <dt>Candidates to assess</dt><dd class="mono">1</dd>
+          <dt>Gaps carried into the report</dt><dd class="mono">7</dd>
+          <dt>Project context</dt><dd>None selected</dd>
+          <dt>Remote Datum tools</dt><dd>Available</dd>
+        </dl>
+      </aside>
+      <footer class="flowfoot"><a class="btn" href="#datasheets">Back</a><span class="grow"></span><button class="btn primary" type="button"><span>Start <span data-stage-out>Quick</span></span></button></footer>
+    </section>
+
+  </div>
+</main>
+
+<footer class="statusbar">
+  <span class="conn" data-state="live">Live</span>
+  <span><span class="k">Review</span>not started</span>
+  <span><span class="k">Layout</span>not started</span>
+  <span class="push wide" data-imported="yes"><span class="k">Design</span><b>RP2040 Basic Support</b></span>
+  <span class="wide" data-imported="yes"><b>25</b> parts</span>
+  <span class="wide" data-imported="yes"><b>50</b> nets</span>
+  <span class="push wide" data-imported="no">No design imported</span>
+</footer>
+
+</div>
+<script type="module" src="demo.js"></script>
+</body>
+</html>

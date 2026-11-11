@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects, Annealage style reference</title>
+<script src="../scheme.js"></script>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="../pages.css">
+<link rel="stylesheet" href="demo.css">
+</head>
+<!-- The project register: platform chrome (no data-product, so no temper).
+     #list | #tiles   ?product=  ?theme=light|dark  ?menus=0 -->
+<body data-routes="list tiles" data-default="list">
+<div class="page">
+
+<header class="titlebar">
+  <div class="tb-left">
+    <a class="mark" href="list.html"><picture><source data-mark-dark srcset="../marks/parent-ribbon-b123d-dark.svg" media="(prefers-color-scheme: dark)"><img data-mark src="../marks/parent-ribbon-b123d.svg" alt="" width="512" height="512"></picture></a>
+    <span class="prod wide" data-prod>Annealage</span>
+    <span class="tsep wide"></span>
+    <nav class="prodtabs" aria-label="Product"><a href="list.html" aria-current="page">Trace</a><a href="list.html">Loom</a></nav>
+  </div>
+  <button class="cmd" type="button"><svg class="ico"><use href="../icons.svg#i-search"/></svg><span>Search or run a command</span><kbd>Ctrl K</kbd></button>
+  <div class="tb-right">
+    <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="../icons.svg#i-auto"/></svg></button>
+    <span class="menuwrap">
+      <button class="btn" type="button" data-menu aria-haspopup="menu" aria-expanded="false" aria-label="Account menu, Alex Engineer"><svg class="ico"><use href="../icons.svg#i-user"/></svg><span class="wide">Alex Engineer</span><svg class="ico ico--sm"><use href="../icons.svg#i-chev-d"/></svg></button>
+      <span class="menu" role="menu"><span class="menu-note">alex@example.com</span><a role="menuitem" href="settings.html">Account</a><a role="menuitem" href="settings.html#security">Security</a><hr><button type="button" role="menuitem">Sign out</button></span>
+    </span>
+  </div>
+</header>
+
+<main class="pagebody">
+  <div class="pagehead">
+    <h1>Projects</h1><span class="n">6</span>
+    <span class="grow"></span>
+    <label class="inputwrap filter"><svg class="ico" aria-hidden="true"><use href="../icons.svg#i-search"/></svg><input class="input" type="search" placeholder="Filter projects" aria-label="Filter projects"></label>
+    <button class="btn sortbtn" type="button" title="Sort"><svg class="ico"><use href="../icons.svg#i-sort"/></svg><span>Last opened</span></button>
+    <div class="seg" role="group" aria-label="View">
+      <a href="#tiles" data-route-link aria-pressed="false"><svg class="ico"><use href="../icons.svg#i-grid"/></svg><span class="wide">Tiles</span></a>
+      <a href="#list" data-route-link aria-pressed="true"><svg class="ico"><use href="../icons.svg#i-list"/></svg><span class="wide">List</span></a>
+    </div>
+    <a class="btn primary" href="flow.html#upload"><svg class="ico"><use href="../icons.svg#i-plus"/></svg>New project</a>
+  </div>
+
+  <label class="dropstrip"><svg class="ico" aria-hidden="true"><use href="../icons.svg#i-upload"/></svg>
+    <span class="wide">Drop design files here to start a project, or <span class="linkish">choose files</span></span>
+    <span class="narrow"><span class="linkish">Choose design files</span> to start a project</span>
+    <input type="file" multiple></label>
+
+  <div class="reg" data-view="list">
+    <div class="reg-head" aria-hidden="true"><span></span><span>Name</span><span>Rev</span><span class="num">Parts</span><span class="num">Nets</span><span>Review</span><span class="sorted">Last opened</span><span>Created</span><span></span></div>
+    <ol class="projs">
+      <li class="proj">
+        <a class="p-thumb paper" href="flow.html#review" tabindex="-1"><img src="assets/sheet-mcu.png" alt=""></a>
+        <a class="p-name" href="flow.html#review">RP2040 stepper controller</a>
+        <span class="p-rev mono"><span class="k">rev </span>3</span><span class="p-parts mono">148<span class="k"> parts</span></span><span class="p-nets mono">212<span class="k"> nets</span></span>
+        <span class="p-state"><span class="lamp ok"></span><span class="st">Detailed done</span><span class="sd"><span class="mono">4</span> findings open</span></span>
+        <span class="p-opened"><span class="k">Opened </span>2 hours ago</span><span class="p-created">9 Oct 2026</span>
+        <span class="p-act"><a class="btn quiet" href="flow.html#review">Open</a><button class="btn icon" type="button" aria-label="More for RP2040 stepper controller"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+      </li>
+      <li class="proj">
+        <a class="p-thumb paper" href="flow.html#review" tabindex="-1"><img src="assets/sheet-can.png" alt=""></a>
+        <a class="p-name" href="flow.html#review">CAN node, isolated</a>
+        <span class="p-rev mono"><span class="k">rev </span>1</span><span class="p-parts mono">61<span class="k"> parts</span></span><span class="p-nets mono">88<span class="k"> nets</span></span>
+        <span class="p-state"><span class="lamp ok"></span><span class="st">Quick done</span><span class="sd"><span class="mono">1</span> finding open</span></span>
+        <span class="p-opened"><span class="k">Opened </span>Yesterday</span><span class="p-created">2 Nov 2026</span>
+        <span class="p-act"><a class="btn quiet" href="flow.html#review">Open</a><button class="btn icon" type="button" aria-label="More for CAN node, isolated"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+      </li>
+      <li class="proj">
+        <a class="p-thumb paper" href="flow.html#review" tabindex="-1"><img src="assets/sheet-power.png" alt=""></a>
+        <a class="p-name" href="flow.html#review">Skydeck camera power tree</a>
+        <span class="p-rev mono"><span class="k">rev </span>2</span><span class="p-parts mono">203<span class="k"> parts</span></span><span class="p-nets mono">301<span class="k"> nets</span></span>
+        <span class="p-state"><span class="lamp run"></span><span class="st">Quick running</span><span class="sd"><span class="mono">6</span> min</span><span class="pline" aria-hidden="true"><i class="p40"></i></span></span>
+        <span class="p-opened"><span class="k">Opened </span>3 days ago</span><span class="p-created">21 Oct 2026</span>
+        <span class="p-act"><a class="btn quiet" href="flow.html#review">Open</a><button class="btn icon" type="button" aria-label="More for Skydeck camera power tree"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+      </li>
+      <li class="proj">
+        <a class="p-thumb paper" href="flow.html#datasheets" tabindex="-1"><img src="assets/sheet-ethernet.png" alt=""></a>
+        <a class="p-name" href="flow.html#datasheets">Ethernet PHY breakout</a>
+        <span class="p-rev mono"><span class="k">rev </span>1</span><span class="p-parts mono">44<span class="k"> parts</span></span><span class="p-nets mono">63<span class="k"> nets</span></span>
+        <span class="p-state"><span class="lamp none"></span><span class="st">Setup</span><span class="sd"><span class="mono">5</span> datasheet gaps</span></span>
+        <span class="p-opened"><span class="k">Opened </span>8 Nov 2026</span><span class="p-created">8 Nov 2026</span>
+        <span class="p-act"><a class="btn quiet" href="flow.html#datasheets">Open</a><button class="btn icon" type="button" aria-label="More for Ethernet PHY breakout"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+      </li>
+      <li class="proj">
+        <a class="p-thumb paper" href="flow.html#review" tabindex="-1"><img src="assets/sheet-drivers.png" alt=""></a>
+        <a class="p-name" href="flow.html#review">Dual stepper driver</a>
+        <span class="p-rev mono"><span class="k">rev </span>4</span><span class="p-parts mono">97<span class="k"> parts</span></span><span class="p-nets mono">140<span class="k"> nets</span></span>
+        <span class="p-state"><span class="lamp ok"></span><span class="st">Detailed done</span><span class="sd quiet">no open findings</span></span>
+        <span class="p-opened"><span class="k">Opened </span>30 Oct 2026</span><span class="p-created">14 Sep 2026</span>
+        <span class="p-act"><a class="btn quiet" href="flow.html#review">Open</a>
+          <span class="menuwrap" data-demo-open="list"><button class="btn icon" type="button" data-menu aria-haspopup="menu" aria-expanded="false" aria-label="More for Dual stepper driver"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button>
+            <span class="menu" role="menu"><button type="button" role="menuitem">Open</button><button type="button" role="menuitem">Rename</button><hr><button type="button" role="menuitem" class="danger">Delete</button></span></span>
+        </span>
+      </li>
+      <li class="proj" aria-busy="true">
+        <span class="p-thumb paper blank"><span>Importing</span></span>
+        <span class="p-name">agent-test</span>
+        <span class="p-rev mono"><span class="k">rev </span>1</span><span class="p-parts mono">25<span class="k"> parts</span></span><span class="p-nets mono">50<span class="k"> nets</span></span>
+        <span class="p-state"><span class="lamp run"></span><span class="st">Starting…</span><span class="sd"></span><span class="pline indet" aria-hidden="true"><i></i></span></span>
+        <span class="p-opened"><span class="k">Opened </span>just now</span><span class="p-created">10 Nov 2026</span>
+        <span class="p-act"><span class="btn quiet" aria-disabled="true">Open</span><button class="btn icon" type="button" aria-label="More for agent-test"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+      </li>
+    </ol>
+  </div>
+</main>
+
+<footer class="statusbar">
+  <span>Signed in as <b>alex@example.com</b></span>
+  <span class="push wide"><b>6</b> projects</span>
+  <span><b>1</b> review running</span>
+  <span class="wide"><b>1</b> starting</span>
+</footer>
+
+</div>
+<script type="module" src="demo.js"></script>
+</body>
+</html>

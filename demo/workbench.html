@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en" data-product="loom">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workbench, Annealage style reference</title>
+<!-- The order a product page uses: scheme.js first, then tokens, the agent
+     layer's agent.css (not needed here), the theme, then the product's own
+     stylesheet (demo.css stands in for it). -->
+<script src="../scheme.js"></script>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="demo.css">
+</head>
+<!-- The workbench frame with each product's kind of content, and the agent
+     pane's markup exactly as annealage-ember's chat.js builds it.
+     ?product=loom|trace|mesh|canvas|pod  ?theme=light|dark  ?side=timeline  ?preview=1 -->
+<body class="panel-open">
+<div class="wb" data-side="review" data-layout="split">
+
+  <header class="titlebar">
+    <div class="tb-left">
+      <a class="mark" href="list.html" title="Projects"><picture><source data-mark-dark srcset="../marks/loom-weave-dark.svg" media="(prefers-color-scheme: dark)"><img data-mark src="../marks/loom-weave.svg" alt="" width="640" height="512"></picture></a>
+      <span class="prod" data-prod>Annealage Loom</span>
+      <span class="tsep"></span>
+      <span data-product-slot>
+        <template data-for-product="loom">
+          <nav class="crumbs" aria-label="Project"><a href="list.html">Projects</a><span class="sep">/</span><span class="here">RP2040 Stepper Controller</span><button class="btn icon sm" type="button" aria-label="Rename project" title="Rename"><svg class="ico"><use href="../icons.svg#i-pencil"/></svg></button></nav>
+          <span class="tsep"></span>
+          <div class="stageline" title="Requirements, architecture, circuit, sheet plan, schematic, floorplan, layout, done"><span>Schematic, <span class="hint">5 of 8</span></span><span class="stagebar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+        </template>
+        <template data-for-product="trace">
+          <nav class="crumbs" aria-label="Project"><a href="list.html">Projects</a><span class="sep">/</span><span class="here">rp2040</span><span class="rev mono">rev 1</span></nav>
+        </template>
+        <template data-for-product="mesh">
+          <span class="doc"><strong>dual-pci shroud</strong><code>~/cad/dual-pci/build</code></span>
+        </template>
+        <template data-default>
+          <span class="doc"><strong>thermostat</strong><code>ui/thermostat.py</code> <span class="tag">view only</span></span>
+        </template>
+      </span>
+    </div>
+    <button class="cmd" type="button"><svg class="ico"><use href="../icons.svg#i-search"/></svg><span>Search or run a command</span><kbd>Ctrl K</kbd></button>
+    <div class="tb-right">
+      <span class="conn" data-state="live">Live</span>
+      <button class="btn quiet" id="pauseBtn" type="button" aria-pressed="false" title="Pause live updates"><svg class="ico"><use href="../icons.svg#i-pause"/></svg><span class="lbl" data-label>Pause</span></button>
+      <span class="gap"></span>
+      <div class="seg icons" role="group" aria-label="Layout focus">
+        <button type="button" aria-pressed="false" data-layout-set="drawing" aria-label="Drawing" title="Drawing"><svg class="ico"><use href="../icons.svg#i-lay-drawing"/></svg></button>
+        <button type="button" aria-pressed="true" data-layout-set="split" aria-label="Split" title="Split"><svg class="ico"><use href="../icons.svg#i-lay-split"/></svg></button>
+        <button type="button" aria-pressed="false" data-layout-set="agent" aria-label="Agent" title="Agent"><svg class="ico"><use href="../icons.svg#i-lay-agent"/></svg></button>
+      </div>
+      <span class="gap"></span>
+      <button class="btn icon" id="panelBtn" type="button" aria-pressed="true" aria-label="Review inspector" title="Review inspector"><svg class="ico"><use href="../icons.svg#i-review"/></svg></button>
+      <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="../icons.svg#i-auto"/></svg></button>
+      <button class="btn icon" type="button" aria-label="Settings" title="Settings"><svg class="ico"><use href="../icons.svg#i-settings"/></svg></button>
+    </div>
+  </header>
+
+  <nav id="tabbar" aria-label="Panes"><button type="button" class="on">Drawing</button><button type="button">Review</button><button type="button">Agent</button></nav>
+
+  <div data-product-slot>
+
+    <!-- ======================================================== Loom -->
+    <template data-for-product="loom pod">
+      <div class="vhead" role="tablist" aria-label="Views">
+        <button class="vtab" type="button">Requirements</button>
+        <button class="vtab" type="button">Workflow</button>
+        <button class="vtab" type="button">Circuit</button>
+        <button class="vtab" type="button" aria-current="page">Schematic</button>
+        <button class="vtab" type="button">Board</button>
+        <span class="vsep"></span>
+        <button class="vtab second" type="button">History</button>
+        <button class="vtab second" type="button">Cost <code>$0.41</code></button>
+        <button class="vtab second" type="button">Reference <span class="n">12</span></button>
+        <button class="vtab second" type="button">Datasheets</button>
+        <button class="vtab second" type="button">Exports</button>
+        <div class="meta" aria-label="Build status">
+          <span>Build <span class="ok"><span class="lamp ok"></span> ok</span></span>
+          <span class="readout"><span class="val zero">0</span><span class="lg">errors</span></span>
+          <span class="readout"><span class="val"><span class="lamp bad"></span>1</span><span class="lg">defect</span></span>
+          <span class="readout"><span class="val"><span class="lamp warn"></span>1</span><span class="lg">warning</span></span>
+          <span class="readout" title="Built 14:32"><span class="val">14:32</span><span class="lg">built</span></span>
+        </div>
+      </div>
+
+      <nav class="rail" aria-label="Drawing tools">
+        <button class="tool" type="button" aria-pressed="true" aria-label="Select" title="Select (V)"><svg class="ico"><use href="../icons.svg#i-select"/></svg><span class="k">V</span></button>
+        <button class="tool" type="button" aria-label="Pan" title="Pan (H)"><svg class="ico"><use href="../icons.svg#i-hand"/></svg><span class="k">H</span></button>
+        <button class="tool" type="button" aria-label="Comment" title="Comment (C)"><svg class="ico"><use href="../icons.svg#i-comment"/></svg><span class="k">C</span></button>
+        <hr>
+        <button class="tool" type="button" aria-label="Fit" title="Fit (F)"><svg class="ico"><use href="../icons.svg#i-fit"/></svg><span class="k">F</span></button>
+        <button class="tool" type="button" aria-label="Fullscreen" title="Fullscreen"><svg class="ico"><use href="../icons.svg#i-fullscreen"/></svg></button>
+        <hr>
+        <button class="tool" type="button" aria-label="Undo" title="Undo"><svg class="ico"><use href="../icons.svg#i-undo"/></svg></button>
+        <button class="tool" type="button" aria-label="Redo" title="Redo"><svg class="ico"><use href="../icons.svg#i-redo"/></svg></button>
+        <hr>
+        <button class="tool" type="button" aria-label="Rebuild" title="Rebuild"><svg class="ico"><use href="../icons.svg#i-rebuild"/></svg></button>
+      </nav>
+
+      <main class="view" aria-label="Schematic, sheet CAN">
+        <div class="previewbar" role="status"><svg class="ico"><use href="../icons.svg#i-restore"/></svg><b>Previewing turn 2</b><span>before the transceiver swap.</span><button class="btn" type="button" data-act="now">Back to now</button></div>
+        <div class="canvas">
+          <span class="hud hud--tl">CAN, sheet 5 of 6</span>
+          <span class="hud hud--tr">210 × 148 mm</span>
+          <div class="demo-sheetwrap">
+            <div class="demo-sheet paper">
+              <img src="assets/sheet-can-large.png" alt="CAN sheet: MCP2515 controller, MCP2551 transceiver, bus termination and connector J7">
+              <span class="demo-box" data-x="92.4" data-y="64.3" data-x2="100.4" data-y2="69.6" title="Defect, tight_text"></span>
+              <span class="demo-box warn" data-x="49.5" data-y="76.5" data-x2="54.5" data-y2="79.5" title="Warning, auto_named_net"></span>
+              <button class="hpin" type="button" data-x="131.9" data-y="62.9" aria-label="Comment 1, U10"><span class="mk">1</span></button>
+              <button class="hpin model" type="button" data-x="154.9" data-y="64.9" aria-label="Callout 2, R21, from the agent"><span class="mk">2</span></button>
+              <button class="hpin" type="button" data-x="180.1" data-y="62.9" aria-label="Comment 3, J7"><span class="mk">3</span></button>
+              <button class="hpin" type="button" data-x="40.6" data-y="81.0" aria-pressed="true" aria-label="Comment 4, Y2, selected"><span class="mk">4</span></button>
+            </div>
+          </div>
+        </div>
+        <nav class="subtabs" aria-label="Sheets">
+          <button class="subtab" type="button">root</button>
+          <button class="subtab" type="button">Power</button>
+          <button class="subtab" type="button">MCU <span class="n" title="1 open comment">1</span></button>
+          <button class="subtab" type="button">Drivers</button>
+          <button class="subtab" type="button" aria-current="page">CAN <span class="n" title="3 open comments, 1 callout">3</span></button>
+          <button class="subtab" type="button">Ethernet</button>
+          <div class="right"><span class="mono">x 131.9  y 62.9 mm</span><span class="zoom"><button class="btn icon sm" type="button" aria-label="Zoom out"><svg class="ico"><use href="../icons.svg#i-minus"/></svg></button><span class="mono">98%</span><button class="btn icon sm" type="button" aria-label="Zoom in"><svg class="ico"><use href="../icons.svg#i-plus"/></svg></button></span></div>
+        </nav>
+      </main>
+
+      <aside class="inspector" id="review" aria-label="Review">
+        <div class="ihead"><h2>Review</h2><span class="mono">CAN</span><button class="btn icon sm" type="button" data-panel-close aria-label="Hide review inspector" title="Hide"><svg class="ico"><use href="../icons.svg#i-x"/></svg></button></div>
+        <div class="iscroll">
+          <details class="sec" open>
+            <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Comments <span class="c">4</span></summary>
+            <div class="secbody">
+              <div class="row"><span class="mk">1</span><div class="rhead"><code class="ref">U10</code><span class="who">andrew</span><code class="xy">131.9, 62.9</code></div><button class="btn quiet sm x" type="button">Resolve</button>
+                <p>MCP2551 is 5 V only and it's not recommended for new designs. Swap to the MCP2562FD with VIO on 3V3, then the R19/R20 divider on RXD can go.</p></div>
+              <div class="row"><span class="mk mk--agent">2</span><div class="rhead"><code class="ref">R21</code><span class="who">agent</span><code class="xy">154.9, 64.9</code></div><button class="btn quiet sm x" type="button">Resolve</button>
+                <p>R21 is always fitted. Put it behind a solder jumper so only the two end nodes terminate the bus.</p></div>
+              <div class="row"><span class="mk">3</span><div class="rhead"><code class="ref">J7</code><span class="who">andrew</span><code class="xy">180.1, 62.9</code></div><button class="btn quiet sm x" type="button">Resolve</button>
+                <p>Label CANH and CANL at the connector.</p><p class="note">The agent is asking to resolve this.</p></div>
+              <div class="row is-selected" aria-current="true"><span class="mk">4</span><div class="rhead"><code class="ref">Y2</code><span class="who">andrew</span><code class="xy">40.6, 81.0</code></div><button class="btn quiet sm x" type="button">Resolve</button>
+                <p>Is 16 MHz right for 1 Mbit/s on the MCP2515? Check the bit timing.</p></div>
+            </div>
+          </details>
+          <details class="sec" open>
+            <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Findings <span class="c">2</span></summary>
+            <div class="secbody">
+              <div class="row"><span class="mk--sev mk--defect"></span><div class="rhead"><code class="ref">tight_text</code><span class="who">Defect</span><code class="xy">92.4, 64.3</code></div>
+                <p>R20 value text sits on the wire to R19.</p></div>
+              <div class="row"><span class="mk--sev mk--warning"></span><div class="rhead"><code class="ref">auto_named_net</code><span class="who">Warning</span><code class="xy">49.5, 76.5</code></div>
+                <p>Net-(U9-OSC1) is auto-named; name it CAN_OSC1.</p></div>
+            </div>
+          </details>
+          <details class="sec" open>
+            <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Build <span class="aside ok">ok</span></summary>
+            <div class="secbody">
+              <dl class="fl">
+                <dt>Result</dt><dd><span class="mono">0</span> errors</dd>
+                <dt>Lint</dt><dd><span class="mono">1</span> defect, <span class="mono">1</span> warning</dd>
+                <dt>Built</dt><dd class="mono">14:32</dd>
+                <dt>KiCad</dt><dd>Verified</dd>
+                <dt>ERC</dt><dd class="mono">lib_symbol_issues: 2</dd>
+              </dl>
+            </div>
+          </details>
+        </div>
+        <div class="ifoot toggles">
+          <label class="check"><input type="checkbox" class="switch" checked>Lint findings</label>
+          <label class="check"><input type="checkbox" class="switch">Resolved comments</label>
+        </div>
+      </aside>
+
+      <aside id="chat" aria-label="Agent" data-pending="1" data-working data-turn-started="0">
+        <header><h1>Agent</h1><span class="chatwho">andrew</span><span class="chatusage">22% context, $0.41</span><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
+          <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b id="chatWorkingTime">1:12</b></span>
+          <span class="spacer"></span>
+          <span id="connIndicator" class="conn" data-state="live">Live</span>
+          <details id="chatMore" class="more"><summary class="hdrbtn">More</summary><div class="menu"><button id="pauseAgent" type="button" class="hdrbtn" aria-pressed="false"><span data-label>Pause</span></button><button id="settingsBtn" type="button" class="hdrbtn">Settings</button><button id="chatExport" type="button" class="hdrbtn">Export</button></div></details>
+        </header>
+        <div id="chatBanner" class="chatbanner" hidden><span id="chatBannerText"></span><button id="chatBannerClose" type="button" aria-label="Dismiss">&times;</button></div>
+        <div id="chatLog" aria-live="polite">
+          <div class="turn" data-turn="1">
+            <div class="msg user"><div class="text">Pin 1: swap the transceiver for the MCP2562FD on 3V3 VIO, and look at the termination while you're there.</div><div class="attachthumbs"></div><div class="contextchips"></div></div>
+            <div class="msg assistant"><div class="segments">
+              <div class="text">The MCP2562FD takes VIO straight from 3V3, so the R19/R20 divider on RXD can go. The MCP2515 stays on 5 V.</div>
+              <details class="toolgroup" open><summary>3 tool calls</summary><div class="tools">
+                <details class="toolcard"><summary>loom: read_circuit</summary><pre class="toolinput">sheet: CAN</pre><pre class="toolresult">ok</pre></details>
+                <details class="toolcard"><summary>loom: add_callout</summary><pre class="toolinput">ref: R21</pre><pre class="toolresult">#2 on R21</pre></details>
+                <details class="toolcard" open><summary>loom: build_sketch</summary><pre class="toolinput">sheets: CAN</pre><pre class="toolresult">ok, 0 errors, 1 defect, 1 warning</pre></details>
+              </div></details>
+              <div class="text">Before I swap U10: the MCP2562FD's pin 5 becomes VIO, so C45 moves to 3V3 and R19/R20 are deleted. I've left callout 2 on R21, the termination is always fitted, which is wrong for a node mid-bus. J7 already has CANH/CANL labels, so I'm resolving your comment 3.</div>
+            </div><div class="turnerrors"></div></div>
+          </div>
+        </div>
+        <div class="side">
+          <div id="chatPending">
+            <div class="permcard" data-request-id="r1">
+              <div class="porigin" hidden></div>
+              <div class="ptool">loom: resolve_comment</div>
+              <pre class="toolinput">id: 3
+resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre>
+              <div class="pactions"><button type="button" class="allow">Allow</button><button type="button">Always allow (this project)</button><textarea class="preason" rows="1" placeholder="Reason (sent to the agent if you deny)"></textarea><button type="button" class="danger">Deny</button></div>
+              <div class="pstatus"></div>
+            </div>
+          </div>
+          <div id="chatComposer">
+            <div id="chatAttachStrip" class="attachstrip" hidden></div>
+            <div id="chatComposerRow"><input id="chatFileInput" type="file" multiple hidden>
+              <button id="chatAttachBtn" type="button" class="attachbtn" aria-label="Attach an image" title="Attach an image"><svg class="ico"><use href="../icons.svg#i-attach"/></svg></button>
+              <textarea id="chatInput" rows="2" aria-label="Message" placeholder="Message the agent"></textarea>
+              <div class="chatbtns"><button id="chatInterrupt" type="button" title="Stop the current turn">Interrupt</button><button id="chatSend" type="button" class="primary">Steer</button></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <footer class="statusbar">
+        <span class="conn" data-state="live">Live</span>
+        <span>Agent working <b>1:12</b></span>
+        <button class="alert" type="button" title="Go to the pending approval">Approval needed: resolve_comment</button>
+        <span class="pv">Previewing turn 2</span>
+        <span class="push"><span class="k">Build</span><span class="ok">ok</span><b>14:32</b></span>
+        <span><span class="k">Sheet</span><b>CAN, 5 of 6</b></span>
+        <span><span class="k">Cost</span><b>$0.41</b></span>
+      </footer>
+    </template>
+
+    <!-- ======================================================= Trace -->
+    <template data-for-product="trace">
+      <div class="vhead" role="tablist" aria-label="Views">
+        <button class="vtab" type="button" aria-current="page">Schematic</button>
+        <button class="vtab" type="button">Board</button>
+        <button class="vtab" type="button">Parts <span class="n">25</span></button>
+        <span class="vsep"></span>
+        <button class="vtab second" type="button">Datasheets</button>
+        <button class="vtab second" type="button">Runs <span class="n">2</span></button>
+        <button class="vtab second" type="button">Report</button>
+        <div class="meta" aria-label="Review status">
+          <span>Quick <span class="state" data-kind="busy">running</span></span>
+          <span class="readout"><span class="val"><span class="lamp bad"></span>1</span><span class="lg">critical</span></span>
+          <span class="readout"><span class="val"><span class="lamp warn"></span>2</span><span class="lg">major</span></span>
+          <span class="readout"><span class="val">25</span><span class="lg">parts</span></span>
+          <span class="readout"><span class="val">50</span><span class="lg">nets</span></span>
+        </div>
+      </div>
+
+      <nav class="rail" aria-label="Drawing tools">
+        <button class="tool" type="button" aria-pressed="true" aria-label="Select" title="Select (V)"><svg class="ico"><use href="../icons.svg#i-select"/></svg><span class="k">V</span></button>
+        <button class="tool" type="button" aria-label="Pan" title="Pan (H)"><svg class="ico"><use href="../icons.svg#i-hand"/></svg><span class="k">H</span></button>
+        <button class="tool" type="button" aria-label="Find" title="Find (/)"><svg class="ico"><use href="../icons.svg#i-search"/></svg></button>
+        <hr>
+        <button class="tool" type="button" aria-label="Fit" title="Fit (F)"><svg class="ico"><use href="../icons.svg#i-fit"/></svg><span class="k">F</span></button>
+      </nav>
+
+      <main class="view" aria-label="Schematic">
+        <div class="canvas">
+          <span class="hud hud--tl">RP2040 Basic Support</span>
+          <span class="hud hud--tr">297 × 210 mm</span>
+          <div class="demo-sheetwrap"><div class="demo-sheet paper"><img src="assets/sheet-mcu.png" alt="RP2040 Basic Support schematic"></div></div>
+        </div>
+        <nav class="subtabs" aria-label="Sheets">
+          <button class="subtab" type="button" aria-current="page">RP2040 Basic Support <span class="n" title="3 findings">3</span></button>
+          <div class="right"><span class="zoom"><button class="btn icon sm" type="button" aria-label="Zoom out"><svg class="ico"><use href="../icons.svg#i-minus"/></svg></button><span class="mono">74%</span><button class="btn icon sm" type="button" aria-label="Zoom in"><svg class="ico"><use href="../icons.svg#i-plus"/></svg></button></span></div>
+        </nav>
+      </main>
+
+      <aside class="inspector" aria-label="Review">
+        <div class="ihead"><div class="ptabs" role="tablist" aria-label="Review"><button role="tab" type="button" aria-controls="paneFindings" aria-selected="true">Findings <span class="n">3</span></button><button role="tab" type="button" aria-controls="paneCoverage" aria-selected="false">Coverage</button></div><button class="btn icon sm" type="button" data-panel-close aria-label="Hide review inspector"><svg class="ico"><use href="../icons.svg#i-x"/></svg></button></div>
+        <div class="ipane" id="paneFindings">
+          <div class="filters">
+            <div class="frow"><span>Severity</span><div class="chips"><button class="chip" type="button" aria-pressed="true">All <span class="n">3</span></button><button class="chip" type="button" aria-pressed="false">Critical <span class="n">1</span></button><button class="chip" type="button" aria-pressed="false">Major <span class="n">2</span></button></div></div>
+            <div class="frow"><span>Status</span><div class="chips"><button class="chip" type="button" aria-pressed="true">Open</button><button class="chip" type="button" aria-pressed="false">Refuted</button></div></div>
+          </div>
+          <div class="iscroll">
+            <details class="finding" open>
+              <summary><div class="fhead"><span class="sev" data-sev="critical">Critical</span><span class="fid">Q-004</span><span class="fstat" data-status="confirmed">confirmed</span></div>
+                <div class="claim">USB D+ and D− have no series resistors; the RP2040 needs 27 Ω on each line.</div>
+                <div class="subj"><code>U6.46</code><code>U6.47</code><code>USB_DP</code><code>USB_DM</code></div></summary>
+              <div class="fbody">
+                <h3>Evidence</h3>
+                <ul class="evidence"><li><span class="etype">Datasheet</span><span><button class="linkish" type="button">rp2040-datasheet.pdf p. 12</button>: 27 Ω series termination on DP and DM.</span></li><li><span class="etype">Netlist</span><span>USB_DP: U6.47, J1.A6. No R on net.</span></li></ul>
+                <p class="note">R3 and R4 are 27 Ω but sit on the QSPI lines.</p>
+                <div class="acts"><button class="btn" type="button">Accept</button><button class="btn quiet" type="button">Dismiss…</button><button class="btn quiet" type="button">Show on sheet</button></div>
+              </div>
+            </details>
+            <details class="finding">
+              <summary><div class="fhead"><span class="sev" data-sev="major">Major</span><span class="fid">Q-007</span><span class="fstat" data-status="needs-evidence">needs evidence</span><span class="fstale">stale</span></div>
+                <div class="claim">Crystal load capacitors look low for a 12 MHz ABM8-272-T3.</div>
+                <div class="subj"><code>Y1</code><code>C29</code><code>C30</code></div></summary>
+            </details>
+            <details class="finding" data-triage="accepted">
+              <summary><div class="fhead"><span class="sev" data-sev="major">Major</span><span class="fid">Q-009</span><span class="fstat" data-status="confirmed-interpretive">confirmed</span><span class="ftri" data-triage="accepted">accepted</span><span class="fver">erc</span></div>
+                <div class="claim">The 1V1 rail has one 100 nF decoupler for two DVDD pins.</div>
+                <div class="subj"><code>U6.23</code><code>U6.50</code><code>C38</code></div></summary>
+            </details>
+            <details class="finding" data-status="refuted">
+              <summary><div class="fhead"><span class="sev" data-sev="minor">Minor</span><span class="fid">Q-002</span><span class="fstat" data-status="refuted">refuted</span></div>
+                <div class="claim">Flash chip select has no pull-up.</div>
+                <div class="subj"><code>U5.1</code><code>R5</code></div></summary>
+            </details>
+          </div>
+        </div>
+        <div class="ipane" id="paneCoverage" hidden>
+          <div class="iscroll">
+            <details class="sec cov" open><summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Power <span class="covcounts"><span>4 checked</span><span class="ne">1 no evidence</span></span></summary>
+              <div class="secbody"><ul class="covlist"><li class="ck">Rail voltages against absolute maximums</li><li class="ck">Decoupling per supply pin</li><li class="ne">Inrush on VBUS</li><li class="nc">Sequencing (not checked in Quick)</li></ul></div></details>
+          </div>
+        </div>
+      </aside>
+
+      <section class="console" aria-label="Review run" data-working>
+        <header class="chead"><h1>Review</h1><span>Quick</span>
+          <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b>6:04</b></span>
+          <span class="spacer"></span>
+          <span>Spend <progress class="meter" value="38" max="100"></progress> <span class="mono">$0.76 of $2.00</span></span>
+          <button class="hdrbtn" type="button">Stop</button>
+        </header>
+        <div class="cbody">
+          <ol class="steps">
+            <li class="step" data-state="done"><span class="name">Read the design</span><span class="meta">0:21</span></li>
+            <li class="step" data-state="done"><span class="name">Freeze datasheets</span><span class="meta">2 of 10</span></li>
+            <li class="step" data-state="running"><span class="name">Quick review</span><span class="meta">4:52</span></li>
+            <li><ol>
+              <li class="step" data-state="done"><span class="name">Power</span><span class="meta">3</span></li>
+              <li class="step" data-state="running"><span class="name">USB and clocks</span><span class="meta">2</span></li>
+              <li class="step" data-state="queued"><span class="name">Flash and boot</span></li>
+            </ol></li>
+            <li class="step" data-state="waiting"><span class="name">Verify findings</span><span class="meta">3 waiting</span></li>
+            <li class="step" data-state="skipped"><span class="name">Detailed review</span><span class="meta">not selected</span></li>
+          </ol>
+          <pre class="log"><b>14:26:02</b> quick: power done, 3 candidate findings
+<b>14:27:40</b> quick: usb, reading rp2040-datasheet.pdf p. 12
+<span class="warn">14:28:11 quick: ABM8-272-T3 has no confirmed datasheet, carrying the gap</span>
+<b>14:29:03</b> verify: Q-004 confirmed against the netlist
+<span class="err">14:29:30 verify: Q-002 refuted, R5 pulls QSPI_SS up</span></pre>
+        </div>
+      </section>
+
+      <footer class="statusbar">
+        <span class="conn" data-state="live">Live</span>
+        <span><span class="k">Review</span>Quick running <b>6:04</b></span>
+        <span class="push"><span class="k">Design</span><b>RP2040 Basic Support</b></span>
+        <span><b>25</b> parts</span>
+        <span><b>50</b> nets</span>
+        <span><span class="k">Cost</span><b>$0.76</b></span>
+      </footer>
+    </template>
+
+    <!-- ======================================================== Mesh -->
+    <template data-for-product="mesh">
+      <div class="vhead">
+        <button class="vtab" type="button" aria-current="page"><code>build</code></button>
+        <div class="meta"><span><b>3</b> parts</span><span><b>60,496</b> triangles</span><span>rebuilt <b>14:26</b></span></div>
+        <div class="right"><div class="seg sm" role="group" aria-label="Up axis"><button type="button" aria-pressed="true">Z-up</button><button type="button" aria-pressed="false">Y-up</button></div></div>
+      </div>
+
+      <nav class="rail" aria-label="Tools">
+        <button class="tool" type="button" aria-pressed="true" aria-label="Navigate" title="Navigate"><svg class="ico"><use href="../icons.svg#i-select"/></svg></button>
+        <button class="tool" type="button" aria-label="Add pin" title="Add pin (A)"><svg class="ico"><use href="../icons.svg#i-pin"/></svg><span class="k">A</span></button>
+        <button class="tool" type="button" aria-label="Measure" title="Measure between two pins"><svg class="ico"><use href="../icons.svg#i-measure"/></svg></button>
+        <button class="tool" type="button" aria-label="Sketch" title="Draw on the model and send it to the agent (S)"><svg class="ico"><use href="../icons.svg#i-sketch"/></svg><span class="k">S</span></button>
+        <hr>
+        <button class="tool" type="button" aria-label="Fit" title="Fit (F)"><svg class="ico"><use href="../icons.svg#i-fit"/></svg><span class="k">F</span></button>
+      </nav>
+
+      <main class="view" aria-label="Model">
+        <div class="previewbar" role="status"><svg class="ico"><use href="../icons.svg#i-restore"/></svg><b>Previewing turn 2</b><span>before the brace move. Pins and callouts as they are now.</span><button class="btn" type="button" data-act="now">Back to now</button></div>
+        <div class="canvas">
+          <div class="demo-scene" aria-hidden="true">
+            <svg viewBox="0 0 860 840" preserveAspectRatio="xMidYMid slice">
+              <g class="g1" stroke-width="1"><path d="M0 120h860M0 200h860M0 280h860M0 360h860M0 440h860M0 520h860M0 600h860M0 680h860M0 760h860M70 0v840M150 0v840M230 0v840M310 0v840M390 0v840M470 0v840M550 0v840M630 0v840M710 0v840M790 0v840"/></g>
+              <g class="g2" stroke-width="1"><path d="M0 40h860M0 440h860M430 0v840M30 0v840M830 0v840"/></g>
+              <path class="p1" stroke-width="1.5" stroke-linejoin="round" d="M250 300l210-70 190 80v230l-200 80-200-90z"/>
+              <path class="p2" stroke-width="1.5" stroke-linejoin="round" d="M250 300l200 80 200-70-190-80z"/>
+              <path class="p3" stroke-width="1.5" stroke-linejoin="round" d="M520 470l80-30v70l-80 32z"/>
+              <path class="mline" stroke-width="1.5" stroke-dasharray="5 4" fill="none" d="M348 356L556 492"/>
+              <g class="pin" transform="translate(348 356)"><path class="dot" stroke-width="1.5" d="M-10-10H5L10-5V10H-10Z"/><text text-anchor="middle" y="4">1</text></g>
+              <g class="pin is-selected" transform="translate(556 492)"><path class="ring" stroke-width="1.5" d="M-14-14H7L14-7V14H-14Z"/><path class="dot" stroke-width="1.5" d="M-10-10H5L10-5V10H-10Z"/><text text-anchor="middle" y="4">2</text></g>
+              <g class="pin model" transform="translate(470 262)"><path class="dot" stroke-width="1.5" d="M-10-10H5L10-5V10H-10Z"/><text text-anchor="middle" y="4">A2</text></g>
+            </svg>
+          </div>
+          <span class="hud hud--bl">Z-up, mm</span>
+          <span class="hud hud--br">Pin 1 to pin 2: 24.8 mm</span>
+        </div>
+      </main>
+
+      <aside class="inspector" id="review" aria-label="Review">
+        <div class="ihead"><div class="ptabs" role="tablist" aria-label="Side panel"><button role="tab" type="button" data-side="review" aria-selected="true">Review</button><button role="tab" type="button" data-side="timeline" aria-selected="false">Timeline</button></div><span>2 pins, 1 callout</span></div>
+        <div class="iscroll">
+          <details class="sec" open>
+            <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Parts <span class="c">3</span></summary>
+            <div class="secbody toggles">
+              <label class="check"><input type="checkbox" checked>shroud <span class="hint mono">48,212</span></label>
+              <label class="check"><input type="checkbox" checked>end_clip <span class="hint mono">9,904</span></label>
+              <label class="check"><input type="checkbox">blanking_plate <span class="hint mono">2,380</span></label>
+            </div>
+          </details>
+          <details class="sec" open>
+            <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Your pins <span class="c">2</span><input class="vis" type="checkbox" checked aria-label="Show your pins"></summary>
+            <div class="secbody">
+              <div class="row"><span class="mk mk--human">1</span>
+                <dl class="fields"><div><dt>Part</dt><dd>shroud</dd></div><div><dt>Face</dt><dd>−Y</dd></div><div><dt>At (mm)</dt><dd>14.4, −44.6, 61.0</dd></div></dl>
+                <button class="btn icon sm x" type="button" aria-label="Delete pin 1"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button>
+                <textarea rows="2" aria-label="Comment on pin 1">Wall is 2 mm here. Take it to 2.4 so it doesn't flex when the clip snaps in.</textarea></div>
+              <div class="row is-selected"><span class="mk mk--human">2</span>
+                <dl class="fields"><div><dt>Part</dt><dd>shroud</dd></div><div><dt>Face</dt><dd>+X</dd></div><div><dt>At (mm)</dt><dd>2.0, 21.7, 38.5</dd></div></dl>
+                <button class="btn icon sm x" type="button" aria-label="Delete pin 2"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button>
+                <textarea rows="2" aria-label="Comment on pin 2">This brace fouls the fan hub screw. Can it move 8 mm towards the back?</textarea></div>
+            </div>
+          </details>
+          <details class="sec" open>
+            <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Agent callouts <span class="c">1</span><input class="vis" type="checkbox" checked aria-label="Show agent callouts"></summary>
+            <div class="secbody">
+              <div class="row"><span class="mk mk--agent">A2</span>
+                <dl class="fields"><div><dt>Part</dt><dd>shroud</dd></div><div><dt>Face</dt><dd>+Z</dd></div><div><dt>At (mm)</dt><dd>4.7, 3.4, 87.4</dd></div></dl>
+                <p>Top skin is 1.6 mm: four perimeters at 0.4 mm.</p></div>
+            </div>
+          </details>
+        </div>
+        <div class="ifoot"><span><b>2 pins</b>, unsaved</span><button class="btn quiet" type="button">Clear all</button><button class="btn primary" type="button">Submit</button></div>
+      </aside>
+
+      <aside class="inspector" id="timeline" aria-label="Timeline">
+        <div class="ihead"><div class="ptabs" role="tablist" aria-label="Side panel"><button role="tab" type="button" data-side="review" aria-selected="false">Review</button><button role="tab" type="button" data-side="timeline" aria-selected="true">Timeline</button></div><span>3 restore points</span></div>
+        <div class="tlscroll">
+          <ol class="tl">
+            <li class="ev ck"><time>14:12</time><span class="node node--build"></span><div class="ebody"><p class="eh"><b>Session started</b></p><ul class="chg"><li>3 parts</li></ul><div class="eacts"><button class="btn sm" type="button" data-act="preview">Preview</button><button class="btn quiet sm" type="button">Restore…</button></div></div></li>
+            <li class="ev ck is-preview"><time>14:19</time><span class="node node--msg"></span><div class="ebody"><p class="eh"><b>You</b></p><p class="eq">Move the brace back 8 mm and take the side wall to 2.4 mm, see pins 1 and 2.</p>
+              <form class="restore" aria-label="Restore">
+                <h3>Restore to just before this message</h3>
+                <label><input type="radio" name="r" checked><span>Files and chat</span><small>The files go back, and the chat picks up from here.</small></label>
+                <label><input type="radio" name="r"><span>Files only</span><small>The agent is told what was put back.</small></label>
+                <label><input type="radio" name="r"><span>Chat only</span><small>Keep the files as they are now.</small></label>
+                <p class="note">Pins and callouts stay.</p>
+                <div class="racts"><button class="btn primary" type="button">Restore</button><button class="btn quiet" type="button" data-act="now">Cancel</button></div>
+              </form></div></li>
+            <li class="ev"><time>14:20</time><span class="node node--ev"></span><div class="ebody"><p class="eh"><b>Edit</b> <code>model.py</code></p><ul class="chg"><li><ins>+4</ins> <del>−2</del></li><li><code>WALL</code> 2.0 → 2.4</li></ul></div></li>
+            <li class="ev ck"><time>14:21</time><span class="node node--build"></span><div class="ebody"><p class="eh"><b>Rebuilt</b></p><ul class="chg"><li>60,496 tri</li></ul></div></li>
+            <li class="ev"><time>14:26</time><span class="node node--wait"></span><div class="ebody"><p class="eh"><b>Waiting on you</b> to allow a write</p></div></li>
+            <li class="ev"><time>now</time><span class="node node--now"></span><div class="ebody"><p class="eh"><b>Now</b></p></div></li>
+          </ol>
+        </div>
+      </aside>
+
+      <aside id="chat" aria-label="Agent" data-pending="1">
+        <header><h1>Agent</h1><span class="chatusage">38% context, $0.19</span><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
+          <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b id="chatWorkingTime"></b></span>
+          <span class="spacer"></span>
+          <span id="connIndicator" class="conn" data-state="live">Live</span>
+          <details id="chatMore" class="more"><summary class="hdrbtn">More</summary><div class="menu"><button type="button" class="hdrbtn">Settings</button><button id="chatExport" type="button" class="hdrbtn">Export</button></div></details>
+        </header>
+        <div id="chatBanner" class="chatbanner" hidden><span id="chatBannerText"></span><button id="chatBannerClose" type="button" aria-label="Dismiss">&times;</button></div>
+        <div id="chatLog" aria-live="polite">
+          <div class="turn" data-turn="1">
+            <div class="msg user"><div class="text">How thick is the top skin at the moment?</div><div class="attachthumbs"></div><div class="contextchips"></div></div>
+            <div class="msg assistant"><div class="segments"><div class="text">1.6 mm, which is four perimeters at 0.4 mm. I've marked it as callout A2.</div></div><div class="turnerrors"></div></div>
+          </div>
+          <div class="turn" data-turn="2">
+            <div class="msg user"><div class="text">Move the brace back 8 mm and take the side wall to 2.4 mm, see pins 1 and 2.</div><div class="attachthumbs"></div><div class="contextchips"><button type="button" class="contextchip">Pin 1, shroud −Y</button><button type="button" class="contextchip">Pin 2, shroud +X</button></div></div>
+            <div class="msg assistant"><div class="segments">
+              <div class="text">Wall thickness is <code>WALL</code> in <code>model.py</code>, and the brace position is <code>BRACE_OFFSET</code>.</div>
+              <details class="toolgroup" open><summary>2 tool calls</summary><div class="tools">
+                <details class="toolcard"><summary>Read</summary><pre class="toolinput">file_path: model.py</pre><pre class="toolresult">142 lines</pre></details>
+                <details class="toolcard" open><summary>Bash</summary><pre class="toolinput">command: python model.py --wall 2.4 --brace-offset 8</pre><pre class="toolresult">wrote build/shroud.stl (48,212 triangles) in 1.9 s</pre></details>
+              </div></details>
+            </div><div class="turnerrors"></div></div>
+          </div>
+        </div>
+        <div class="side">
+          <div class="chathint">Approval cards appear here for actions outside this project folder, over the network, or that write files.</div>
+          <div id="chatPending">
+            <div class="permcard" data-request-id="r1">
+              <div class="porigin" hidden></div>
+              <div class="ptool">Write</div>
+              <pre class="toolinput">file_path: ~/cad/dual-pci/cad/clip.py
+content: NUT_SLOT = 5.7</pre>
+              <div class="pactions"><button type="button" class="allow">Allow</button><button type="button">Always allow (this project)</button><textarea class="preason" rows="1" placeholder="Reason (sent to the agent if you deny)"></textarea><button type="button" class="danger">Deny</button></div>
+              <div class="pstatus"></div>
+            </div>
+          </div>
+          <div id="chatComposer">
+            <div class="chatmodelrow"><label for="chatModelInput">Model</label><input id="chatModelInput" type="text" placeholder="backend default" autocomplete="off" spellcheck="false"></div>
+            <div id="chatAttachStrip" class="attachstrip" hidden></div>
+            <div id="chatComposerRow"><input id="chatFileInput" type="file" multiple hidden>
+              <button id="chatAttachBtn" type="button" class="attachbtn" aria-label="Attach an image"><svg class="ico"><use href="../icons.svg#i-attach"/></svg></button>
+              <textarea id="chatInput" rows="2" aria-label="Message" placeholder="Message the agent"></textarea>
+              <div class="chatbtns"><button id="chatInterrupt" type="button" disabled>Interrupt</button><button id="chatSend" type="button" class="primary">Send</button></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <footer class="statusbar">
+        <span class="conn" data-state="live">Live</span>
+        <span>Agent <b>Ready</b></span>
+        <button class="alert" type="button" title="Go to the pending approval">Approval needed: Write</button>
+        <span class="pv">Previewing turn 2</span>
+        <span class="push">Pin 2 at <b>2.0, 21.7, 38.5</b> mm</span>
+        <span>Z-up</span>
+      </footer>
+    </template>
+
+    <!-- ====================================================== Canvas -->
+    <template data-default>
+      <div class="vhead">
+        <button class="vtab" type="button" aria-current="page">Screen</button>
+        <button class="vtab" type="button">Source</button>
+        <span class="vsep"></span>
+        <button class="vtab second" type="button">Actions <span class="n">22</span></button>
+        <div class="meta"><span>reload <b>8 ms</b></span><span><b>480 × 320</b></span></div>
+        <div class="right"><button class="btn sm" type="button"><svg class="ico"><use href="../icons.svg#i-rebuild"/></svg>Reload</button></div>
+      </div>
+
+      <nav class="rail" aria-label="Tools">
+        <button class="tool" type="button" aria-pressed="true" aria-label="Touch" title="Touch"><svg class="ico"><use href="../icons.svg#i-select"/></svg></button>
+        <button class="tool" type="button" aria-label="Inspect" title="Inspect a widget (I)"><svg class="ico"><use href="../icons.svg#i-eye"/></svg><span class="k">I</span></button>
+        <button class="tool" type="button" aria-label="Comment" title="Comment (C)"><svg class="ico"><use href="../icons.svg#i-comment"/></svg><span class="k">C</span></button>
+        <hr>
+        <button class="tool" type="button" aria-label="Fit" title="Fit (F)"><svg class="ico"><use href="../icons.svg#i-fit"/></svg><span class="k">F</span></button>
+        <button class="tool end" type="button" aria-label="Run" title="Run"><svg class="ico"><use href="../icons.svg#i-run"/></svg></button>
+      </nav>
+
+      <main class="view" aria-label="Screen">
+        <div class="canvas split">
+          <aside class="vpanel" aria-label="Screen controls">
+            <details class="sec" open>
+              <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Layers</summary>
+              <div class="secbody">
+                <div class="chips"><button class="chip" type="button" aria-pressed="true">All</button><button class="chip" type="button" aria-pressed="false">Top</button><button class="chip" type="button" aria-pressed="false">Sys</button></div>
+                <div class="layerlist">
+                  <div class="layergroup">Screen</div>
+                  <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#5599B8"></span><span class="name">lbl_title</span><span class="hint">label</span></label>
+                  <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#E0A94A"></span><span class="name">lbl_temp</span><span class="hint">label</span></label>
+                  <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#9E8BC0"></span><span class="name">btn_down</span><span class="hint">btn</span></label>
+                  <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#6FA85A"></span><span class="name">btn_up</span><span class="hint">btn</span></label>
+                  <details><summary class="layergroup">Hidden (1 of 4 shown)</summary><label class="layerrow"><input type="checkbox"><span class="swatch" data-c="#B9BEC3"></span><span class="name">msgbox_err</span></label></details>
+                </div>
+                <label class="slider">Outlines <input type="range" min="0" max="100" value="70"></label>
+              </div>
+            </details>
+            <details class="sec" open>
+              <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Find widget</summary>
+              <div class="secbody">
+                <form class="query"><input class="input" type="search" value="type:btn" aria-label="Widget query" spellcheck="false"></form>
+                <div class="chips"><button class="chip mono" type="button">text:Start</button><button class="chip mono" type="button">hidden</button></div>
+                <div class="qmeta">2 buttons</div>
+                <div class="qacts"><button class="btn sm" type="button">Highlight all</button><button class="btn sm quiet" type="button">Clear</button></div>
+                <div class="results">
+                  <button class="hit on" type="button"><span class="kind">btn</span><span class="ref">btn_up</span><span class="why">372, 248, 84 × 44</span></button>
+                  <button class="hit" type="button"><span class="kind">btn</span><span class="ref">btn_down</span><span class="why">24, 248, 84 × 44</span></button>
+                </div>
+              </div>
+            </details>
+          </aside>
+          <div class="stage" aria-hidden="true">
+            <div class="demo-screen"><div class="rowz"><span>Thermostat</span><span>14:32</span></div><div class="big">21.5°</div><div class="rowz"><span class="key">−</span><span>Target 22.0°</span><span class="key sel">+</span></div></div>
+            <span class="hud hud--bl">480 × 320, 100%</span>
+          </div>
+        </div>
+      </main>
+
+      <aside class="inspector" aria-label="Selection">
+        <div class="ihead"><h2>Selection</h2><button class="btn icon sm" type="button" data-panel-close aria-label="Hide inspector"><svg class="ico"><use href="../icons.svg#i-x"/></svg></button></div>
+        <div class="iscroll">
+          <div class="propshead"><span class="ref">btn_up</span><span class="hint">lv.button</span><span class="acts"><button class="btn sm quiet" type="button">Tap</button></span></div>
+          <table class="props">
+            <tr><th>At</th><td>372, 248</td></tr>
+            <tr><th>Size</th><td>84 × 44</td></tr>
+            <tr><th>Parent</th><td><button class="linkish" type="button">scr_main</button></td></tr>
+            <tr><th>Handlers</th><td><button class="linkish" type="button">on_up</button> (CLICKED)</td></tr>
+          </table>
+          <div class="subhead">Notes <span class="c">2</span></div>
+          <p class="notice">The harness reloaded 8 ms ago.</p>
+          <p class="notice notice--warn"><span><code>lbl_temp</code> is clipped by 6 px at this font size.</span></p>
+          <p class="empty">No comments on this screen yet.</p>
+        </div>
+      </aside>
+
+      <aside id="chat" aria-label="Agent" data-pending="0">
+        <header><h1>Agent</h1><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
+          <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b id="chatWorkingTime"></b></span>
+          <span class="spacer"></span>
+          <span id="connIndicator" class="conn" data-state="live">Live</span>
+          <button id="sessionStart" type="button" class="hdrbtn primary">Start session</button>
+        </header>
+        <div id="chatBanner" class="chatbanner" data-kind="info"><span id="chatBannerText">No session yet. Start one to let the agent drive this screen.</span><button id="chatBannerClose" type="button" aria-label="Dismiss">&times;</button></div>
+        <div id="chatLog" aria-live="polite"><button class="chathistory" type="button">Beginning of conversation</button></div>
+        <div class="side">
+          <div id="chatPending"></div>
+          <div id="chatComposer">
+            <div id="chatAttachStrip" class="attachstrip" hidden></div>
+            <div id="chatComposerRow"><input id="chatFileInput" type="file" multiple hidden>
+              <button id="chatAttachBtn" type="button" class="attachbtn" aria-label="Attach an image"><svg class="ico"><use href="../icons.svg#i-attach"/></svg></button>
+              <textarea id="chatInput" rows="2" aria-label="Message" placeholder="Message the agent"></textarea>
+              <div class="chatbtns"><button id="chatInterrupt" type="button" disabled>Interrupt</button><button id="chatSend" type="button" class="primary">Send</button></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <footer class="statusbar">
+        <span class="conn" data-state="live">Live</span>
+        <span>Agent <b>Ready</b></span>
+        <span class="push">Harness <span class="ok">running</span></span>
+        <span>reload <b>8 ms</b></span>
+      </footer>
+    </template>
+
+  </div>
+</div>
+<script type="module" src="demo.js"></script>
+</body>
+</html>

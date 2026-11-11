@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account, Annealage style reference</title>
+<script src="../scheme.js"></script>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="../pages.css">
+<link rel="stylesheet" href="demo.css">
+</head>
+<!-- A settings or account page: a text nav and labelled rows on hairlines.
+     #overview | #usage | #security | #workspaces | #danger   ?theme=light|dark -->
+<body data-routes="overview usage security workspaces danger" data-default="overview">
+<div class="page">
+
+<header class="titlebar">
+  <div class="tb-left">
+    <a class="mark" href="list.html"><picture><source srcset="../marks/parent-ribbon-b123d-dark.svg" media="(prefers-color-scheme: dark)"><img src="../marks/parent-ribbon-b123d.svg" alt="" width="512" height="512"></picture></a>
+    <span class="prod">Annealage</span>
+    <span class="tsep"></span>
+    <nav class="prodtabs" aria-label="Product"><a href="list.html">Trace</a><a href="list.html">Loom</a></nav>
+  </div>
+  <button class="cmd" type="button"><svg class="ico"><use href="../icons.svg#i-search"/></svg><span>Search or run a command</span><kbd>Ctrl K</kbd></button>
+  <div class="tb-right">
+    <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="../icons.svg#i-auto"/></svg></button>
+    <span class="menuwrap">
+      <button class="btn" type="button" data-menu aria-haspopup="menu" aria-expanded="false" aria-pressed="true" aria-label="Account menu, Alex Engineer"><svg class="ico"><use href="../icons.svg#i-user"/></svg><span>Alex Engineer</span><svg class="ico ico--sm"><use href="../icons.svg#i-chev-d"/></svg></button>
+      <span class="menu" role="menu"><span class="menu-note">alex@example.com</span><a role="menuitem" href="settings.html">Account</a><a role="menuitem" href="settings.html#security">Security</a><hr><button type="button" role="menuitem">Sign out</button></span>
+    </span>
+  </div>
+</header>
+
+<main class="navpage">
+  <nav class="sidenav" aria-label="Account sections">
+    <h1>Account</h1>
+    <a href="#overview" data-route-link>Overview</a>
+    <a href="#usage" data-route-link>Usage</a>
+    <a href="#security" data-route-link>Security</a>
+    <a href="#workspaces" data-route-link>Workspaces</a>
+    <a href="#danger" data-route-link>Danger zone</a>
+    <span class="navrule"></span>
+    <a href="list.html">Back to projects</a>
+    <button type="button">Sign out</button>
+  </nav>
+
+  <div class="navmain">
+
+    <section data-view="overview">
+      <div class="blk">
+        <h2 class="blk-h">Profile <button class="btn edge" type="button">Edit</button></h2>
+        <dl class="rows">
+          <div class="fr"><dt>Name</dt><dd>Alex Engineer</dd></div>
+          <div class="fr"><dt>Email</dt><dd>alex@example.com</dd></div>
+          <div class="fr"><dt>Member since</dt><dd>March 2026</dd></div>
+        </dl>
+      </div>
+      <div class="blk">
+        <h2 class="blk-h">Products</h2>
+        <ul class="rows">
+          <li class="fr item"><span class="name"><picture><source srcset="../marks/trace-net-dark.svg" media="(prefers-color-scheme: dark)"><img src="../marks/trace-net.svg" alt="" width="640" height="512"></picture>Trace</span><span class="hint">Review electronics designs</span><span class="count"><span class="mono">6</span> projects</span><span class="fr-act"><a class="btn quiet" href="#overview">Settings</a><a class="btn" href="list.html">Open</a></span></li>
+          <li class="fr item"><span class="name"><picture><source srcset="../marks/loom-weave-dark.svg" media="(prefers-color-scheme: dark)"><img src="../marks/loom-weave.svg" alt="" width="640" height="512"></picture>Loom</span><span class="hint">Design electronics</span><span class="count"><span class="mono">2</span> projects</span><span class="fr-act"><a class="btn" href="workbench.html?product=loom">Open</a></span></li>
+        </ul>
+      </div>
+      <div class="blk">
+        <h2 class="blk-h">This month <span class="blk-note">November 2026, to date</span></h2>
+        <ul class="rows">
+          <li class="fr sum"><span>Trace</span><span><span class="mono">14</span> <span class="hint">reviews</span></span><span class="fig">$38.20</span></li>
+          <li class="fr sum"><span>Loom</span><span><span class="mono">31</span> <span class="hint">agent turns</span></span><span class="fig">$112.40</span></li>
+          <li class="fr sum total"><span>Total</span><span></span><span class="fig"><span class="val lg">$150.60</span></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section data-view="usage" hidden>
+      <div class="blk">
+        <h2 class="blk-h">This month <span class="blk-note">November 2026, to date</span></h2>
+        <ul class="rows">
+          <li class="fr sum"><span>Trace</span><span><span class="mono">14</span> <span class="hint">reviews</span></span><span class="fig">$38.20</span></li>
+          <li class="fr sum"><span>Loom</span><span><span class="mono">31</span> <span class="hint">agent turns</span></span><span class="fig">$112.40</span></li>
+          <li class="fr sum total"><span>Total</span><span></span><span class="fig"><span class="val lg">$150.60</span></span></li>
+        </ul>
+        <p class="stub">Per-project and per-day usage are not drawn on this reference page.</p>
+      </div>
+    </section>
+
+    <section data-view="security" hidden>
+      <div class="blk">
+        <h2 class="blk-h">Sign-in methods <button class="btn edge" type="button"><svg class="ico"><use href="../icons.svg#i-plus"/></svg>Add passkey</button></h2>
+        <table class="dtable flush fixed">
+          <colgroup><col class="c-label"><col><col class="c-date"><col class="c-date"><col class="c-act"></colgroup>
+          <thead><tr><th>Method</th><th>Detail</th><th>Added</th><th>Last used</th><th><span class="sr">Action</span></th></tr></thead>
+          <tbody>
+            <tr><td class="strong">Passkey</td><td>MacBook Touch ID</td><td>12 Aug 2026</td><td>Today</td><td><button class="btn quiet" type="button">Remove</button></td></tr>
+            <tr><td class="strong">GitHub</td><td class="mono">alex-eng</td><td>3 Mar 2026</td><td>6 Nov 2026</td><td><button class="btn quiet" type="button">Disconnect</button></td></tr>
+            <tr><td class="strong">Email link</td><td>alex@example.com</td><td>3 Mar 2026</td><td>19 Sep 2026</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="blk">
+        <h2 class="blk-h">Sessions <button class="btn edge" type="button">Sign out everywhere else</button></h2>
+        <table class="dtable flush fixed">
+          <colgroup><col><col class="c-date"><col class="c-date"><col class="c-act"></colgroup>
+          <thead><tr><th>Device</th><th>Location</th><th>Last active</th><th><span class="sr">Action</span></th></tr></thead>
+          <tbody>
+            <tr><td><span class="strong">Firefox on Linux</span> <span class="hint">this device</span></td><td>Sydney, AU</td><td><span class="state" data-kind="good">Now</span></td><td></td></tr>
+            <tr><td class="strong">Chrome on macOS</td><td>Sydney, AU</td><td>3 days ago</td><td><button class="btn quiet" type="button">Sign out</button></td></tr>
+            <tr><td class="strong">Safari on iPhone</td><td>Melbourne, AU</td><td>2 weeks ago</td><td><button class="btn quiet" type="button">Sign out</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="blk">
+        <h2 class="blk-h">Recent activity</h2>
+        <table class="dtable flush fixed">
+          <colgroup><col><col class="c-when"></colgroup>
+          <thead><tr><th>Event</th><th>When</th></tr></thead>
+          <tbody>
+            <tr><td>Signed in with passkey</td><td class="when">Today, <span class="mono">09:12</span></td></tr>
+            <tr><td>Passkey added</td><td class="when">12 Aug 2026</td></tr>
+            <tr><td>GitHub connected</td><td class="when">3 Mar 2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section data-view="workspaces" hidden>
+      <div class="blk">
+        <h2 class="blk-h">Workspaces</h2>
+        <table class="dtable flush fixed">
+          <colgroup><col><col class="c-date"><col class="c-date"><col class="c-act"></colgroup>
+          <thead><tr><th>Workspace</th><th>Role</th><th class="num">Projects</th><th></th></tr></thead>
+          <tbody><tr><td class="strong">Personal</td><td>Owner</td><td class="num">8</td><td></td></tr></tbody>
+        </table>
+        <p class="stub">Shared workspaces and invitations are not drawn on this reference page.</p>
+      </div>
+    </section>
+
+    <section data-view="danger" hidden>
+      <div class="blk">
+        <h2 class="blk-h">Danger zone</h2>
+        <ul class="rows">
+          <li class="fr"><span class="strong">Delete account</span><span class="hint">Removes your profile, 8 projects and their reviews. This can't be undone.</span><span class="fr-act"><button class="btn danger" type="button">Delete account…</button></span></li>
+        </ul>
+        <p class="notice notice--danger">Deleting an account also cancels any review that is running.</p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="statusbar">
+  <span>Signed in as <b>alex@example.com</b></span>
+  <span class="push"><span class="k">Member since</span>March 2026</span>
+</footer>
+
+</div>
+<script type="module" src="demo.js"></script>
+</body>
+</html>
