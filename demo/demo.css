@@ -126,15 +126,16 @@
 
 /* --------------------------------------------- the workspace overview (overview.html) */
 /* The product's own layout for these tables: hosted writes its overview.css the same way. */
-.dt.ov { --cols: 16px minmax(200px, 1fr) 90px 130px 100px 70px 70px 124px; }
-.dt.sent { --cols: 140px minmax(160px, 1fr) minmax(160px, 1fr) 96px minmax(0, 1.1fr) 90px; }
-.dt.lin { --cols: minmax(160px, 1fr) 70px 100px 110px minmax(0, 1.2fr) 100px; --dt-pad-l: 0px; --dt-pad-r: 0px; border-top: 0; }
+.dt.ov { --cols: 16px minmax(200px, 1fr) 90px 130px 90px 70px 70px 124px; }
+.dt.sent { --cols: minmax(160px, 1fr) minmax(200px, 232px) 96px minmax(120px, 190px) 100px 90px; --dt-pad-l: calc(var(--gutter) + 28px); }
+.dt.lin { --cols: minmax(200px, 1fr) 90px 130px 90px 152px 124px; --dt-pad-l: 0px; --dt-pad-r: 0px; border-top: 0; }
 :is(.dt.ov, .dt.sent) > .dt-row { min-height: 40px; }
 :is(.dt.ov, .dt.sent, .dt.lin) .dt-row > :not(.dt-act) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 :is(.dt.ov, .dt.sent, .dt.lin) .k { display: none; font-family: var(--sans); color: var(--ink-2); }
 .dt.ov .exp-none { width: 16px; }
 .dt.ov > .dt-detail { padding-left: calc(var(--dt-pad-l) + 28px); }
 .dt.lin .dt-row { min-height: 36px; }
+.dt.lin .dt-row > .note, .dt.sent .dt-row > .note { white-space: normal; }
 :is(.dt.ov, .dt.sent, .dt.lin) :is(.note, .kind, .when) { color: var(--ink-2); }
 :is(.dt.ov, .dt.sent, .dt.lin) .tag { margin-left: 4px; }
 :is(.dt.ov, .dt.sent, .dt.lin) a.state:hover { text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
@@ -153,17 +154,28 @@
 .treepanes[data-count="2"] .treepane:first-child { padding-right: 24px; }
 .treepanes[data-count="2"] .treepane + .treepane { padding-left: 24px; border-left: 1px solid var(--rule); }
 .st-facts .discs { margin-top: 20px; }
-.st-facts .disc-body .fl { --fl-label: 140px; }
+.st-facts .disc-body { padding-left: 0; }
+.st-facts .disc-body .fl { --fl-label: 180px; column-gap: 16px; }
 .st-facts .disc-body .fl > dt, .st-facts .disc-body .fl > dd { padding: 4px 0; }
+.st-facts > .notice { margin-block: 10px; }
 .st-facts .state + .state { margin-left: 12px; }
 .st-facts .tag { margin-left: 4px; }
 .st-facts .fr > dd { padding-block: 8px; }
 .st-facts .disc-body .fl > dd { color: var(--ink); }
 
+/* Between a phone and a laptop the register drops its two count columns, so the row menu stays on screen. */
+@media (min-width: 641px) and (max-width: 960px) {
+  .dt.ov { --cols: 16px minmax(160px, 1fr) 80px 110px 60px 124px; }
+  .dt.ov > .dt-head > :is(:nth-child(5), :nth-child(6)), .dt.ov > .dt-row > :is(:nth-child(5), :nth-child(6)) { display: none; }
+  .dt.lin { --cols: minmax(120px, 1fr) 80px 110px 90px minmax(0, 1fr) 100px; }
+  .dt.sent { --cols: minmax(120px, 1fr) minmax(120px, 1fr) 88px minmax(110px, 1.6fr) 90px 76px; }
+}
+
 /* The not-found page has no menu and no tabs: the product's shell leaves them out. */
 body[data-route=missing] :is(.prodtabs, .tsep, .menuwrap, .statusbar) { display: none; }
 
 @media (max-width: 640px) {
+  .dt.sent { --dt-pad-l: 12px; }
   .dt.ov .dt-row { grid-template-columns: 16px minmax(0, 1fr) auto; grid-template-areas: "exp main act" "exp sub act" "exp state unread"; }
   .dt.ov .dt-row > :is(.exp, .exp-none) { display: grid; grid-area: exp; align-self: start; margin-top: 2px; }
   .dt.ov .dt-row > .unread { display: block; grid-area: unread; justify-self: end; font-size: 11.5px; }

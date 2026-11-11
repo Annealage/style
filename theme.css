@@ -268,6 +268,9 @@ input[type=range] { accent-color: var(--ink); }
 .state[data-kind=pending]::before { background: none; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
 .state[data-kind=gap]::before { background: var(--warn); }
 .state[data-kind=bad]::before { background: var(--danger); }
+/* A state that links to its detail: <a class="state" data-kind="good" href>Sent</a> is underlined like any text link. */
+a.state { text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
+a.state:hover { text-decoration-color: var(--ink); }
 .state[data-kind=waiting] { font-weight: 600; }
 .state[data-kind=waiting]::before { background: var(--ink); }
 /* An open item's own small mark, e.g. beside "open" on a comment: <span class="state--open">open</span> */

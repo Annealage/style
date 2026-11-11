@@ -64,7 +64,9 @@ if (has("many")) { // 44 projects, one with a long name, to see the table at the
   $(".dt-main", long).textContent = "Dual stepper driver with the carrier board for the fixture, revision B, after the review";
   rows()[1].after(long);
   $("[data-project-count]").textContent = String(rows().length);
-  $(".chip .n").textContent = String(rows().length);
+  for (const chip of $$(".chips .chip")) {
+    $(".n", chip).textContent = String(chip.dataset.filter ? rows().filter((r) => r.dataset.product === chip.dataset.filter).length : rows().length);
+  }
 }
 
 if (has("empty")) {
@@ -103,6 +105,7 @@ function refreshTargets() {
   if (usable.length === 0 && radios[1].checked) radios[0].checked = true;
   if (usable.length && !usable.includes(target.selectedOptions[0])) target.value = usable[0].value;
   target.disabled = dest() !== "existing";
+  target.title = target.disabled ? "Choose Existing project to pick one" : "";
   hint.textContent = usable.length === 0 ? "You have no other project of this product to send into." : "";
 }
 function closeSend() {
@@ -124,6 +127,7 @@ function openSend(button) {
   $("#send-error").hidden = true;
   $("#send-result").hidden = true;
   $("#send-submit").disabled = false;
+  $("#send-submit").removeAttribute("title");
   const row = button.closest(".dt-row");
   if (row) {
     const holder = document.createElement("div");
@@ -146,6 +150,7 @@ $("[data-close]", form).addEventListener("click", closeSend);
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   $("#send-submit").disabled = true;
+  $("#send-submit").title = "This send is already queued";
   $("#send-result").hidden = false;
 });
 document.addEventListener("click", (e) => {
@@ -161,12 +166,13 @@ if (has("send") || has("after-send") || has("existing")) {
     radios[0].disabled = true;
     radios[0].title = "You can't start a new project in this workspace";
     radios[0].closest("label").title = radios[0].title;
-    product.value = "loom";
+    product.value = "trace";
     radios[1].checked = true;
     refreshTargets();
   }
   if (has("after-send")) form.requestSubmit();
   if (has("error")) {
+    if (has("existing")) target.selectedIndex = -1;
     $("#send-error").textContent = "Choose a project to send into.";
     $("#send-error").hidden = false;
   }
@@ -193,6 +199,18 @@ if (has("norev")) {
   const send = $("#tree-send");
   send.disabled = true;
   send.title = "This project has no revision to send yet";
+  for (const b of [...$$("[data-tree-toggle]"), $("#compare-show")]) {
+    b.disabled = true;
+    b.title = "This project has no revision yet";
+  }
+}
+// Show compares, so it waits for a project.
+const compare = $("#compare");
+const show = $("#compare-show");
+if (!has("norev")) {
+  const sync = () => { show.disabled = !compare.value; show.title = compare.value ? "" : "Choose a project to compare with"; };
+  compare.addEventListener("change", sync);
+  sync();
 }
 for (const b of $$("[data-tree-toggle]")) b.addEventListener("click", () => {
   for (const d of $$(".tree details")) d.open = b.dataset.treeToggle === "open";
@@ -208,6 +226,10 @@ setState($('[data-field="state"]'), STATUS[picked]);
 const terminal = ["sent", "failed", "cancelled"].includes(picked);
 $("main[data-view=status]").dataset.state = picked;
 $("#cancel-send").hidden = terminal;
+if (picked === "checking") {
+  $("#cancel-send").disabled = true;
+  $("#cancel-send").title = "Checking the state of this send";
+}
 if (has("details")) $("#st-details").open = true;
 if (has("error")) $("#derivation-error").hidden = false;
 if (has("unreadable")) {
