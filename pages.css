@@ -1,0 +1,366 @@
+/* Annealage pages outside the workbench frame: the project register, a guided
+   flow (upload, check, review setup) and settings or account pages.
+
+   Link it after theme.css; it uses that file's controls, tables, lamps,
+   markers and readouts. These pages share the workbench's title bar and status
+   bar, type and density, so opening a project is a move within one tool.
+   Content starts on the --gutter line the product name sits on. Each
+   component's markup is in the comment above its rules. */
+
+/* -------------------------------------------------------------- page shell */
+/* <div class="page"><header class="titlebar">…</header>
+     <main class="pagebody"> | <main class="flow"> | <main class="navpage">
+   [<footer class="statusbar">]</div> */
+.page { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+.page > .titlebar, .page > .statusbar { flex: none; }
+.page > main { flex: 1; min-height: 0; }
+.pagebody { overflow: auto; padding: 0 var(--s-5) 40px var(--gutter); }
+.pagebody > .reg, .pagebody > .dt { margin-inline: calc(-1 * var(--gutter)) calc(-1 * var(--s-5)); }
+.pagebody > .dt { --dt-pad-l: var(--gutter); --dt-pad-r: var(--s-5); }
+.pagebody h1, .flowhead h1, .sidenav h1 { font: 600 var(--fs-title)/var(--lh-title) var(--sans); letter-spacing: -0.005em; }
+.pagebody h2 { font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); }
+.lede { color: var(--ink-2); max-width: 880px; }
+/* Text that should not run the full width: <div class="measure">. */
+.measure { max-width: 920px; }
+.pageacts { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* The title row of a list page: <div class="pagehead"><h1>Projects</h1><span class="n">6</span><span class="grow"></span>
+   <label class="inputwrap filter">…</label> <button class="btn sortbtn">…</button> <div class="seg">…</div> <a class="btn primary">New project</a></div> */
+.pagehead { display: flex; align-items: center; gap: 8px; height: 56px; }
+.pagehead .n { margin-left: 2px; font-size: var(--fs-ui); }
+.pagehead .filter { width: 220px; }
+.pagehead .sortbtn { color: var(--ink-2); font-weight: 400; }
+.pagehead .sortbtn span { color: var(--ink); }
+.pagehead .btn.primary { margin-left: 8px; }
+
+/* A section of a page, where a card used to be: a hairline, a heading row,
+   then the content. No box. <section class="card"><h2>Share</h2><p>…</p>…</section> */
+.card { border-top: 1px solid var(--rule); padding-bottom: 12px; }
+.card > h2, .card > .chd { display: flex; align-items: center; min-height: 44px; margin: 0; font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); }
+.card > p { color: var(--ink-2); }
+.card > p + p { margin-top: 6px; }
+.card > ul { padding-left: 18px; list-style: disc; color: var(--ink-2); }
+
+/* A labelled read-only value with a copy button, e.g. a share link:
+   <div class="linkrow"><span>Share link</span><input class="input" readonly><button class="btn">Copy</button></div> */
+.linkrow { display: grid; grid-template-columns: var(--fl-label, 180px) minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 40px; border-top: 1px solid var(--rule); }
+.linkrow > span { color: var(--ink-2); }
+.linkrow .input { font: 400 var(--fs-small)/1 var(--mono); }
+
+/* --------------------------------------------------------------- drop zone */
+/* Dropping files is the way in, so it is an input and may have an edge: wide,
+   short and dashed. <label class="drop"><svg class="ico">upload</svg><span><span class="linkish">Choose</span> or drop files</span><input type="file" multiple></label>
+   .over while a file is dragged over it. .dropstrip is the slim full-width
+   one above a list ("Drop design files here to start a project"). */
+.drop, .dropstrip {
+  position: relative; display: flex; align-items: center; justify-content: center; gap: 10px;
+  border: 1px dashed var(--rule-strong); border-radius: var(--r);
+  background: none; color: var(--ink); font: 500 var(--fs-ui)/var(--lh-ui) var(--sans); text-align: center; cursor: pointer;
+}
+button.drop, button.dropstrip { width: 100%; }
+.drop { min-height: 76px; padding: 12px 16px; }
+.dropstrip { height: 44px; margin-bottom: 14px; color: var(--ink-2); font-weight: 400; }
+.drop:hover, .drop.over, .dropstrip:hover, .dropstrip.over { border-color: var(--ink-3); background: var(--hover); color: var(--ink); }
+.drop .ico, .dropstrip .ico { color: var(--ink-2); }
+.drop b { font-weight: 600; }
+.drop input[type=file], .dropstrip input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; appearance: auto; border: 0; }
+.drop:focus-within, .dropstrip:focus-within { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+/* -------------------------------------------------------------------- flow */
+/* A guided job: the steps on a hairline spine at the left, the current step's
+   content, and a pinned footer with Back and the one primary action.
+   <main class="flow">
+     <aside class="flowside"><h2 class="subhead">Setup</h2>
+       <ol class="flowsteps"><li class="flowstep" data-state="done|current|open|locked"><a href="#upload">
+         <span class="mk">1</span><span class="name">Upload<svg class="ico tick">check</svg></span><span class="detail">3 files</span></a></li>…</ol>
+       <div class="flowfacts"><h2 class="subhead">Design</h2><div class="paper thumb"><img></div><dl class="fl">…</dl></div></aside>
+     <div class="flowmain"><section class="flowview [split]">
+       <div class="flowscroll"><header class="flowhead"><h1>Datasheets</h1><p>One line of help.</p></header> … </div>
+       [<aside class="flowaside"> a field list </aside>]
+       <footer class="flowfoot"><a class="btn">Back</a><span class="grow"></span><a class="btn primary">Continue</a></footer></section></div></main>
+   The step markers sit on the same centre line as the mark above them. */
+.flow { --pad-l: 24px; --pad-r: 20px; display: grid; grid-template-columns: 260px minmax(0, 1fr); }
+.flowside { min-height: 0; overflow: auto; padding: 6px 16px 16px 11px; border-right: 1px solid var(--rule); }
+.flowside > .subhead, .flowfacts > .subhead { padding: 0; }
+.flowsteps { position: relative; margin-bottom: 14px; }
+.flowsteps::before { content: ""; position: absolute; left: 8.5px; top: 20px; bottom: 30px; border-left: 1px solid var(--rule-strong); }
+.flowstep a { display: grid; grid-template-columns: 18px minmax(0, 1fr); column-gap: 10px; align-items: center; padding: 6px 0 7px; }
+.flowstep a:hover .name { text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
+.flowstep .mk { --mk-edge: var(--rule-strong); --mk-fill: var(--ground); color: var(--ink-2); box-shadow: 0 0 0 3px var(--ground); }
+.flowstep .name { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+.flowstep .tick { display: none; width: 14px; height: 14px; color: var(--quench); stroke-width: 1.75; }
+.flowstep .detail { grid-column: 2; color: var(--ink-2); font-size: var(--fs-small); line-height: 16px; }
+.flowstep[data-state=done] .tick { display: block; }
+.flowstep[data-state=done] .mk { --mk-edge: var(--ink-2); color: var(--ink); }
+.flowstep[data-state=current] .mk { --mk-edge: var(--temper); --mk-fill: var(--temper); color: var(--on-temper); }
+.flowstep[data-state=current] .name { font-weight: 600; }
+.flowstep[data-state=locked] a { cursor: default; }
+.flowstep[data-state=locked] :is(.name, .detail, .mk) { color: var(--ink-3); font-weight: 400; }
+.flowstep[data-state=locked] a:hover .name { text-decoration: none; }
+.flowfacts { margin-inline: -11px -16px; padding: 2px 16px 0 11px; border-top: 1px solid var(--rule); }
+.flowfacts .thumb { aspect-ratio: 2400 / 1697; margin-bottom: 10px; }
+.flowfacts .fl { --fl-label: 64px; font-size: var(--fs-small); }
+.flowfacts .fl > dt, .flowfacts .fl > dd { padding: 2px 0; }
+.flowfacts.none { padding-top: 12px; color: var(--ink-3); font-size: var(--fs-small); }
+
+.flowmain { min-width: 0; min-height: 0; }
+.flowview { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 52px; height: 100%; min-height: 0; }
+.flowview.split { grid-template-columns: minmax(0, 1fr) 340px; }
+.flowscroll { grid-column: 1; min-width: 0; min-height: 0; overflow: auto; padding: 20px 0 24px; }
+.flowscroll > * { margin-inline: var(--pad-l) var(--pad-r); }
+.flowscroll > .dt { margin-inline: 0; --dt-pad-l: var(--pad-l); --dt-pad-r: var(--pad-r); }
+.flowhead { margin-bottom: 20px; }
+.flowhead p { margin-top: 4px; color: var(--ink-2); }
+.flowscroll .help { color: var(--ink-2); }
+.flowscroll > .subhead { padding: 0; }
+.flowscroll > .subhead:not(:first-child) { margin-top: 20px; }
+.flowscroll > .discs { margin-top: 18px; }
+.flowaside { grid-column: 2; grid-row: 1; min-height: 0; overflow: auto; padding: 16px 20px 24px; border-left: 1px solid var(--rule); }
+.flowaside > .subhead { padding: 0; margin-bottom: 2px; }
+/* A field list whose label is the term itself: <dl class="fl stack"><dt>KiCad</dt><dd>The .kicad_pro, …</dd></dl> */
+.fl.stack { grid-template-columns: 68px minmax(0, 1fr); column-gap: 0; }
+.fl.stack > dt, .fl.stack > dd { padding: 7px 0; border-top: 1px solid var(--rule); }
+.fl.stack > dt { color: var(--ink); font-weight: 500; }
+.fl.stack > dd { color: var(--ink-2); }
+.fl.stack .mono { color: var(--ink); }
+.flowfoot { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; padding-inline: calc(var(--pad-l) - 10px) var(--pad-r); border-top: 1px solid var(--rule); white-space: nowrap; }
+.flowfoot > .hint:first-child { padding-left: 10px; }
+
+/* Readiness: a few labelled figures over a thin proportional bar, with the
+   last check and its action at the right.
+   <div class="ready"><dl class="figs"><div><dt><span class="lamp ok"></span>Covered or exempt</dt><dd>2</dd></div>…</dl>
+     <div class="ready-r"><span class="hint">Last checked</span><span class="mono">10 Nov 2026 10:35 UTC</span><button class="btn edge">Re-check</button></div>
+     <div class="segbar"><i class="ok w2"></i><i class="warn w1"></i><i class="w7"></i></div></div>
+   Each figure is a readout. A segment's share is .w1 to .w10, or flex-grow set from script. */
+.ready { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; margin-bottom: 18px; }
+.figs { display: flex; }
+.figs > div { width: 164px; }
+.figs dt { display: flex; align-items: center; gap: 6px; color: var(--ink-2); font-size: var(--fs-small); line-height: 16px; white-space: nowrap; }
+.figs dd {
+  display: inline-flex; align-items: center; min-width: 48px; height: 28px; margin-top: 5px; padding: 0 8px;
+  border-radius: var(--r-xs); background: var(--well); box-shadow: inset 0 0 0 1px var(--rule);
+  font: 400 var(--fs-figure)/1 var(--mono); font-variant-numeric: tabular-nums;
+}
+.ready-r { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.segbar { grid-column: 1 / -1; display: flex; gap: 2px; height: 4px; margin-top: 12px; }
+.segbar i { flex: 1; background: var(--rule-strong); }
+.segbar .ok { background: var(--quench); }
+.segbar .warn { background: var(--warn); }
+.segbar .bad { background: var(--danger); }
+.segbar .w2 { flex: 2; } .segbar .w3 { flex: 3; } .segbar .w4 { flex: 4; } .segbar .w5 { flex: 5; } .segbar .w6 { flex: 6; }
+.segbar .w7 { flex: 7; } .segbar .w8 { flex: 8; } .segbar .w9 { flex: 9; } .segbar .w10 { flex: 10; }
+
+/* A choice between a few options as rows on hairlines, not cards:
+   <div class="optlist" role="radiogroup"><label class="opt"><input type="radio" name="stage" checked><span class="opt-name">Quick only</span><span class="opt-desc">…</span></label>…</div> */
+.optlist { border-top: 1px solid var(--rule); }
+.opt { display: grid; grid-template-columns: 14px 148px minmax(0, 1fr); column-gap: 12px; align-items: center; min-height: 40px; border-bottom: 1px solid var(--rule); cursor: pointer; }
+.opt-name { font-weight: 500; }
+.opt:has(:checked) .opt-name { font-weight: 600; }
+.opt-desc { color: var(--ink-2); }
+/* A list with a quiet consequence beside it: <div class="besides"> the list, then <p class="sidenote">…</p></div> */
+.besides { display: grid; grid-template-columns: minmax(0, 1fr) 300px; column-gap: 28px; align-items: start; }
+.sidenote { padding-top: 8px; color: var(--ink-3); font-size: var(--fs-small); line-height: 17px; }
+
+/* ---------------------------------------------------------------- register */
+/* The project list: one list of projects, drawn as a register table or as
+   tiles. data-view="list|tiles" on .reg picks.
+   <div class="reg" data-view="list">
+     <div class="reg-head"><span></span><span>Name</span><span>Rev</span><span class="num">Parts</span><span class="num">Nets</span><span>Review</span><span class="sorted">Last opened</span><span>Created</span><span></span></div>
+     <ol class="projs"><li class="proj">
+       <a class="p-thumb paper" href><img src alt=""></a> <a class="p-name" href>RP2040 stepper controller</a>
+       <span class="p-rev mono"><span class="k">rev </span>3</span> <span class="p-parts mono">148<span class="k"> parts</span></span> <span class="p-nets mono">212<span class="k"> nets</span></span>
+       <span class="p-state"><span class="lamp ok"></span><span class="st">Detailed done</span><span class="sd">4 findings open</span>[<span class="pline"><i class="p40"></i></span>]</span>
+       <span class="p-opened"><span class="k">Opened </span>2 hours ago</span> <span class="p-created">9 Oct 2026</span>
+       <span class="p-act"><a class="btn quiet" href>Open</a> a .menuwrap with Open, Rename, Delete</span></li>…</ol></div>
+   A project that is still starting is a row like any other (aria-busy, a
+   .p-thumb.blank, an .indet line), not a separate page. Delete lives in the
+   row menu, never as a button on every row. */
+.p-name { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+a.p-name:hover { text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
+.p-thumb { display: block; aspect-ratio: 2400 / 1692; }
+.p-thumb.blank { display: grid; place-items: center; background: var(--paper); color: #565D63; font-size: var(--fs-small); }
+.p-rev, .p-parts, .p-nets { white-space: nowrap; }
+.p-state { display: grid; grid-template-columns: 8px auto minmax(0, 1fr); column-gap: 8px; align-items: center; white-space: nowrap; }
+.p-state .sd { color: var(--ink-2); }
+.p-state .sd .mono { color: var(--ink); }
+.p-state .sd.quiet { color: var(--ink-3); }
+.p-state .pline { grid-column: 2 / -1; margin-top: 5px; }
+.p-opened, .p-created { color: var(--ink-2); white-space: nowrap; }
+.p-act { display: flex; align-items: center; justify-content: flex-end; gap: 2px; }
+
+.reg-head, .reg[data-view=list] .proj {
+  display: grid; grid-template-columns: var(--reg-cols, 64px minmax(200px, 1fr) 44px 52px 52px 310px 112px 100px 92px);
+  column-gap: 20px; align-items: center;
+  padding: 0 calc(var(--s-5) - 8px) 0 var(--gutter); border-bottom: 1px solid var(--rule);
+}
+.reg-head { height: 32px; color: var(--ink-2); font: 500 var(--fs-small)/1 var(--sans); }
+.reg-head .num { text-align: right; }
+.reg-head .sorted { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }
+.reg-head .sorted::after { content: ""; width: 4px; height: 4px; margin-top: -3px; border: solid var(--ink-2); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+.reg[data-view=list] .proj { min-height: 62px; }
+.reg[data-view=list] .proj:hover { background: var(--hover); }
+.reg[data-view=list] .proj .k { display: none; }
+.reg[data-view=list] :is(.p-parts, .p-nets) { text-align: right; }
+.reg[data-view=list] .p-state { grid-template-columns: 8px 104px minmax(0, 1fr); }
+.reg[data-view=list] .p-state .pline { width: 196px; }
+.reg[data-view=list] .proj:hover .p-act .btn { color: var(--ink); }
+
+/* Tiles: the thumbnail's edge is the only edge. */
+.reg[data-view=tiles] .reg-head { display: none; }
+.reg[data-view=tiles] .projs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px 24px; padding: 2px var(--s-5) 32px var(--gutter); }
+.reg[data-view=tiles] .proj {
+  display: grid; grid-template-columns: auto auto auto minmax(0, 1fr) auto;
+  grid-template-areas: "thumb thumb thumb thumb thumb" "name name name name act" "rev parts nets . opened" "state state state state state";
+  column-gap: 12px; align-items: center; align-content: start;
+}
+.reg[data-view=tiles] .p-thumb { grid-area: thumb; margin-bottom: 6px; }
+.reg[data-view=tiles] .p-name { grid-area: name; }
+.reg[data-view=tiles] .p-act { grid-area: act; margin-right: -6px; }
+.reg[data-view=tiles] .p-act > .btn:not(.icon) { display: none; }
+.reg[data-view=tiles] .p-rev { grid-area: rev; }
+.reg[data-view=tiles] .p-parts { grid-area: parts; }
+.reg[data-view=tiles] .p-nets { grid-area: nets; }
+.reg[data-view=tiles] .proj .mono .k { color: var(--ink-2); font-family: var(--sans); }
+.reg[data-view=tiles] .p-opened { grid-area: opened; font-size: var(--fs-small); }
+.reg[data-view=tiles] .p-opened .k, .reg[data-view=tiles] .p-created { display: none; }
+.reg[data-view=tiles] .p-state { grid-area: state; margin-top: 6px; }
+.reg[data-view=tiles] .p-state .pline { grid-column: 1 / -1; }
+
+/* ---------------------------------------------------- settings and account */
+/* A text nav at the left, then labelled rows on hairlines.
+   <main class="navpage"><nav class="sidenav"><h1>Account</h1><a href="#overview" aria-current="page">Overview</a>…<span class="navrule"></span><button>Sign out</button></nav>
+     <div class="navmain"><section>
+       <div class="blk"><h2 class="blk-h">Profile <span class="blk-note">…</span><button class="btn edge">Edit</button></h2>
+         <dl class="rows"><div class="fr"><dt>Name</dt><dd>Alex Engineer</dd></div>…</dl></div>…</section></div></main>
+   .fr is label, value, action. .fr.item is a named thing (a product): name with
+   its mark, purpose, a count, actions. .fr.sum is a line of a summary: label,
+   activity, a figure at the right; .total closes it with a readout. */
+.navpage { display: grid; grid-template-columns: 216px minmax(0, 1fr); overflow: hidden; }
+.sidenav { display: flex; flex-direction: column; gap: 2px; min-height: 0; overflow: auto; padding: 0 12px 16px calc(var(--gutter) - 12px); border-right: 1px solid var(--rule); }
+.sidenav h1 { display: flex; align-items: center; height: 56px; flex: none; padding: 0 12px; }
+.sidenav a, .sidenav button {
+  display: flex; align-items: center; height: var(--ctl); flex: none; padding: 0 12px;
+  border: 0; border-radius: var(--r); background: none; color: var(--ink-2); text-align: left;
+}
+.sidenav a:hover, .sidenav button:hover { background: var(--hover); color: var(--ink); }
+.sidenav a[aria-current] { background: var(--hover); color: var(--ink); font-weight: 600; }
+.navrule { height: 1px; flex: none; margin: 10px 12px; background: var(--rule); }
+.navmain { min-height: 0; overflow: auto; padding: 6px 32px 40px; }
+.navmain > section { max-width: 920px; }
+.blk + .blk { margin-top: 20px; }
+.blk-h { display: flex; align-items: center; height: 44px; font: 600 var(--fs-ui)/1 var(--sans); }
+.blk-h .btn { margin-left: auto; }
+.blk-note { margin-left: 10px; color: var(--ink-3); font-weight: 400; font-size: var(--fs-small); }
+.blk > .stub { margin-top: 12px; color: var(--ink-3); }
+.rows { border-top: 1px solid var(--rule); }
+.fr { display: grid; grid-template-columns: var(--fl-label, 180px) minmax(0, 1fr) auto; column-gap: 16px; align-items: center; min-height: 40px; border-bottom: 1px solid var(--rule); }
+.fr > dt { color: var(--ink-2); }
+.fr-act { display: flex; justify-content: flex-end; gap: 2px; margin-right: -10px; }
+.strong { font-weight: 500; }
+.fr.item { grid-template-columns: var(--fl-label, 180px) minmax(0, 1fr) 120px 150px; min-height: 48px; }
+.fr.item .name { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+.fr.item .name img { height: 20px; width: auto; }
+.fr.item .count { color: var(--ink-2); }
+.fr.item .count .mono { color: var(--ink); }
+.fr.sum { grid-template-columns: var(--fl-label, 180px) minmax(0, 1fr) 120px; }
+.fr.sum .fig { padding-right: 9px; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.fr.sum.total { border-bottom: 0; min-height: 44px; font-weight: 600; }
+.fr.sum.total .fig { padding-right: 0; }
+/* Plain tables whose date and action columns line up from one table to the
+   next: <table class="dtable flush fixed"><colgroup><col class="c-label"><col><col class="c-date"><col class="c-date"><col class="c-act"></colgroup> */
+.dtable.fixed { table-layout: fixed; border-top: 1px solid var(--rule); }
+.dtable.fixed td { height: 40px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dtable.fixed td:not(.strong):not(:first-child) { color: var(--ink-2); }
+.dtable.fixed td:has(> .btn) { text-align: right; }
+.dtable.fixed td > .btn { margin-right: -10px; }
+.dtable col.c-label { width: 180px; }
+.dtable col.c-date { width: 150px; }
+.dtable col.c-act { width: 130px; }
+.dtable col.c-when { width: 430px; }
+
+/* ------------------------------------------------------------------- phone */
+/* The register and the flow work at 400px: the steps become a strip, tables
+   stack (theme.css does that for .dt), the register becomes stacked rows. */
+@media (max-width: 640px) {
+  .page > .titlebar:has(> .tb-left) { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .page > .titlebar { padding-right: 4px; }
+  .page > .titlebar .tb-left { min-width: 0; }
+  .page > .titlebar .cmd { display: none; }
+  .page > .titlebar .crumbs { overflow: hidden; }
+  .page > .titlebar .crumbs .here { overflow: hidden; text-overflow: ellipsis; }
+  .page > .statusbar { gap: 12px; }
+  .pagebody { padding: 0 12px 24px; }
+  .pagebody > .reg, .pagebody > .dt { margin-inline: -12px; }
+  .pagebody > .dt { --dt-pad-l: 12px; --dt-pad-r: 12px; }
+  .pagehead { flex-wrap: wrap; height: auto; padding-block: 10px; row-gap: 0; }
+  .pagehead > .grow { display: none; }
+  .pagehead::after { content: ""; order: 4; flex-basis: 100%; height: 8px; }
+  .pagehead .filter { order: 5; flex: 1; width: auto; }
+  .pagehead .sortbtn { order: 6; padding: 0 6px; }
+  .pagehead .sortbtn span { display: none; }
+  .pagehead .seg { order: 7; }
+  .pagehead .btn.primary { margin-left: auto; }
+  .dropstrip { height: 40px; margin-bottom: 8px; }
+  .linkrow { grid-template-columns: minmax(0, 1fr) auto; padding-block: 6px; }
+  .linkrow > span { grid-column: 1 / -1; }
+
+  .reg-head { display: none; }
+  .projs { border-top: 1px solid var(--rule); }
+  .reg[data-view=list] .proj {
+    grid-template-columns: 64px auto auto auto minmax(0, 1fr) auto;
+    grid-template-areas: "thumb name name name name act" "thumb rev parts nets . act" "thumb state state state state state";
+    column-gap: 10px; row-gap: 2px; padding: 10px 6px 10px 12px;
+  }
+  .reg[data-view=list] .p-thumb { grid-area: thumb; align-self: start; margin-right: 2px; }
+  .reg[data-view=list] .p-name { grid-area: name; }
+  .reg[data-view=list] .p-rev { grid-area: rev; }
+  .reg[data-view=list] .p-parts { grid-area: parts; }
+  .reg[data-view=list] .p-nets { grid-area: nets; }
+  .reg[data-view=list] :is(.p-rev, .p-parts, .p-nets) { font-size: 11.5px; }
+  .reg[data-view=list] .proj .mono .k { display: inline; color: var(--ink-2); font-family: var(--sans); font-size: var(--fs-small); }
+  .reg[data-view=list] .p-state { grid-area: state; grid-template-columns: 8px auto minmax(0, 1fr); font-size: var(--fs-small); }
+  .reg[data-view=list] .p-state .pline { width: auto; margin-right: 6px; }
+  .reg[data-view=list] .p-act { grid-area: act; align-self: start; margin-top: -4px; }
+  .reg[data-view=list] .p-act > .btn:not(.icon), .reg[data-view=list] :is(.p-opened, .p-created) { display: none; }
+  .reg[data-view=tiles] .projs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; padding: 12px; }
+  .reg[data-view=tiles] .proj { column-gap: 8px; }
+  .reg[data-view=tiles] .p-opened { display: none; }
+
+  .flow { --pad-l: 12px; --pad-r: 12px; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .flowside { padding: 0 12px; border-right: 0; border-bottom: 1px solid var(--rule); overflow: visible; }
+  .flowside > .subhead, .flowfacts { display: none; }
+  .flowsteps { display: flex; justify-content: space-between; margin: 0; }
+  .flowsteps::before { content: none; }
+  .flowstep a { display: flex; gap: 6px; height: 36px; padding: 2px 0 0; border-bottom: 2px solid transparent; margin-bottom: -1px; font-size: var(--fs-small); }
+  .flowstep[data-state=current] a { border-bottom-color: var(--temper-text); }
+  .flowstep .mk { --cut: 4px; width: 16px; height: 16px; box-shadow: none; font-size: 10px; }
+  .flowstep .tick { width: 12px; height: 12px; }
+  .flowstep .name { gap: 4px; }
+  .flowstep .detail { display: none; }
+  /* A step with an aside scrolls as one column, its footer pinned. */
+  .flowview.split { display: flex; flex-direction: column; overflow: auto; }
+  .flowview.split > .flowscroll { flex: none; overflow: visible; padding-bottom: 0; }
+  .flowview.split > .flowfoot { position: sticky; bottom: 0; flex: none; height: 52px; margin-top: auto; background: var(--ground); }
+  .flowscroll { padding: 14px 0 16px; }
+  .flowhead { margin-bottom: 14px; }
+  .flowhead h1 { font-size: 16px; line-height: 22px; }
+  .flowaside { border-left: 0; border-top: 1px solid var(--rule); margin-top: 16px; padding: 8px 12px 16px; overflow: visible; }
+  .ready { grid-template-columns: minmax(0, 1fr); row-gap: 10px; margin-bottom: 14px; }
+  .figs > div { width: auto; flex: 1; }
+  .figs dt { align-items: flex-start; white-space: normal; font-size: var(--fs-micro); line-height: 14px; min-height: 28px; padding-right: 6px; }
+  .figs dt .lamp { margin-top: 3px; }
+  .figs dd { min-width: 0; }
+  .segbar { margin-top: 0; grid-row: 2; }
+  .ready-r { font-size: var(--fs-small); }
+  .ready-r .btn { margin-left: auto; }
+  .opt { grid-template-columns: 14px minmax(0, 1fr); padding-block: 8px; row-gap: 2px; }
+  .opt-desc { grid-column: 2; }
+  .besides { grid-template-columns: minmax(0, 1fr); }
+  .navpage { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .sidenav { flex-direction: row; align-items: center; gap: 2px; padding: 0 4px; border-right: 0; border-bottom: 1px solid var(--rule); overflow-x: auto; scrollbar-width: none; }
+  .sidenav h1, .navrule { display: none; }
+  .sidenav a, .sidenav button { white-space: nowrap; }
+  .navmain { padding: 0 12px 24px; }
+  .fr, .fr.item, .fr.sum { grid-template-columns: minmax(0, 1fr) auto; padding-block: 8px; row-gap: 2px; }
+  .fr > dt, .fr.item .name { grid-column: 1 / -1; }
+}
