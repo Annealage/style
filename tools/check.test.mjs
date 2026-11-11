@@ -48,6 +48,11 @@ test('planted faults are all found', () => {
   } finally { rmSync(root, { recursive: true }); }
 });
 
+test('a directory with VENDORED.json is skipped like one with runtime-files.txt', () => {
+  const root = tree({ ...CLEAN, 'static/style/VENDORED.json': '{}\n', 'static/style/x.css': 'a { color: #ff00aa; }\n' });
+  try { assert.deepEqual(rulesIn(root), []); } finally { rmSync(root, { recursive: true }); }
+});
+
 test('check-ok skips a line; runtime-files names a missing path', () => {
   const root = tree({
     'a.css': '/* check-ok: brand colour from the logo file */\n.x { color: #112233; }\n',

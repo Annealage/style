@@ -25,8 +25,8 @@ export function walk(root, { exclude = [] } = {}) {
       try { st = statSync(p); } catch { continue; }
       if (st.isDirectory()) {
         if (SKIP_DIRS.has(name)) continue;
-        // A directory that carries runtime-files.txt is the style library, vendored: it is checked by its own repo.
-        if (p !== resolve(root) && existsSync(join(p, 'runtime-files.txt'))) continue;
+        // A directory that carries runtime-files.txt or VENDORED.json is the style library, vendored: it is checked by its own repo.
+        if (p !== resolve(root) && (existsSync(join(p, 'runtime-files.txt')) || existsSync(join(p, 'VENDORED.json')))) continue;
         go(p);
       } else if (st.isFile() && st.size < 2_000_000 && !name.endsWith('.min.js')) {
         const e = ext(name);
