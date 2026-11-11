@@ -102,12 +102,61 @@ const grip = (key, n) => async (tab) => {
   }, { args: [key, n] });
 };
 
+// Canvas Studio (C0, Q26 (a)): the file tree is the inspector, at the left, with no rail, so the .wb columns are
+// [tree, editor and screen, agent]; the panes' heads (the file tabs and the screen's) are --h-pane tall, as the tree's
+// and the agent's are, so their hairlines meet. A state entry says what it changes on top of that.
+const CANVAS_COLS = ['260px', null, '400px'];
+const canvasConform = (cols = CANVAS_COLS, why = 'the file tree is the inspector at the left and there is no rail: three columns') => ({
+  reason: why,
+  expect: { '.wb': { gridTemplateColumns: cols }, '.vhead': { height: '36px' } },
+});
+const canvasPhone = (tab) => ({
+  reason: tab === 'files' || tab === 'agent'
+    ? `the ${tab} pane fills a phone page and the editor and screen heads are not drawn`
+    : 'a phone page shows one pane at a time; the pane head (the file tabs, or the screen head) is --h-pane tall',
+  expect: tab === 'files' || tab === 'agent' ? { '.vhead': 'absent' } : { '.vhead': { height: '36px' } },
+});
+const canvasShot = (state, scheme, extra = {}) => ref(
+  `workbench-canvas${state ? `-${state}` : ''}-${scheme}`,
+  `workbench.html?product=canvas&theme=${scheme}${state ? `&state=${state}` : ''}`,
+  scheme, 1600, 1000, 'workbench', { conform: canvasConform(), ...extra });
+// A handle: focus it from the keyboard and press the key that grows its pane n times.
+const gripBy = (key, n, arrow) => async (tab) => {
+  await tab.run(async ({ page }, k, times, a) => {
+    await page.keyboard.press('Shift');
+    await page.evaluate((kk) => document.querySelector(`[data-grip="${kk}"]`).focus(), k);
+    for (let i = 0; i < times; i++) await page.keyboard.press(a);
+  }, { args: [key, n, arrow] });
+};
+const CANVAS = [
+  canvasShot('', 'light'), canvasShot('', 'dark'),
+  // Every Studio state drawn once (?state= in canvas-demo.js lists them).
+  ...[
+    ['capture', ['light', 'dark']], ['viewonly', ['light', 'dark']], ['standalone', ['light']],
+    ['merge', ['light', 'dark']], ['deleted', ['light']], ['saving', ['light']], ['paused', ['light']], ['error', ['light']],
+    ['menu', ['light', 'dark']], ['rename', ['light']], ['newfile', ['light']], ['newfolder', ['light']], ['delete', ['light']], ['discard', ['light']],
+    ['empty', ['light']], ['loading', ['light']],
+  ].flatMap(([state, schemes]) => schemes.map((s) => canvasShot(state, s))),
+  // The frame: tree closed, tree and split dragged, layout focus, keyboard focus on the split handle.
+  canvasShot('', 'light', { name: 'workbench-canvas-tree-closed-light', file: 'workbench-canvas-tree-closed-light', state: click('#panelBtn'), conform: canvasConform(['0px', null, '400px'], 'the file tree toggle closes the left column; the editor and screen take its width') }),
+  canvasShot('', 'light', { name: 'workbench-canvas-tree-wide-light', file: 'workbench-canvas-tree-wide-light', state: gripBy('insp', 8, 'ArrowRight'), conform: canvasConform(['388px', null, '400px'], 'file tree column dragged (8 steps of the handle) from 260px to 388px') }),
+  canvasShot('', 'light', { name: 'workbench-canvas-split-wide-light', file: 'workbench-canvas-split-wide-light', state: gripBy('split', 8, 'ArrowRight') }),
+  canvasShot('', 'light', { name: 'workbench-canvas-split-focus-light', file: 'workbench-canvas-split-focus-light', state: gripBy('split', 0, 'ArrowRight') }),
+  canvasShot('', 'light', { name: 'workbench-canvas-layout-drawing-light', file: 'workbench-canvas-layout-drawing-light', state: click('[data-layout-set="drawing"]'), conform: canvasConform(['260px', null, '0px'], 'layout focus "drawing" closes the agent column; the tree keeps its width') }),
+  canvasShot('', 'light', { name: 'workbench-canvas-layout-agent-light', file: 'workbench-canvas-layout-agent-light', state: click('[data-layout-set="agent"]'), conform: { reason: 'layout focus "agent" gives the agent column the whole window and collapses the tree and the view, so no pane head is drawn', expect: { '.wb': { gridTemplateColumns: ['0px', '0px', null] }, '.vhead': 'absent' } } }),
+  // Phone: the tab bar is Files, Editor, Screen, Agent; one pane at a time.
+  ref('workbench-canvas-phone', 'workbench.html?product=canvas&theme=light', 'light', 400, 860, 'workbench', { conform: canvasPhone('files') }),
+  ...['files', 'editor', 'screen', 'agent'].flatMap((t) => ['light', 'dark'].filter((s) => !(t === 'files' && s === 'light')).map((s) =>
+    ref(`workbench-canvas-phone-${t}-${s}`, `workbench.html?product=canvas&theme=${s}`, s, 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: canvasPhone(t) }))),
+  ...['editor', 'screen'].map((t) => ref(`workbench-canvas-phone-capture-${t}-light`, 'workbench.html?product=canvas&theme=light&state=capture', 'light', 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: canvasPhone(t) })),
+];
+
 export const SHOTS_REFERENCE = [
   ref('components-light', 'components.html?theme=light', 'light', 1440, 1000, 'components', { full: true }),
   ref('components-dark', 'components.html?theme=dark', 'dark', 1440, 1000, 'components', { full: true }),
   wb('loom', 'light'), wb('loom', 'dark'),
   wb('trace', 'light'), wb('trace', 'dark'),
-  wb('canvas', 'light'), wb('canvas', 'dark'),
+  ...CANVAS,
   wb('mesh', 'light'), wb('mesh', 'dark'),
   // A title bar without .cmd keeps its right controls at the right edge (?cmd=none removes the field).
   ref('workbench-nocmd-light', 'workbench.html?product=loom&theme=light&cmd=none', 'light', 1600, 1000, 'workbench'),

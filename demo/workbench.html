@@ -35,34 +35,67 @@
         <template data-for-product="mesh">
           <span class="doc"><strong title="~/cad/dual-pci">dual-pci</strong></span>
         </template>
+        <template data-for-product="canvas">
+          <span class="doc"><strong>thermostat</strong> <span class="tag" data-only="viewonly" hidden>Read-only</span></span>
+        </template>
         <template data-default>
           <span class="doc"><strong>thermostat</strong><code>ui/thermostat.py</code> <span class="tag">view only</span></span>
         </template>
       </span>
     </div>
     <button class="cmd" type="button" aria-label="Search or run a command"><svg class="ico"><use href="../icons.svg#i-search"/></svg><span>Search or run a command</span><kbd>Ctrl K</kbd></button>
-    <div class="tb-right">
-      <span class="conn" data-state="live">Live</span>
-      <button class="btn quiet" id="pauseBtn" type="button" aria-pressed="false" title="Pause live updates"><svg class="ico"><use href="../icons.svg#i-pause"/></svg><span class="lbl" data-label>Pause</span></button>
-      <span class="gap"></span>
-      <div class="seg icons" role="group" aria-label="Layout focus">
-        <button type="button" aria-pressed="false" data-layout-set="drawing" aria-label="Drawing" title="Drawing"><svg class="ico"><use href="../icons.svg#i-lay-drawing"/></svg></button>
-        <button type="button" aria-pressed="true" data-layout-set="split" aria-label="Split" title="Split"><svg class="ico"><use href="../icons.svg#i-lay-split"/></svg></button>
-        <button type="button" aria-pressed="false" data-layout-set="agent" aria-label="Agent" title="Agent"><svg class="ico"><use href="../icons.svg#i-lay-agent"/></svg></button>
+    <div data-product-slot>
+      <template data-for-product="canvas">
+        <div class="tb-right">
+          <a class="btn quiet" href="settings.html#security" data-only="hosted" hidden>Account</a>
+          <button class="btn quiet" type="button" data-only="hosted" title="Sign out of Canvas" hidden>Sign out</button>
+          <span class="gap" data-only="hosted" hidden></span>
+          <span class="state" data-kind="good" id="runState">Running</span>
+          <span class="gap"></span>
+          <button class="btn" id="pauseBtn" type="button" aria-pressed="false" title="Pause the agent"><svg class="ico"><use href="../icons.svg#i-pause"/></svg><span class="lbl" data-label>Pause agent</span></button>
+          <span class="gap"></span>
+          <div class="seg icons" role="group" aria-label="Layout focus">
+            <button type="button" aria-pressed="false" data-layout-set="drawing" aria-label="Editor and screen" title="Editor and screen"><svg class="ico"><use href="../icons.svg#i-lay-drawing"/></svg></button>
+            <button type="button" aria-pressed="true" data-layout-set="split" aria-label="Split" title="Split"><svg class="ico"><use href="../icons.svg#i-lay-split"/></svg></button>
+            <button type="button" aria-pressed="false" data-layout-set="agent" aria-label="Agent" title="Agent"><svg class="ico"><use href="../icons.svg#i-lay-agent"/></svg></button>
+          </div>
+          <span class="gap"></span>
+          <button class="btn icon" id="panelBtn" type="button" aria-pressed="true" aria-label="File tree" title="File tree"><svg class="ico"><use href="../icons.svg#i-panel-l"/></svg></button>
+          <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="../icons.svg#i-auto"/></svg></button>
+        </div>
+      </template>
+      <template data-default>
+      <div class="tb-right">
+        <span class="conn" data-state="live">Live</span>
+        <button class="btn quiet" id="pauseBtn" type="button" aria-pressed="false" title="Pause live updates"><svg class="ico"><use href="../icons.svg#i-pause"/></svg><span class="lbl" data-label>Pause</span></button>
+        <span class="gap"></span>
+        <div class="seg icons" role="group" aria-label="Layout focus">
+          <button type="button" aria-pressed="false" data-layout-set="drawing" aria-label="Drawing" title="Drawing"><svg class="ico"><use href="../icons.svg#i-lay-drawing"/></svg></button>
+          <button type="button" aria-pressed="true" data-layout-set="split" aria-label="Split" title="Split"><svg class="ico"><use href="../icons.svg#i-lay-split"/></svg></button>
+          <button type="button" aria-pressed="false" data-layout-set="agent" aria-label="Agent" title="Agent"><svg class="ico"><use href="../icons.svg#i-lay-agent"/></svg></button>
+        </div>
+        <span class="gap"></span>
+        <button class="btn icon" id="panelBtn" type="button" aria-pressed="true" aria-label="Review inspector" title="Review inspector"><svg class="ico"><use href="../icons.svg#i-review"/></svg></button>
+        <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="../icons.svg#i-auto"/></svg></button>
+        <button class="btn icon" type="button" aria-label="Settings" title="Settings"><svg class="ico"><use href="../icons.svg#i-settings"/></svg></button>
       </div>
-      <span class="gap"></span>
-      <button class="btn icon" id="panelBtn" type="button" aria-pressed="true" aria-label="Review inspector" title="Review inspector"><svg class="ico"><use href="../icons.svg#i-review"/></svg></button>
-      <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="../icons.svg#i-auto"/></svg></button>
-      <button class="btn icon" type="button" aria-label="Settings" title="Settings"><svg class="ico"><use href="../icons.svg#i-settings"/></svg></button>
+      </template>
     </div>
   </header>
 
-  <nav id="tabbar" role="tablist" aria-label="Panes"><button type="button" role="tab" aria-selected="true" data-tab="drawing" data-target=".view">Drawing</button><button type="button" role="tab" aria-selected="false" data-tab="review" data-target=".inspector:not(#timeline)">Review</button><button type="button" role="tab" aria-selected="false" data-tab="agent" data-target="#chat, .console">Agent</button></nav>
+  <div data-product-slot>
+    <template data-for-product="canvas">
+      <nav id="tabbar" role="tablist" aria-label="Panes"><button type="button" role="tab" aria-selected="true" data-tab="files" data-target=".inspector">Files</button><button type="button" role="tab" aria-selected="false" data-tab="editor" data-target="#editorHalf">Editor</button><button type="button" role="tab" aria-selected="false" data-tab="screen" data-target="#screenHalf">Screen</button><button type="button" role="tab" aria-selected="false" data-tab="agent" data-target="#chat">Agent</button></nav>
+    </template>
+    <template data-default>
+      <nav id="tabbar" role="tablist" aria-label="Panes"><button type="button" role="tab" aria-selected="true" data-tab="drawing" data-target=".view">Drawing</button><button type="button" role="tab" aria-selected="false" data-tab="review" data-target=".inspector:not(#timeline)">Review</button><button type="button" role="tab" aria-selected="false" data-tab="agent" data-target="#chat, .console">Agent</button></nav>
+    </template>
+  </div>
 
   <div data-product-slot>
 
     <!-- ======================================================== Loom -->
-    <template data-for-product="loom pod">
+    <template data-for-product="loom pod" data-default>
       <div class="vhead" role="tablist" aria-label="Views">
         <button class="vtab" type="button">Requirements</button>
         <button class="vtab" type="button">Workflow</button>
@@ -478,79 +511,172 @@ content: NUT_SLOT = 5.7</pre>
     </template>
 
     <!-- ====================================================== Canvas -->
-    <template data-default>
-      <div class="vhead">
-        <button class="vtab" type="button" aria-current="page">Screen</button>
-        <button class="vtab" type="button">Source</button>
-        <span class="vsep"></span>
-        <button class="vtab second" type="button">Actions <span class="n">22</span></button>
-        <div class="meta"><span>reload <b>8 ms</b></span><span><b>480 × 320</b></span></div>
-        <div class="right"><button class="btn sm" type="button"><svg class="ico"><use href="../icons.svg#i-rebuild"/></svg>Reload</button></div>
-      </div>
+    <!-- Annealage Canvas Studio, drawn for the real layout (Q26 (a)): the file tree is the inspector
+         column moved to the left (data-insp="left", set by demo.js), the view is a split of editor and
+         screen with a handle between them, the agent column stays at the right. There is no tool rail
+         and no window-wide tab row: each half has its own pane head, the same height as the tree's
+         and the agent's, so their hairlines meet. File names are mono (the user's own files).
+         ?state= takes a comma list, drawn by canvas-demo.js (the product's own script draws the real ones):
+           capture     the snapshot review: pins and a rectangle on a capture, a comment field
+           viewonly    a hosted view-only session: read-only review, Pause agent and the tools disabled
+           standalone  Studio with no agent: no chat, Capture and Export and the agent focus disabled
+           merge deleted saving    the editor's conflict view, deleted-file message, saving marks
+           paused error            the run state in the title bar (error adds the status bar's last error)
+           menu rename newfile newfolder delete    the tree's context menu and its prompts
+           discard     closing a tab with unsaved edits
+           empty loading    a project with no files, and the tree while it loads
+         ?confirm=1 opens the first confirmation (confirm-demo.js), here the discard prompt. -->
+    <template data-for-product="canvas">
+      <main class="view" aria-label="Editor and screen">
+        <div class="canvas split even">
 
-      <nav class="rail" aria-label="Tools">
-        <button class="tool" type="button" aria-pressed="true" aria-label="Touch" title="Touch"><svg class="ico"><use href="../icons.svg#i-select"/></svg></button>
-        <button class="tool" type="button" aria-label="Inspect" title="Inspect a widget (I)"><svg class="ico"><use href="../icons.svg#i-eye"/></svg><span class="k">I</span></button>
-        <button class="tool" type="button" aria-label="Comment" title="Comment (C)"><svg class="ico"><use href="../icons.svg#i-comment"/></svg><span class="k">C</span></button>
-        <hr>
-        <button class="tool" type="button" aria-label="Fit" title="Fit (F)"><svg class="ico"><use href="../icons.svg#i-fit"/></svg><span class="k">F</span></button>
-        <button class="tool end" type="button" aria-label="Run" title="Run"><svg class="ico"><use href="../icons.svg#i-run"/></svg></button>
-      </nav>
+          <section class="half ed" id="editorHalf" aria-label="Editor">
+            <div class="vhead" role="tablist" aria-label="Open files">
+              <div class="vtab" role="tab" aria-selected="true" aria-current="page" data-file="thermostat.py"><button class="vname mono" type="button">thermostat.py</button><span class="dirty" role="img" aria-label="Unsaved changes" title="Unsaved changes"></span><button class="btn icon sm x" type="button" aria-label="Close thermostat.py" title="Close" data-confirm='{"title":"Discard changes to thermostat.py?","detail":"Your edits to this file are not saved.","action":"Discard changes","danger":true}' data-confirm-into="#editConfirm"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button></div>
+              <div class="vtab" role="tab" aria-selected="false" data-file="widgets.py"><button class="vname mono" type="button">widgets.py</button><button class="btn icon sm x" type="button" aria-label="Close widgets.py" title="Close"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button></div>
+              <div class="vtab" role="tab" aria-selected="false" data-file="main.py"><button class="vname mono" type="button">main.py</button><button class="btn icon sm x" type="button" aria-label="Close main.py" title="Close"><svg class="ico ico--sm"><use href="../icons.svg#i-x"/></svg></button></div>
+            </div>
+            <div id="editConfirm"></div>
+            <div class="edmsg" id="msgChanged" data-hide="viewonly merge deleted empty">
+              <p class="notice notice--warn"><span>The agent changed this file.</span></p>
+              <div class="acts"><button class="btn sm quiet" type="button">View diff</button><button class="btn sm quiet" type="button">Keep mine</button><button class="btn sm quiet" type="button">Take theirs</button></div>
+            </div>
+            <div class="edmsg" id="msgDeleted" hidden>
+              <p class="notice notice--danger"><span>This file was deleted from the project.</span></p>
+              <div class="acts"><button class="btn sm quiet" type="button">Restore file</button><button class="btn sm quiet" type="button">Close tab</button></div>
+            </div>
+            <ol class="src" aria-label="thermostat.py" tabindex="0">
+            <li><code><span class="tok-keyword">import</span> lvgl <span class="tok-keyword">as</span> lv</code></li>
+            <li><code><span class="tok-keyword">from</span> widgets <span class="tok-keyword">import</span> step_button</code></li>
+            <li><code></code></li>
+            <li><code>T_MIN = <span class="tok-number">10.0</span></code></li>
+            <li><code>T_MAX = <span class="tok-number">30.0</span></code></li>
+            <li><code></code></li>
+            <li><code><span class="tok-decorator">@lv.on_reload</span></code></li>
+            <li><code><span class="tok-keyword">def</span> <span class="tok-defname">build_ui</span>(scr):</code></li>
+            <li><code>    title = lv.label(scr)</code></li>
+            <li><code>    title.set_text(<span class="tok-string">"Thermostat"</span>)</code></li>
+            <li><code>    title.align(lv.ALIGN.TOP_LEFT, <span class="tok-number">16</span>, <span class="tok-number">14</span>)</code></li>
+            <li><code></code></li>
+            <li><code>    temp = lv.label(scr)</code></li>
+            <li><code>    temp.set_text(<span class="tok-builtin">str</span>(read_temp()))</code></li>
+            <li><code>    temp.center()</code></li>
+            <li><code></code></li>
+            <li><code>    step_button(scr, <span class="tok-string">"-"</span>, <span class="tok-keyword">lambda</span>: <mark aria-current="true">nudge</mark>(<span class="tok-number">-0.5</span>))</code></li>
+            <li><code>    step_button(scr, <span class="tok-string">"+"</span>, <span class="tok-keyword">lambda</span>: <mark>nudge</mark>(<span class="tok-number">0.5</span>))</code></li>
+            <li><code></code></li>
+            <li><code></code></li>
+            <li><code><span class="tok-keyword">def</span> <span class="tok-defname"><mark>nudge</mark></span>(step):</code></li>
+            <li><code>    <span class="tok-keyword">global</span> target</code></li>
+            <li><code>    <span class="tok-comment"># Keep the target inside the range the heater accepts.</span></code></li>
+            <li><code>    target = <span class="sel"><span class="tok-builtin">max</span>(T_MIN, <span class="tok-builtin">min</span>(T_MAX, target + step))</span></code></li>
+          </ol>
+            <div class="merge" id="mergeView" hidden>
+              <div class="edmsg">
+                <p class="notice notice--warn"><span>2 lines differ.</span></p>
+                <div class="acts"><button class="btn sm quiet" type="button">Keep mine</button><button class="btn sm quiet" type="button">Take theirs</button><button class="btn sm primary" type="button">Accept manual</button></div>
+              </div>
+              <div class="mcols">
+                <section aria-label="Mine"><h3>Mine</h3>
+                  <ol class="src" aria-label="thermostat.py, mine" tabindex="0">
+                <li><code><span class="tok-keyword">def</span> <span class="tok-defname">nudge</span>(step):</code></li>
+                <li><code>    <span class="tok-keyword">global</span> t</code></li>
+                <li data-diff><code>    t += step</code></li>
+                <li data-diff><code>    t = <span class="tok-builtin">max</span>(<span class="tok-number">10</span>, t)</code></li>
+                <li><code>    show(t)</code></li>
+              </ol>
+                </section>
+                <section aria-label="Theirs"><h3>Theirs</h3>
+                  <ol class="src" aria-label="thermostat.py, theirs" tabindex="0">
+                <li><code><span class="tok-keyword">def</span> <span class="tok-defname">nudge</span>(step):</code></li>
+                <li><code>    <span class="tok-keyword">global</span> t</code></li>
+                <li data-diff><code>    t = clamp(t + step)</code></li>
+                <li><code>    show(t)</code></li>
+              </ol>
+                </section>
+              </div>
+            </div>
+            <p class="empty" id="noFiles" hidden>No files open. Pick a file in the tree to edit it.</p>
+            <div class="subtabs" role="status" aria-label="File status">
+              <span class="state" data-kind="gap" id="fileState">Unsaved changes</span>
+            </div>
+          </section>
 
-      <main class="view" aria-label="Screen">
-        <div class="canvas split">
-          <aside class="vpanel" aria-label="Screen controls">
-            <details class="sec" open>
-              <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Layers</summary>
-              <div class="secbody">
-                <div class="chips"><button class="chip" type="button" aria-pressed="true">All</button><button class="chip" type="button" aria-pressed="false">Top</button><button class="chip" type="button" aria-pressed="false">Sys</button></div>
-                <div class="layerlist">
-                  <div class="layergroup">Screen</div>
-                  <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#5599B8"></span><span class="name">lbl_title</span><span class="hint">label</span></label>
-                  <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#E0A94A"></span><span class="name">lbl_temp</span><span class="hint">label</span></label>
-                  <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#9E8BC0"></span><span class="name">btn_down</span><span class="hint">btn</span></label>
-                  <label class="layerrow"><input type="checkbox" checked><span class="swatch" data-c="#6FA85A"></span><span class="name">btn_up</span><span class="hint">btn</span></label>
-                  <details><summary class="layergroup">Hidden (1 of 4 shown)</summary><label class="layerrow"><input type="checkbox"><span class="swatch" data-c="#B9BEC3"></span><span class="name">msgbox_err</span></label></details>
-                </div>
-                <label class="slider">Outlines <input type="range" min="0" max="100" value="70"></label>
+          <section class="half" id="screenHalf" aria-label="Screen">
+            <div class="vhead">
+              <button class="vtab" type="button" aria-current="page">Screen</button>
+              <div class="right">
+                <button class="btn sm" type="button" title="Reload the screen"><svg class="ico"><use href="../icons.svg#i-rebuild"/></svg>Reload</button>
+                <button class="btn sm" type="button" id="captureBtn" title="Capture a snapshot of the screen">Capture</button>
+                <button class="btn sm" type="button" id="exportBtn" title="Export the project">Export</button>
               </div>
-            </details>
-            <details class="sec" open>
-              <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Find widget</summary>
-              <div class="secbody">
-                <form class="query"><input class="input" type="search" value="type:btn" aria-label="Widget query" spellcheck="false"></form>
-                <div class="chips"><button class="chip mono" type="button">text:Start</button><button class="chip mono" type="button">hidden</button></div>
-                <div class="qmeta">2 buttons</div>
-                <div class="qacts"><button class="btn sm" type="button">Highlight all</button><button class="btn sm quiet" type="button">Clear</button></div>
-                <div class="results">
-                  <button class="hit on" type="button"><span class="kind">btn</span><span class="ref">btn_up</span><span class="why">372, 248, 84 × 44</span></button>
-                  <button class="hit" type="button"><span class="kind">btn</span><span class="ref">btn_down</span><span class="why">24, 248, 84 × 44</span></button>
-                </div>
+            </div>
+            <div class="previewbar" role="status"><b>Capture <span class="mono">14:32</span></b><span id="roLine" hidden>Read-only</span><button class="btn sm" type="button" id="pinTool" aria-pressed="true">Pin</button><button class="btn sm" type="button" id="boxTool" aria-pressed="false">Rectangle</button><button class="btn sm" type="button">Back to live</button></div>
+            <div class="stage">
+              <div class="demo-screen" role="img" aria-label="The thermostat screen, 480 by 320">
+                <div class="rowz"><span>Thermostat</span><span>14:32</span></div><div class="big">21.5°</div><div class="rowz"><span class="key">−</span><span>Target 22.0°</span><span class="key">+</span></div>
+                <button class="hpin cap" type="button" data-sx="240" data-sy="46" aria-label="Pin 1, the title"><span class="mk">1</span></button>
+                <button class="hpin cap" type="button" data-sx="310" data-sy="120" aria-pressed="true" aria-label="Pin 2, the temperature, selected"><span class="mk">2</span></button>
+                <button class="hbox" type="button" data-sx="411" data-sy="261" data-sw="53" data-sh="45" aria-label="Rectangle 3, the plus key"></button>
+                <button class="hpin cap" type="button" data-sx="411" data-sy="261" aria-label="Number 3, the plus key"><span class="mk">3</span></button>
               </div>
-            </details>
-          </aside>
-          <div class="stage" aria-hidden="true">
-            <div class="demo-screen"><div class="rowz"><span>Thermostat</span><span>14:32</span></div><div class="big">21.5°</div><div class="rowz"><span class="key">−</span><span>Target 22.0°</span><span class="key sel">+</span></div></div>
-            <span class="hud hud--bl">480 × 320, 100%</span>
-          </div>
+              <span class="hud hud--bl">480 × 320</span>
+              <form class="composer" aria-label="Comment on pin 2" data-hide="viewonly">
+                <div class="where">Pin 2 at <span class="mono">310, 120</span></div>
+                <textarea rows="2" aria-label="Comment">The set point matters more than the clock. Make it the largest thing here.</textarea>
+                <div class="acts"><button class="btn sm quiet danger" type="button">Delete pin</button><button class="btn sm quiet" type="button">Cancel</button><button class="btn sm" type="button">Save</button></div>
+              </form>
+            </div>
+            <nav class="subtabs" aria-label="Live screen and captures">
+              <button class="subtab" type="button" id="liveTab" aria-current="page">Live</button>
+              <button class="subtab" type="button" data-capture><span class="mono">14:32</span></button>
+              <button class="subtab" type="button"><span class="mono">14:18</span></button>
+              <button class="subtab" type="button"><span class="mono">13:57</span></button>
+              <div class="right"><span class="zoom"><button class="btn icon sm" type="button" aria-label="Zoom out"><svg class="ico"><use href="../icons.svg#i-minus"/></svg></button><span class="mono">100%</span><button class="btn icon sm" type="button" aria-label="Zoom in"><svg class="ico"><use href="../icons.svg#i-plus"/></svg></button></span></div>
+            </nav>
+          </section>
+
         </div>
       </main>
 
-      <aside class="inspector" aria-label="Selection">
-        <div class="ihead"><h2>Selection</h2><button class="btn icon sm" type="button" data-panel-close aria-label="Hide inspector"><svg class="ico"><use href="../icons.svg#i-x"/></svg></button></div>
+      <aside class="inspector" id="files" aria-label="Files">
+        <div class="ihead"><h2>Files</h2><button class="btn icon sm" type="button" data-panel-close aria-label="Hide the file tree" title="Hide"><svg class="ico"><use href="../icons.svg#i-x"/></svg></button></div>
         <div class="iscroll">
-          <div class="propshead"><span class="ref">btn_up</span><span class="hint">lv.button</span><span class="acts"><button class="btn sm quiet" type="button">Tap</button></span></div>
-          <table class="props">
-            <tr><th>At</th><td>372, 248</td></tr>
-            <tr><th>Size</th><td>84 × 44</td></tr>
-            <tr><th>Parent</th><td><button class="linkish" type="button">scr_main</button></td></tr>
-            <tr><th>Handlers</th><td><button class="linkish" type="button">on_up</button> (CLICKED)</td></tr>
-          </table>
-          <div class="subhead">Notes <span class="c">2</span></div>
-          <p class="notice">The harness reloaded 8 ms ago.</p>
-          <p class="notice notice--warn"><span><code>lbl_temp</code> is clipped by 6 px at this font size.</span></p>
-          <p class="empty">No comments on this screen yet.</p>
+          <ul class="tree" id="fileTree" aria-label="Project files">
+            <li><details open><summary><span class="mono">ui</span></summary>
+              <ul>
+                <li class="file" data-open aria-current="true" data-file="thermostat.py"><span class="mono">thermostat.py</span><span class="lamp warn" role="img" aria-label="Changed by the agent" title="Changed by the agent"></span></li>
+                <li class="file" data-open data-file="widgets.py"><span class="mono">widgets.py</span></li>
+                <li class="file" data-file="theme.py"><span class="mono">theme.py</span></li>
+              </ul></details></li>
+            <li><details open><summary><span class="mono">assets</span></summary>
+              <ul>
+                <li><details open><summary><span class="mono">icons</span></summary>
+                  <ul>
+                    <li class="file"><span class="mono">flame.png</span></li>
+                    <li class="file"><span class="mono">snow.png</span></li>
+                  </ul></details></li>
+                <li class="file"><span class="mono">font_44.bin</span></li>
+              </ul></details></li>
+            <li><details><summary><span class="mono">lib</span></summary>
+              <ul>
+                <li class="file"><span class="mono">sensors.py</span></li>
+              </ul></details></li>
+            <li class="file" data-open data-file="main.py"><span class="mono">main.py</span></li>
+            <li class="file"><span class="mono">boot.py</span></li>
+            <li class="tin" id="treeInput" hidden><form id="treeForm"><input class="input mono" id="treeName" type="text" value="widgets.py" spellcheck="false" autocomplete="off" aria-label="New name"></form><p class="hint">Enter renames, Escape cancels</p></li>
+            <li class="tin" id="treeConfirm" hidden></li>
+          </ul>
+          <p class="empty" id="treeEmpty" hidden>No files yet. Add one with New file, from the menu on a folder.</p>
+          <p class="empty" id="treeLoading" hidden>Loading files</p>
         </div>
+        <span class="menu at" id="ctxMenu" role="menu" aria-label="widgets.py" hidden>
+          <button type="button" role="menuitem">Rename</button>
+          <button type="button" role="menuitem" class="danger" id="ctxDelete" data-confirm='{"title":"Delete widgets.py?","detail":"The file is removed from the project.","action":"Delete","danger":true}' data-confirm-into="#treeConfirm">Delete</button>
+          <hr>
+          <button type="button" role="menuitem">New file</button>
+          <button type="button" role="menuitem">New folder</button>
+        </span>
       </aside>
 
       <aside id="chat" aria-label="Agent" data-pending="0">
@@ -574,12 +700,21 @@ content: NUT_SLOT = 5.7</pre>
           </div>
         </div>
       </aside>
+      <template id="chatNone">
+        <aside id="chat" aria-label="Agent">
+          <header><h1>Agent</h1></header>
+          <p class="empty">Standalone Studio has no agent. Open the project through Annealage to work with one.</p>
+        </aside>
+      </template>
 
       <footer class="statusbar">
         <span class="conn" data-state="live">Live</span>
-        <span>Agent <b>Ready</b></span>
-        <span class="push">Harness <span class="ok">running</span></span>
-        <span>reload <b>8 ms</b></span>
+        <span>Harness <span class="ok" id="harnessState">running</span></span>
+        <span id="lastError" hidden><span class="state" data-kind="bad">Last error</span><b>ImportError: no module named widgets</b></span>
+        <span id="readOnlyNote" hidden>Read-only</span>
+        <span id="savedNote" class="push">Saved <b>14:31</b></span>
+        <span id="unsavedNote" data-hide="viewonly">Unsaved changes <b>1</b></span>
+        <span>Reloads <b>8</b></span>
       </footer>
     </template>
 
@@ -588,6 +723,7 @@ content: NUT_SLOT = 5.7</pre>
 <script src="../frame.js" data-auto></script>
 <script src="../palette.js"></script>
 <script type="module" src="demo.js"></script>
+<script type="module" src="canvas-demo.js"></script>
 <script type="module" src="confirm-demo.js"></script>
 </body>
 </html>

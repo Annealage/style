@@ -32,6 +32,8 @@ for (const slot of $$("[data-product-slot]")) {
   if (pick) slot.replaceWith(pick.content.cloneNode(true));
   else slot.remove();
 }
+// Canvas puts its file tree in the inspector column, at the left (data-insp, theme.css).
+if (product === "canvas") document.querySelector(".wb")?.setAttribute("data-insp", "left");
 
 // ---- Scheme: ?theme= forces one for this page without touching the stored choice.
 const theme = q.get("theme");
