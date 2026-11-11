@@ -54,7 +54,7 @@ Dark is graphite, not black. Ground is `#16191C`, the well is darker and the fie
 | Caution | `--warn` | warnings, candidates, unconfirmed |
 
 - Temper is small. It marks selection and "where you are", never a large fill, a header band or a button. The greys carry no tint of it; the products are told apart by their mark and their temper on the selected thing.
-- Platform pages (project chooser, account, sign-in) have no temper. Selection and the active tab there are ink. A product's own mark or name may appear in its colours.
+- Account and sign-in pages have no temper; selection and the active tab there are ink. A product host's project chooser carries that product's temper (`data-product` set) on the selected row and the active tab. A product's own mark or name may appear in its colours.
 - Severity is never ember. Critical is danger and major is warn. A run that failed is danger; a run that is waiting for the user's decision is ember.
 - A primary button is solid ink. There is one per view, at the end of the flow (bottom right of a step, right of a title row).
 - No gradients, glows, blur or tinted shadows. The only shadow is under a menu.
@@ -182,6 +182,8 @@ List, guided flow and sign-in pages work at 400px: the step spine becomes a stri
 - Dates are `10 Nov 2026 10:35 UTC` in data and "today 09:12" in activity. Durations are `1:12`.
 - No emoji, no arrows on buttons, no sparkle icons, no "AI" labels. The agent is "the agent".
 - No implementation detail on screen. The user sees their design by its title, sheet name and revision, never by the file the product happens to store it in (`*.kicad_sch`, a build directory, an internal id). A file name appears only where the user handed over or asked for that file: the upload list, a download.
+- Provenance is the exception, and only a narrow one. Ids, hashes, revision numbers and stored file names may appear as mono data inside a view whose purpose is provenance (a workflow, cost or run-details view) or behind a "Details" disclosure. They never appear in a title, label, button, tab, status bar or message. The user's own source file names are always allowed. A path is shown from the project root, never as an absolute path or a home directory.
+- A control that cannot act, whether the state is wrong, the viewer is not the owner, a grant is missing or the feature has no backend yet, is shown disabled with a `title` in plain words saying why ("Only the project owner can delete it"). It is not hidden and not left clickable, so the user can see the action exists and what unlocks it. Data the viewer may not see can stay absent. One exception: where the mere presence of a control would tell the user something they must not learn (an administrator surface shown to someone who is not one, where the server answers 404), leave it out. `components.html` shows the disabled specimens.
 - Not used: revolutionary, seamless, transform, supercharge, unleash, reimagine, comprehensive, robust, cutting-edge, next-generation, paradigm.
 
 ## Motion
