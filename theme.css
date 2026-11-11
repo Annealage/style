@@ -891,7 +891,6 @@ body:not(.panel-open) .wb[data-insp=left] .half:first-child > .vhead { padding-l
   .wb[data-insp=left] .titlebar .cmd:hover { background: var(--hover); color: var(--ink); }
   .wb[data-insp=left] .titlebar .cmd > :is(span, kbd) { display: none; }
 }
-}
 .stage > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
 
 /* A layer list: .layergroup headings, then label.layerrow each holding a
