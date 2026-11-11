@@ -8,7 +8,7 @@ The look is **Hairline + plate**. Everything sits on one surface divided by 1px 
 
 - `tokens.css`: colours, type, sizes and the `@font-face` rules. Light and dark follow the OS through `light-dark()`, and `<html data-theme="light|dark">` forces one. `<html data-product="loom|trace|canvas|mesh|pod">` sets the product's temper and nothing else: the greys are the same for every product. With no `data-product` the page is platform chrome and temper falls back to ink.
 - `theme.css`: base, controls, lamps, markers, readouts, menus, tables, the workbench frame (title bar, view tabs, tool rail, well, inspector, agent pane, status bar), the timeline, findings, the run console, and the agent chat and settings window that annealage-ember's `chat.js` and `settings.js` build.
-- `pages.css`: what sits outside the workbench frame. The project register and tiles, a guided flow with its step spine and pinned footer, the settings or account layout, the drop zone.
+- `pages.css`: what sits outside the workbench frame. The project register and tiles, a guided flow with its step spine and pinned footer, the settings or account layout, the drop zone. `--reg-cols` is the register's column hook: set it on `.reg` to replace the default `grid-template-columns` of `.reg-head` and the list rows (one track per cell). `pages.css` has no global selectors, so it may also be linked inside the workbench frame for `.drop`, `.dropstrip`, `.measure`, `.ready`, `.segbar`, `dl.figs` and `.ready-r`.
 - `scheme.js`: light and dark follow the OS unless the user picks one, remembered per origin in localStorage under `annealage.scheme`. It sets `<html data-theme>`, keeps the marks' `<picture>` sources in step, drives any `<button data-scheme-toggle>` (System, Light, Dark), and fires `schemechange` on `<html>` (detail `{scheme, choice}`) on every effective change. `window.annealageScheme` has `choice()`, `get()` and `set('light'|'dark'|null)`.
 - `frame.js`: the page frame's driver (layout focus, the Panel button, the phone tab bar, column resizers). See "The frame driver" below.
 - `palette.js`: the command palette behind the title bar's `.cmd` field, and the registry products put their commands in. See "The command palette" below.
@@ -164,7 +164,7 @@ tools/shot --derive-conformance                # rewrite tools/conformance.json 
 
 ### `tools/check`
 
-`tools/check [dir] [--style <dir>] [--rules a,b] [--json]` reads a product tree without a browser and reports `file:line: [rule] message`: `old-look` (old tokens, Chivo), `inline-style` (a `style=""` attribute in markup, templates, or markup built in a script), `hex` (a hex colour outside the exceptions in `tools/conformance.json` `check`; hex in a `data-*` attribute is data), `confirm` (a `confirm()` call; use `confirm.js`), `emdash` (an em dash in a string or in markup text) and `runtime-files` (every path in `runtime-files.txt` exists, in `--style`, `lib/style` or the tree itself). A vendored library directory (one that holds `runtime-files.txt`) is not scanned. A line, or the line above it, with `check-ok` and a reason is skipped. Exit 0 clean, 1 findings.
+`tools/check [dir] [--style <dir>] [--rules a,b] [--json]` reads a product tree without a browser and reports `file:line: [rule] message`: `old-look` (old tokens, Chivo), `inline-style` (a `style=""` attribute in markup, templates, or markup built in a script), `hex` (a hex colour outside the exceptions in `tools/conformance.json` `check`; hex in a `data-*` attribute is data), `confirm` (a `confirm()` call; use `confirm.js`), `emdash` (an em dash in a string or in markup text) and `runtime-files` (every path in `runtime-files.txt` exists, in `--style`, `lib/style` or the tree itself). A vendored library directory (one that holds `runtime-files.txt` or `VENDORED.json`, which `tools/vendor-style.sh` writes) is not scanned. A line, or the line above it, with `check-ok` and a reason is skipped. Exit 0 clean, 1 findings.
 
 ### Wiring a product
 
@@ -199,7 +199,7 @@ Each component's markup is in the comment above its rules.
 - Checkboxes and radios are styled wherever they are; `input.switch` is a toggle; `label.check` lays one out with its text.
 - `.seg` (segmented control, `.icons`, `.sm`), `.chips` and `.chip`, the count `.n`, the label `.tag`.
 - `[data-scheme-toggle]`, the scheme button.
-- `.confirm` and `confirm.js`: the inline approval row that replaces the browser's `confirm()`. `confirmRow(anchor, {title, detail, fields, action, danger, cancel, into})` returns a promise that is true for the action and false for Cancel, Escape, another row opening or the anchor leaving the page. It opens in place (a `.dt-detail` under a table row, `into`, or after the anchor), disables the opener while open and returns focus to it. A spend uses the solid ink button, a destructive action danger text; neither is ember. It is for in-page actions: a `beforeunload` guard stays with the browser's own prompt.
+- `.confirm` and `confirm.js` (an ES module: `import { confirmRow } from "/style/confirm.js"` in a `<script type="module">` or with `import()`; the product serves it with the other runtime files): the inline approval row that replaces the browser's `confirm()`. `confirmRow(anchor, {title, detail, fields, action, danger, cancel, extra, into})` returns a promise that is true for the action and false for Cancel, Escape, another row opening or the anchor leaving the page. `extra` is a DOM node or an array of them, placed inside the row between the detail and the actions (a warning, a Details `.disc`); the caller builds it, and it is not parsed from a string. Inside a register row (`.reg .proj > .confirm`) it spans the row's columns (specimen: `demo/list.html`). It opens in place (a `.dt-detail` under a table row, `into`, or after the anchor), disables the opener while open and returns focus to it. A spend uses the solid ink button, a destructive action danger text; neither is ember. It is for in-page actions: a `beforeunload` guard stays with the browser's own prompt.
 
 **Lamps, markers, readouts**
 - `.lamp` with `.ok`, `.warn`, `.bad`, `.none`, `.run`; `.state[data-kind=good|busy|gap|bad|pending|waiting]`; `.conn[data-state]`; `.agentstatus[data-state]`.
@@ -232,19 +232,19 @@ Each component's markup is in the comment above its rules.
 
 **Agent pane and settings** (annealage-ember's markup)
 - `#chat` with its header (`.agentstatus`, `.chatwho`, `.chatusage`, `.working`, `.conn`, `.hdrbtn`, `details.more`), `.chatbanner[data-kind]`, `#chatLog` (`.turn`, `.msg.user`, `.msg.assistant`, `.msg.action`, `.segments`, `.text`, `details.thinking`, `details.toolgroup`, `details.toolcard`, `pre.toolinput`, `pre.toolresult`, `.turnerrors`, `.chathistory`, `.attachthumbs`, `.contextchip`), `.side`, `.chathint`, `#chatPending` with `.permcard`, and `#chatComposer` (`.chatmodelrow`, `.attachstrip`, `.attachchip`, `#chatComposerRow`, `.attachbtn`, `#chatInput`, `.chatbtns`).
-- `.modal` and `.setpanel` with `.setwarn`, `.setbody`, `.setrow`, `.setlabel`, `.setinput`, `.setnote`, `.sethelp`, `.diagrow`, `.logrow`, `.logtail`, `.loginflow`.
+- `.modal` (a `div` or a `<dialog class="modal">`, closed one hidden; the dialog's backdrop is not drawn, `.modal` paints the scrim; `.toolcard` single-line rows read as in `#chat`) and `.setpanel` with `.setwarn`, `.setbody`, `.setrow`, `.setlabel`, `.setinput`, `.setnote`, `.sethelp`, `.diagrow`, `.logrow`, `.logtail`, `.loginflow`.
 - `#toast` (class `ok` or `err`) and `#err`, which ember's `ui.js` writes: a floating message row with a lamp.
 - The project views `project.js` builds, all `pj-*` classes: `.pj-header`, `.pj-history`, `.pj-lineage`, `.pj-projects` and the `.pj-modal` dialog. The theme draws their look and layout; `demo/ember.html` shows them under ember's real `agent.css` and `project.css`.
 
 **Review** (a product that runs a review rather than a chat)
-- `section.console` with `.chead` and `.cbody`, `ol.steps` of `li.step[data-state]`, `pre.log`.
+- `section.console` with `.chead` and `.cbody`, `ol.steps` of `li.step[data-state=done|running|waiting|queued|failed|skipped|cancelled]` (cancelled is a run stopped by the user: solid grey lamp, readable text; label it "Stopped"), `pre.log`.
 - `.filters` and `.frow`; `details.finding` with `.fhead`, `.sev[data-sev]`, `.fid`, `.fstat[data-status]`, `.ftri`, `.fver`, `.fstale`, `.claim`, `.subj`, `.fbody`, `ul.evidence`, `form.triageform`.
 - Coverage: `.covcounts`, `.covlist`, `.covhead`.
 
 **Pages** (`pages.css`)
 - `.page` with `.pagebody`, `.pagehead`, `.lede`, `.measure`, `.pageacts`; `section.card` (a ruled section, not a box); `.linkrow`.
 - `.drop` and `.dropstrip`.
-- Flow: `.flow`, `.flowside`, `ol.flowsteps` of `li.flowstep[data-state=done|current|open|locked]`, `.flowfacts`, `.flowmain`, `.flowview` (`.split`), `.flowscroll`, `.flowhead`, `.flowaside`, `.flowfoot`; `.ready` with `.figs`, `.ready-r` and `.segbar`; `.optlist` and `.opt`; `.besides` and `.sidenote`; `dl.fl.stack`.
+- Flow: `.flow`, `.flowside`, `ol.flowsteps` of `li.flowstep[data-state=done|current|open|locked]` (the step control is an `a` or a `button`, styled alike), `.flowfacts`, `.flowmain`, `.flowview` (`.split`), `.flowscroll`, `.flowhead`, `.flowaside`, `.flowfoot`; `.ready` with `.figs`, `.ready-r` and `.segbar`; `.optlist` and `.opt`; `.besides` and `.sidenote`; `dl.fl.stack`.
 - Register: `.reg[data-view=list|tiles]` with `.reg-head`, `.projs`, `.proj` and its `.p-thumb`, `.p-name`, `.p-rev`, `.p-parts`, `.p-nets`, `.p-state`, `.p-opened`, `.p-created`, `.p-act`.
 - Settings: `.navpage` with `.sidenav` and `.navmain`; `.blk`, `.blk-h`, `.rows`, `.fr` (`.item`, `.sum`, `.total`), `.fr-act`; `table.dtable.fixed` with `col.c-label`, `.c-date`, `.c-act`.
 
