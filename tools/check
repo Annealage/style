@@ -1,0 +1,3 @@
+#!/usr/bin/env node
+// tools/check: static conformance of a product tree, no browser. See README "Automated checks".
+import('./lib/check-cli.mjs').then((m) => m.main(process.argv.slice(2)), (e) => { console.error(e.message || e); process.exit(2); });
