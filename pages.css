@@ -199,6 +199,7 @@ a.p-name:hover { text-decoration: underline; text-decoration-color: var(--rule-s
 .reg-head .sorted { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }
 .reg-head .sorted::after { content: ""; width: 4px; height: 4px; margin-top: -3px; border: solid var(--ink-2); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
 .reg[data-view=list] .proj { min-height: 62px; }
+.reg .proj > .confirm { grid-column: 1 / -1; }
 .reg[data-view=list] .proj:hover { background: var(--hover); }
 .reg[data-view=list] .proj .k { display: none; }
 .reg[data-view=list] :is(.p-parts, .p-nets) { text-align: right; }

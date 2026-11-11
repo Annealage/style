@@ -352,11 +352,11 @@ details.more > summary::-webkit-details-marker { display: none; }
 summary { cursor: pointer; }
 .disc > summary { display: flex; align-items: center; gap: 8px; height: 32px; list-style: none; font-weight: 500; }
 .disc > summary::-webkit-details-marker { display: none; }
-.disc > summary::before, #chat .toolcard > summary::before, #chat .toolgroup > summary::before, #chat .thinking > summary::before, #chat .turnerror > summary::before, .chatbannerdetail > summary::before {
+.disc > summary::before, :is(#chat, .modal) .toolcard > summary::before, #chat .toolgroup > summary::before, #chat .thinking > summary::before, #chat .turnerror > summary::before, .chatbannerdetail > summary::before {
   content: ""; width: 5px; height: 5px; margin: 0 4px 0 3px; flex: none;
   border: solid var(--ink-3); border-width: 0 1.5px 1.5px 0; transform: rotate(-45deg);
 }
-.disc[open] > summary::before, #chat .toolcard[open] > summary::before, #chat .toolgroup[open] > summary::before, #chat .thinking[open] > summary::before, #chat .turnerror[open] > summary::before, .chatbannerdetail[open] > summary::before { transform: rotate(45deg) translate(-1px, -1px); }
+.disc[open] > summary::before, :is(#chat, .modal) .toolcard[open] > summary::before, #chat .toolgroup[open] > summary::before, #chat .thinking[open] > summary::before, #chat .turnerror[open] > summary::before, .chatbannerdetail[open] > summary::before { transform: rotate(45deg) translate(-1px, -1px); }
 .disc-body { padding: 0 0 12px 20px; color: var(--ink-2); max-width: 720px; }
 .disc-body p + p { margin-top: 6px; }
 .discs { border-top: 1px solid var(--rule); }
@@ -1163,33 +1163,33 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 #chat .chathistory:hover:not(:disabled) { background: var(--hover); color: var(--ink); }
 
 /* Thinking, tool runs and tool calls: single quiet lines with a chevron. */
-#chat .thinking, #chat .toolgroup, #chat .toolcard { border: 0; border-radius: 0; background: none; }
-#chat .thinking > summary, #chat .toolgroup > summary, #chat .toolcard > summary, #chat .turnerror > summary {
+#chat .thinking, #chat .toolgroup, :is(#chat, .modal) .toolcard { border: 0; border-radius: 0; background: none; }
+#chat .thinking > summary, #chat .toolgroup > summary, :is(#chat, .modal) .toolcard > summary, #chat .turnerror > summary {
   display: flex; align-items: center; gap: 5px; height: 24px; padding: 0; list-style: none; cursor: pointer;
   font: 400 var(--fs-small)/1 var(--sans); font-style: normal; color: var(--ink-2); white-space: nowrap;
 }
-#chat .thinking > summary::-webkit-details-marker, #chat .toolgroup > summary::-webkit-details-marker, #chat .toolcard > summary::-webkit-details-marker, #chat .turnerror > summary::-webkit-details-marker { display: none; }
-#chat .thinking > summary:hover, #chat .toolgroup > summary:hover, #chat .toolcard > summary:hover, #chat .toolcard[open] > summary { color: var(--ink); }
+#chat .thinking > summary::-webkit-details-marker, #chat .toolgroup > summary::-webkit-details-marker, :is(#chat, .modal) .toolcard > summary::-webkit-details-marker, #chat .turnerror > summary::-webkit-details-marker { display: none; }
+#chat .thinking > summary:hover, #chat .toolgroup > summary:hover, :is(#chat, .modal) .toolcard > summary:hover, :is(#chat, .modal) .toolcard[open] > summary { color: var(--ink); }
 #chat .thinking > summary { color: var(--ink-3); }
 #chat .thinkingtext { max-height: min(24rem, 45vh); overflow-y: auto; overscroll-behavior: contain; padding: 0 0 4px 17px; font-size: var(--fs-small); line-height: var(--lh-ui); color: var(--ink-2); white-space: pre-wrap; word-break: break-word; }
 #chat .thinkingnote { padding: 0 0 4px 17px; font-size: var(--fs-small); color: var(--ink-3); }
 #chat .toolgroup { margin-inline: -16px; }
 #chat .toolgroup > summary { padding: 0 16px; }
 #chat .tools { display: block; max-height: min(24rem, 45vh); overflow-y: auto; overscroll-behavior: contain; padding: 0; gap: 0; }
-#chat .toolcard > summary { padding: 0 16px 0 33px; font-family: var(--mono); font-weight: 400; }
-#chat .toolcard > summary::before, #chat .toolgroup > summary::before, #chat .thinking > summary::before, #chat .turnerror > summary::before { content: ""; color: inherit; }
+:is(#chat, .modal) .toolcard > summary { padding: 0 16px 0 33px; font-family: var(--mono); font-weight: 400; }
+:is(#chat, .modal) .toolcard > summary::before, #chat .toolgroup > summary::before, #chat .thinking > summary::before, #chat .turnerror > summary::before { content: ""; color: inherit; }
 /* A call's input and result: a field-tone block between two hairlines. */
-#chat pre.toolinput, #chat pre.toolresult {
+:is(#chat, .modal) pre.toolinput, :is(#chat, .modal) pre.toolresult {
   display: grid; grid-template-columns: 48px minmax(0, 1fr);
   margin: 0; padding: 2px 16px 2px 49px; border: 0; overflow-x: visible;
   background: var(--field); color: var(--ink);
   font: 400 var(--fs-small)/var(--lh-ui) var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; word-break: normal;
 }
-#chat pre.toolinput::before, #chat pre.toolresult::before, #chat .permcard .ptool::before { color: var(--ink-3); font: 400 var(--fs-small)/var(--lh-ui) var(--sans); }
-#chat pre.toolinput::before { content: "Input"; }
-#chat pre.toolresult::before { content: "Result"; }
-#chat .toolcard > pre.toolinput { margin-top: 2px; padding-top: 6px; border-top: 1px solid var(--rule); }
-#chat .toolcard > pre.toolresult, #chat .toolcard > pre.toolinput:has(+ pre.toolresult[hidden]), #chat .toolcard > pre.toolinput:last-child { margin-bottom: 4px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+:is(#chat, .modal) pre.toolinput::before, :is(#chat, .modal) pre.toolresult::before, #chat .permcard .ptool::before { color: var(--ink-3); font: 400 var(--fs-small)/var(--lh-ui) var(--sans); }
+:is(#chat, .modal) pre.toolinput::before { content: "Input"; }
+:is(#chat, .modal) pre.toolresult::before { content: "Result"; }
+:is(#chat, .modal) .toolcard > pre.toolinput { margin-top: 2px; padding-top: 6px; border-top: 1px solid var(--rule); }
+:is(#chat, .modal) .toolcard > pre.toolresult, :is(#chat, .modal) .toolcard > pre.toolinput:has(+ pre.toolresult[hidden]), :is(#chat, .modal) .toolcard > pre.toolinput:last-child { margin-bottom: 4px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
 #chat pre.toolresult.error { color: var(--danger); }
 /* What went wrong in a turn, with the backend's own text behind a disclosure. */
 #chat .turnerror { margin: 6px 0 0; padding: 0; border: 0; color: var(--ink); font-size: var(--fs-ui); }
@@ -1445,10 +1445,14 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 .covhead { padding: 4px 12px 2px; font-size: var(--fs-small); color: var(--ink-2); }
 
 /* ------------------------------------------------ settings (settings.js) */
-/* settings.js builds this inside the page's #settingsModal.modal:
+/* The overlay is a div.modal or a <dialog class="modal"> (open it with showModal() or show(); the dialog's own backdrop is not drawn, .modal paints the scrim). Single-line .toolcard rows read the same inside it as in #chat.
+   settings.js builds this inside the page's #settingsModal.modal:
    .setpanel > header (h2, button.setclose) [.setwarn] .setbody > section (h3, [h4], .setrow > label.setlabel + .setinput + .setnote + .sethelp)
    Diagnostics: .diagblock > .diagrow > .diagkey + .diagval.  Agent log: .loglist > .logrow > .loghead (.logname .logpath button.logbtn) [.logopts pre.logtail]
    footer > .setstatus + button.primary.  A dialog, so it has an edge and the menu shadow. */
+dialog.modal:not([open]) { display: none; }
+dialog.modal { width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border: 0; color: inherit; overflow: visible; }
+dialog.modal::backdrop { background: none; }
 .modal { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; padding: 16px; background: light-dark(rgba(20, 23, 26, 0.35), rgba(0, 0, 0, 0.55)); }
 .setpanel {
   display: flex; flex-direction: column; width: min(600px, 100%); max-height: min(86vh, 100%);

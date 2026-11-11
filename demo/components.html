@@ -394,6 +394,15 @@ resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre><div class="pa
 </section>
 
 <section class="spec-sec">
+  <h2>Modal</h2>
+  <p class="lede"><code>&lt;dialog class="modal"&gt;</code> works like the <code>div.modal</code> overlay: closed it is not drawn, open it covers the page with the scrim and the dialog's own backdrop is not painted. Shown here in place; single-line tool rows read as in the chat.</p>
+  <div class="spec-grid">
+    <h3>Dialog <code>dialog.modal</code><code>.toolcard</code></h3>
+    <div class="spec-pane wide spec-modal"><dialog class="modal" open aria-label="Tool calls"><div class="setpanel"><header><h2>Tool calls</h2><button class="setclose" type="button" aria-label="Close">&times;</button></header><div class="setbody"><details class="toolcard"><summary>loom: read_circuit</summary><pre class="toolinput">sheet: CAN</pre><pre class="toolresult">ok</pre></details><details class="toolcard" open><summary>loom: run_erc</summary><pre class="toolinput">sheets: CAN</pre><pre class="toolresult error">failed: lib_symbol_issues</pre></details></div></div></dialog></div>
+  </div>
+</section>
+
+<section class="spec-sec">
   <h2>Settings window</h2>
   <p class="lede">What settings.js builds inside the page's <code>#settingsModal.modal</code>, shown here in place.</p>
   <div class="spec-grid">

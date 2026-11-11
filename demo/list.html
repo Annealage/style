@@ -36,7 +36,7 @@
     <h1>Projects</h1><span class="n">6</span>
     <span class="grow"></span>
     <label class="inputwrap filter"><svg class="ico" aria-hidden="true"><use href="../icons.svg#i-search"/></svg><input class="input" type="search" placeholder="Filter projects" aria-label="Filter projects"></label>
-    <button class="btn sortbtn" type="button" title="Sort"><svg class="ico"><use href="../icons.svg#i-sort"/></svg><span>Last opened</span></button>
+    <button class="btn sortbtn" type="button" title="Sort"><svg class="ico"><use href="../icons.svg#i-sort"/></svg><span>Created</span></button>
     <div class="seg" role="group" aria-label="View">
       <a href="#tiles" data-route-link aria-pressed="false"><svg class="ico"><use href="../icons.svg#i-grid"/></svg><span class="wide">Tiles</span></a>
       <a href="#list" data-route-link aria-pressed="true"><svg class="ico"><use href="../icons.svg#i-list"/></svg><span class="wide">List</span></a>
@@ -50,7 +50,7 @@
     <input type="file" multiple></label>
 
   <div class="reg" data-view="list">
-    <div class="reg-head" aria-hidden="true"><span></span><span>Name</span><span>Rev</span><span class="num">Parts</span><span class="num">Nets</span><span>Review</span><span class="sorted">Last opened</span><span>Created</span><span></span></div>
+    <div class="reg-head" aria-hidden="true"><span></span><span>Name</span><span>Rev</span><span class="num">Parts</span><span class="num">Nets</span><span>Review</span><span>Last opened</span><span class="sorted">Created</span><span></span></div>
     <ol class="projs">
       <li class="proj">
         <a class="p-thumb paper" href="flow.html#review" tabindex="-1"><img src="assets/sheet-mcu.png" alt=""></a>
@@ -67,6 +67,7 @@
         <span class="p-state"><span class="lamp ok"></span><span class="st">Quick done</span><span class="sd"><span class="mono">1</span> finding open</span></span>
         <span class="p-opened"><span class="k">Opened </span>Yesterday</span><span class="p-created">2 Nov 2026</span>
         <span class="p-act"><a class="btn quiet" href="flow.html#review">Open</a><button class="btn icon" type="button" aria-label="More for CAN node, isolated"><svg class="ico"><use href="../icons.svg#i-more"/></svg></button></span>
+        <div class="confirm" data-kind="danger" role="group" aria-labelledby="reg-c1" aria-live="polite"><p class="ch" id="reg-c1">Delete CAN node, isolated</p><p class="cd">The project and its reviews are removed for everyone in the workspace.</p><div class="cacts"><button class="btn quiet" type="button">Cancel</button><button class="btn danger" type="button">Delete</button></div></div>
       </li>
       <li class="proj">
         <a class="p-thumb paper" href="flow.html#review" tabindex="-1"><img src="assets/sheet-power.png" alt=""></a>
