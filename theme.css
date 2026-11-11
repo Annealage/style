@@ -490,12 +490,17 @@ html #toast:empty, html #err:empty { display: none; }
      <nav class="rail">  <main class="view">  <aside class="inspector">  <aside id="chat">
      <footer class="statusbar">
    The rail is one --gutter wide, so the product name, the first tab and the
-   drawing's left edge share a line. --insp-w and --chat-w set the pane widths.
+   drawing's left edge share a line. --insp-w and --chat-w set the pane widths;
+   frame.js writes the widths the user dragged to as --insp-w-user and
+   --chat-w-user, which win over them while the column is open (--insp-col and
+   --chat-col are what the grid reads, and a closed state sets them to 0).
    No more than two chrome rows sit above the drawing. */
 .wb {
   height: 100vh; height: 100dvh;
   display: grid;
-  grid-template-columns: var(--gutter) minmax(0, 1fr) var(--insp-w, 300px) var(--chat-w, 400px);
+  --insp-col: var(--insp-w-user, var(--insp-w, 300px));
+  --chat-col: var(--chat-w-user, var(--chat-w, 400px));
+  grid-template-columns: var(--gutter) minmax(0, 1fr) var(--insp-col) var(--chat-col);
   grid-template-rows: var(--h-bar) minmax(0, 1fr) var(--h-status);
   grid-template-areas:
     "title  title  title  title"
@@ -512,21 +517,33 @@ html #toast:empty, html #err:empty { display: none; }
     "status status status status";
 }
 /* The inspector follows the agent layer's Panel button (body.panel-open). */
-body:not(.panel-open) .wb { --insp-w: 0px; }
+body:not(.panel-open) .wb { --insp-w: 0px; --insp-col: 0px; }
 body:not(.panel-open) .inspector { display: none; }
 /* A page with no rail sets data-rail="none"; one with no agent pane or run
    console sets data-console="none". */
-.wb[data-rail=none] { grid-template-columns: 0 minmax(0, 1fr) var(--insp-w, 300px) var(--chat-w, 400px); }
+.wb[data-rail=none] { grid-template-columns: 0 minmax(0, 1fr) var(--insp-col) var(--chat-col); }
 .wb[data-rail=none] .rail { display: none; }
-.wb[data-console=none] { --chat-w: 0px; }
+.wb[data-console=none] { --chat-w: 0px; --chat-col: 0px; }
 .wb[data-console=none] :is(#chat, .console) { display: none; }
 /* Layout focus, from a three-way control in the title bar: data-layout on .wb
    is "drawing" (no agent pane), "split" (the default) or "agent" (only it). */
-.wb[data-layout=drawing] { --chat-w: 0px; }
+.wb[data-layout=drawing] { --chat-w: 0px; --chat-col: 0px; }
 .wb[data-layout=drawing] :is(#chat, .console) { display: none; }
 .wb[data-layout=agent] { grid-template-columns: 0 0 0 minmax(0, 1fr); }
 .wb[data-layout=agent] :is(.rail, .view, .inspector) { display: none; }
 #tabbar { display: none; }
+/* The drag handles frame.js inserts before the inspector and the agent pane: a
+   7px grab strip centred on the hairline at the pane's left edge. Only the
+   hairline shows, in the temper on hover, focus and while dragging. */
+.colgrip { position: relative; z-index: 6; justify-self: start; width: 7px; margin-left: -4px; cursor: col-resize; touch-action: none; }
+.colgrip[data-grip=insp] { grid-area: insp; }
+.colgrip[data-grip=chat] { grid-area: chat; }
+.colgrip::before { content: ""; position: absolute; inset: 0 3px; }
+.colgrip:is(:hover, [data-dragging])::before, .colgrip:focus-visible::before { background: var(--temper-text); }
+.colgrip:focus-visible::before { inset: 0 2px 0 3px; }
+.colgrip:focus { outline: none; }
+body:not(.panel-open) .colgrip[data-grip=insp], .wb[data-layout=agent] .colgrip,
+.wb[data-layout=drawing] .colgrip[data-grip=chat], .wb[data-console=none] .colgrip[data-grip=chat] { display: none; }
 
 /* --------------------------------------------------------------- title bar */
 /* <header class="titlebar">
@@ -1630,16 +1647,17 @@ html .pj-modal {
   .wide { display: none !important; }
   .narrow { display: revert; }
 }
-/* At 900px and below the agent layer's layout.js shows one pane at a time
-   from the page's #tabbar, hiding the rest with an inline display:none. So
-   every pane is laid out in the one main area here and shown by default. */
+/* At 900px and below frame.js (or annealage-ember's layout.js) shows one pane
+   at a time from the page's #tabbar, hiding the rest with an inline
+   display:none. So every pane is laid out in the one main area here and shown
+   by default. */
 @media (max-width: 900px) {
   .wb, .wb:has(> .vhead), .wb[data-rail=none], .wb[data-layout] {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: var(--h-bar) 40px auto minmax(0, 1fr);
     grid-template-areas: "title" "panes" "tabs" "main";
   }
-  .wb > .statusbar, #panelBtn { display: none; }
+  .wb > .statusbar, #panelBtn, .colgrip { display: none; }
   .titlebar:has(> .tb-left) { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
   .tb-left { min-width: 0; }
   .titlebar { padding-right: 4px; }
@@ -1659,7 +1677,7 @@ html .pj-modal {
     margin-bottom: -1px; padding: 2px 0 0; border: 0; border-bottom: 2px solid transparent; background: none;
     font: 500 var(--fs-ui)/1 var(--sans); color: var(--ink-2); white-space: nowrap; cursor: pointer;
   }
-  #tabbar button.on { color: var(--ink); font-weight: 600; border-bottom-color: var(--temper-text); }
+  #tabbar button:is(.on, [aria-selected=true]) { color: var(--ink); font-weight: 600; border-bottom-color: var(--temper-text); }
   .vhead { padding-left: 12px; }
   .wb:has(> .view[style*="none"]) > .vhead { display: none; }
   .view, .inspector, #chat, .console { grid-area: main; border: 0; }
