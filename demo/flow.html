@@ -266,7 +266,7 @@
           <dt>Remote Datum tools</dt><dd>Available</dd>
         </dl>
       </aside>
-      <footer class="flowfoot"><a class="btn" href="#datasheets">Back</a><span class="grow"></span><button class="btn primary" type="button"><span>Start <span data-stage-out>Quick</span></span></button></footer>
+      <footer class="flowfoot"><a class="btn" href="#datasheets">Back</a><span class="grow"></span><button class="btn primary" type="button" data-confirm='{"title":"Start review","detail":"It runs in the background and spends from this workspace's quota. You can stop it from the review page.","fields":[["Stage","Quick"],["Model","claude-sonnet"],["Limit","$5 per run"]],"action":"Start review"}' data-confirm-into="[data-view=review] .flowaside"><span>Start <span data-stage-out>Quick</span></span></button></footer>
     </section>
 
   </div>
@@ -284,5 +284,6 @@
 
 </div>
 <script type="module" src="demo.js"></script>
+<script type="module" src="confirm-demo.js"></script>
 </body>
 </html>

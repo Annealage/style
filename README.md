@@ -91,6 +91,7 @@ Each component's markup is in the comment above its rules.
 - Checkboxes and radios are styled wherever they are; `input.switch` is a toggle; `label.check` lays one out with its text.
 - `.seg` (segmented control, `.icons`, `.sm`), `.chips` and `.chip`, the count `.n`, the label `.tag`.
 - `[data-scheme-toggle]`, the scheme button.
+- `.confirm` and `confirm.js`: the inline approval row that replaces the browser's `confirm()`. `confirmRow(anchor, {title, detail, fields, action, danger, cancel, into})` returns a promise that is true for the action and false for Cancel, Escape, another row opening or the anchor leaving the page. It opens in place (a `.dt-detail` under a table row, `into`, or after the anchor), disables the opener while open and returns focus to it. A spend uses the solid ink button, a destructive action danger text; neither is ember. It is for in-page actions: a `beforeunload` guard stays with the browser's own prompt.
 
 **Lamps, markers, readouts**
 - `.lamp` with `.ok`, `.warn`, `.bad`, `.none`, `.run`; `.state[data-kind=good|busy|gap|bad|pending|waiting]`; `.conn[data-state]`; `.agentstatus[data-state]`.

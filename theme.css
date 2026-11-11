@@ -1136,11 +1136,12 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 /* The approval: the one thing waiting on the human, so the one bordered box.
    .permcard > [.porigin] .ptool pre.toolinput .pactions (button.allow, [button], textarea.preason, button.danger) .pstatus
    Its heading and the Tool / Input labels are drawn here, not in the markup. */
-#chat .permcard {
-  margin: 0 0 8px; padding: 10px 12px 12px;
+#chat .permcard, .confirm {
+  padding: 10px 12px 12px;
   border: 1px solid var(--rule-strong); border-radius: var(--r);
   background: var(--field); color: var(--ink);
 }
+#chat .permcard { margin: 0 0 8px; }
 #chat .permcard::before { content: "Approval needed"; display: block; margin-bottom: 6px; font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); }
 #chat .permcard .porigin { margin: 0 0 4px; font-size: var(--fs-small); color: var(--ink-2); }
 #chat .permcard .ptool { display: grid; grid-template-columns: 48px minmax(0, 1fr); margin: 0; font: 500 var(--fs-small)/var(--lh-ui) var(--mono); color: var(--ink); overflow-wrap: anywhere; }
@@ -1165,6 +1166,29 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 #chat .permcard.submitted .pactions { opacity: 0.6; }
 #chat .permcard .pstatus { margin-top: 6px; font-size: var(--fs-small); color: var(--ink-2); }
 #chat .permcard .pstatus:empty { display: none; }
+
+/* The page's own confirmation, which replaces the browser's confirm(): the
+   approval's box (it shares its declarations above) for an action the human
+   started and is about to make final. Opened in place by confirm.js, never a
+   modal and never dimming the page. No ember and no plate cut: a spend
+   confirms with the solid ink button, a destructive action with danger text,
+   so the view's one ember (an agent approval) stays the only one.
+   <div class="confirm" data-kind="danger|spend" role="group" aria-labelledby aria-live="polite">
+     <p class="ch">Title</p> [<p class="cd">one line of consequence</p> | <details class="disc">…</details>]
+     [<dl class="fl"><dt>Model</dt><dd>…</dd></dl>]
+     <div class="cacts"><button class="btn quiet">Cancel</button><button class="btn danger|primary">Verb</button></div></div>
+   Inside a table it sits in a .dt-detail under its row. */
+.confirm { margin: 8px 0 0; min-width: 0; }
+.confirm .ch { margin: 0; font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); overflow-wrap: anywhere; }
+.confirm .cd { margin: 2px 0 0; color: var(--ink-2); font-size: var(--fs-small); line-height: 17px; overflow-wrap: anywhere; }
+.confirm .disc { margin-top: 2px; }
+.confirm .disc > summary { height: 24px; color: var(--ink-2); font-size: var(--fs-small); }
+.confirm .disc-body { padding-bottom: 4px; font-size: var(--fs-small); overflow-wrap: anywhere; }
+.confirm dl.fl { --fl-label: 72px; margin: 8px 0 0; font-size: var(--fs-small); }
+.confirm .cacts { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0 0 -10px; }
+.confirm .cacts .btn:last-child { margin-right: -10px; }
+.dt-detail > .confirm { margin: 4px 0 0; }
+.row > .confirm { grid-column: 2 / -1; margin: 6px 0 0; }
 
 /* The composer: one field holding the message, with attach at its bottom left
    and Interrupt and Send (which reads Queue or Steer mid-turn) at its bottom right.

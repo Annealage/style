@@ -7,3 +7,4 @@ frame.js
 palette.js
 fonts
 marks
+confirm.js

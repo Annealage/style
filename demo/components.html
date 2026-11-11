@@ -361,6 +361,26 @@ resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre><div class="pa
 </section>
 
 <section class="spec-sec">
+  <h2>Confirm</h2>
+  <p class="lede">The page's own confirmation, in place of the browser's confirm(). Opened next to the control that asked by <code>confirm.js</code>; the control is disabled while it is open. The solid ink button is a spend, danger text is a destructive action, and neither is ember, so an agent approval can still be the view's one ember element.</p>
+  <div class="spec-grid">
+    <h3>Destructive <code>.confirm[data-kind=danger]</code><code>.ch .cd .cacts</code></h3>
+    <div class="spec-pane wide"><div class="confirm" data-kind="danger" role="group" aria-labelledby="spec-c1" aria-live="polite"><p class="ch" id="spec-c1">Delete 3 pins</p><p class="cd">They are removed from the model and the agent will no longer see them.</p><div class="cacts"><button class="btn quiet" type="button">Cancel</button><button class="btn danger" type="button">Delete</button></div></div></div>
+    <h3>Spend, with fields <code>.confirm[data-kind=spend]</code><code>dl.fl</code></h3>
+    <div class="spec-pane wide"><div class="confirm" data-kind="spend" role="group" aria-labelledby="spec-c2" aria-live="polite"><p class="ch" id="spec-c2">Start review</p><p class="cd">It runs in the background and spends from this workspace's quota.</p><dl class="fl"><dt>Stage</dt><dd>Quick</dd><dt>Model</dt><dd>claude-sonnet</dd><dt>Limit</dt><dd>$5 per run</dd></dl><div class="cacts"><button class="btn quiet" type="button">Cancel</button><button class="btn primary" type="button">Start review</button></div></div></div>
+    <h3>Long consequence <code>details.disc</code></h3>
+    <div class="spec-pane"><div class="confirm" data-kind="danger" role="group" aria-labelledby="spec-c3" aria-live="polite"><p class="ch" id="spec-c3">Discard the unsaved requirements</p><details class="disc"><summary>What this does</summary><div class="disc-body"><p>Everything typed since the last save is dropped, including the three open questions you answered, and the agent is told the draft was discarded. The saved version is not changed, and nothing already sent to the agent can be taken back.</p></div></details><div class="cacts"><button class="btn quiet" type="button">Keep editing</button><button class="btn danger" type="button">Discard</button></div></div></div>
+    <h3>In a table <code>.dt-detail > .confirm</code></h3>
+    <div class="spec-pane full"><div class="dt parts" role="table">
+      <div class="dt-row" role="row"><input type="checkbox" aria-label="Select"><button class="exp" type="button" aria-expanded="false" aria-label="Details"></button><span class="mono dt-main">RP2040</span><span class="mono dt-sub">U6</span><span class="mono hint">QFN-56-1EP_7x7mm</span><span class="mono num">1</span><span class="dt-state"><span class="lamp ok"></span>Covered</span><span class="src"><span class="mono">rp2040-datasheet.pdf</span></span><span class="dt-act"><button class="btn quiet" type="button">Open PDF</button></span></div>
+      <div class="dt-row is-open" role="row"><input type="checkbox" aria-label="Select"><button class="exp" type="button" aria-expanded="false" aria-label="Details"></button><span class="mono dt-main">ABM8-272-T3</span><span class="mono dt-sub">Y1</span><span class="mono hint">Crystal_SMD_3225-4Pin</span><span class="mono num">1</span><span class="dt-state"><span class="lamp warn"></span>1 candidate</span><span class="src"><span class="mono">abm8-272-t3.pdf</span></span><span class="dt-act"><button class="btn quiet" type="button" disabled>Remove</button></span></div>
+      <div class="dt-detail"><div class="confirm" data-kind="danger" role="group" aria-labelledby="spec-c4" aria-live="polite"><p class="ch" id="spec-c4">Remove the datasheet for ABM8-272-T3</p><p class="cd">The part goes back to having a gap.</p><div class="cacts"><button class="btn quiet" type="button">Cancel</button><button class="btn danger" type="button">Remove</button></div></div></div>
+      <div class="dt-row" role="row"><input type="checkbox" aria-label="Select"><button class="exp" type="button" aria-expanded="false" aria-label="Details"></button><span class="mono dt-main">CL05A104KA5NNNC</span><span class="mono dt-sub">C31, C33</span><span class="mono hint">C_0402_1005Metric</span><span class="mono num">9</span><span class="dt-state"><span class="lamp none"></span>No datasheet</span><span class="src quiet">None found</span><span class="dt-act"><button class="btn" type="button">Request from Datum</button></span></div>
+    </div></div>
+  </div>
+</section>
+
+<section class="spec-sec">
   <h2>Settings window</h2>
   <p class="lede">What settings.js builds inside the page's <code>#settingsModal.modal</code>, shown here in place.</p>
   <div class="spec-grid">

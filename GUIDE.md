@@ -125,6 +125,7 @@ Don't use one for a value that already sits in a table or a field list, in the s
 | A caveat or limit | a disclosure, or a field list beside the action | a left-ruled callout |
 | Something went wrong | an inline message row with a danger lamp, next to the thing that failed | a coloured box across the page |
 | Something needs a decision from the human | the approval: the one bordered box, with the ember Allow | a modal, a toast |
+| The page's own action needs confirming (a delete, leaving, a run that spends) | the inline confirm row (`confirm.js`): the approval's box opened in place, solid ink for a spend, danger text for a destructive action, no ember | the browser's `confirm()`, a modal |
 | More actions than fit | a menu from a `...` or labelled button | a second row of buttons |
 | Nothing to show yet | one line saying what will appear and the action that produces it | an illustration, a card with a heading |
 | Choosing a file | a drop zone that is also a button, listing what is accepted as a field list | the browser's raw file input |
