@@ -11,6 +11,7 @@ The reference pages show it in use. Each takes `?product=loom|trace|mesh|canvas|
 | [demo/flow.html](demo/flow.html) | a guided flow (Trace's setup) |
 | [demo/list.html](demo/list.html) | the project chooser, as a register and as tiles |
 | [demo/settings.html](demo/settings.html) | account and settings |
+| [demo/overview.html](demo/overview.html) | the hosted workspace overview: projects across products, a project's files, the status of a send |
 
 The look in one sentence: one continuous surface divided by hairlines, with the drawing as the largest thing on screen, data set as data, and the mark's 45° cut on the few things an engineer points at.
 
@@ -164,6 +165,16 @@ For picking a project or any other collection.
 - One markup, two drawings: a register table (name, rev, counts, state, last opened) or tiles where the thumbnail is the tile.
 - A thing that is starting or running is a row state with a lamp, not a separate waiting page.
 - Creating by upload is a slim drop strip above the list, or the first tile.
+
+### Overview, files and send status
+
+For a workspace that holds projects of several products (the hosted front door).
+
+- Platform chrome with the product tabs and none current: no temper, no command field. The title row is the workspace name and a product filter as chips.
+- One register, flat and ordered by last change, with the product as a column. Where two projects are related, the row opens to show it (a chevron, then Came from and Sent to as a nested table); a group per product would pull related projects apart. What a row does is one action and a `...` menu.
+- A form for an action on one thing opens in place under that thing, on hairlines and not in a box or a modal. Its first fields are the ones every use needs; the rest sit behind Options.
+- A file tree is mono data (paths from the project root) in nested lists with hairline guides. A file's fingerprint is its `title`, never a column.
+- The status of a long action is a lamp and a word in a field list. Job id, operation, revision hashes and checksums sit in a Details disclosure.
 
 ### Settings and account
 

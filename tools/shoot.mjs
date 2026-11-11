@@ -27,7 +27,7 @@
 //   schemes    default ['light', 'dark']
 //   webgl      the view needs WebGL; skipped with a note unless shoot() gets {webgl: true}
 //   shape      page shape for the presets and the structural check: workbench | flow |
-//              list | settings | components (tools/shot, tools/conformance.json)
+//              list | settings | overview | components (tools/shot, tools/conformance.json)
 //   mask       CSS selectors of regions that change by design (a clock, a run time, a
 //              thumbnail); they are hidden (visibility) in the shot, so the baseline
 //              diff ignores them. Give a mask a fixed size, or mask its container.
@@ -160,6 +160,43 @@ export const SHOTS_REFERENCE = [
   ]),
   ...['review', 'agent'].flatMap((t) => ['light', 'dark'].map((s) =>
     ref(`workbench-phone-tab-${t}-${s}`, `workbench.html?product=loom&theme=${s}`, s, 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: PHONE_TAB }))),
+  // Workspace overview (H7): the overview, the file tree and the send status of the hosted front door. ?state= picks a state (overview.html's comment lists them).
+  ...[
+    ['overview-list', '', 'overview', ['light', 'dark']],
+    ['overview-send', '&menus=0&state=send,options', 'overview', ['light', 'dark']],
+    ['overview-queued', '&menus=0&state=after-send', 'overview', ['light']],
+    ['overview-existing', '&menus=0&state=existing,error', 'overview', ['light']],
+    ['overview-viewer', '&state=viewer', 'overview', ['light']],
+    ['overview-filtered', '&state=filtered', 'overview', ['light']],
+    ['overview-empty', '&state=empty', 'overview', ['light']],
+    ['overview-history', '&menus=0&state=history', 'overview', ['light', 'dark']],
+    ['overview-many', '&menus=0&state=many', 'overview', ['light']],
+    ['overview-checking', '&menus=0&state=checking,history', 'overview', ['light']],
+    ['tree-single', '', 'tree', ['light', 'dark']],
+    ['tree-compare', '&state=compare', 'tree', ['light', 'dark']],
+    ['tree-revisions', '&state=revisions', 'tree', ['light']],
+    ['tree-send', '&state=send', 'tree', ['light']],
+    ['tree-truncated', '&state=truncated', 'tree', ['light']],
+    ['tree-norev', '&state=norev', 'tree', ['light']],
+    ['tree-viewer', '&state=viewer', 'tree', ['light']],
+    ['status-sending', '', 'status', ['light', 'dark']],
+    ['status-details', '&state=sent,details', 'status', ['light', 'dark']],
+    ['status-queued', '&state=queued', 'status', ['light']],
+    ['status-failed', '&state=failed', 'status', ['light']],
+    ['status-cancel-error', '&state=sending,error', 'status', ['light']],
+    ['status-cancelled', '&state=cancelled', 'status', ['light']],
+    ['status-checking', '&state=checking', 'status', ['light']],
+    ['status-confirm', '&confirm=1', 'status', ['light', 'dark']],
+    ['status-viewer', '&state=viewer', 'status', ['light']],
+    ['status-unreadable', '&state=sent,unreadable', 'status', ['light']],
+    ['overview-missing', '', 'missing', ['light', 'dark'], { reason: 'the not-found page has no account menu, tabs or status bar', expect: { '.statusbar': 'absent', '.btn:not(.icon, .sm, .primary, .ember)': 'absent' } }],
+  ].flatMap(([name, query, hash, schemes, conform]) => schemes.map((s) =>
+    ref(`${name}-${s}`, `overview.html?theme=${s}${query}#${hash}`, s, 1440, 1000, 'overview', conform ? { conform } : {}))),
+  ...['overview', 'tree', 'status'].flatMap((hash) => ['light', 'dark'].map((s) =>
+    ref(`overview-phone-${hash}-${s}`, `overview.html?theme=${s}${hash === 'status' ? '&state=sent,details' : ''}#${hash}`, s, 400, 860, 'overview'))),
+  ref('overview-phone-send-light', 'overview.html?theme=light&menus=0&state=send,options#overview', 'light', 400, 860, 'overview'),
+  ref('overview-phone-queued-light', 'overview.html?theme=light&menus=0&state=after-send#overview', 'light', 400, 860, 'overview'),
+  ref('overview-phone-compare-light', 'overview.html?theme=light&state=compare,pane2#tree', 'light', 400, 860, 'overview'),
 ];
 
 // Every PNG a table produces: one job per entry, scheme and viewport.

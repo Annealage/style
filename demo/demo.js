@@ -60,7 +60,7 @@ function applyRoute() {
   const hash = location.hash.slice(1);
   const route = routes.includes(hash) ? hash : body.dataset.default || routes[0];
   body.dataset.route = route;
-  for (const view of $$("section[data-view]")) view.hidden = view.dataset.view !== route;
+  for (const view of $$("section[data-view], main[data-view]")) view.hidden = view.dataset.view !== route;
   for (const reg of $$(".reg[data-view]")) reg.dataset.view = route;
   for (const link of $$("[data-route-link]")) {
     const on = link.getAttribute("href") === `#${route}`;
