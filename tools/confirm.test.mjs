@@ -200,3 +200,30 @@ test("opens into a given element", async () => {
   await result;
   assert.equal(panel.children.length, 0);
 });
+
+test("extra nodes sit between the detail and the actions", async () => {
+  const { doc, anchor } = page();
+  const warn = doc.createElement("p");
+  const more = doc.createElement("details");
+  const result = confirmRow(anchor, { ...opts, detail: "One line.", extra: [warn, more] });
+  const row = doc.body.find("confirm");
+  const slot = row.find("cx");
+  assert.deepEqual(slot.children, [warn, more]);
+  const order = row.children.map((c) => c.className);
+  assert.ok(order.indexOf("cd") < order.indexOf("cx") && order.indexOf("cx") < order.indexOf("cacts"));
+  row.find("cacts").children[0].click();
+  await result;
+});
+
+test("a single extra node works and no extra adds no slot", async () => {
+  const { doc, anchor } = page();
+  const one = doc.createElement("div");
+  const first = confirmRow(anchor, { ...opts, extra: one });
+  assert.equal(doc.body.find("cx").children[0], one);
+  doc.body.find("cacts").children[0].click();
+  await first;
+  const second = confirmRow(anchor, opts);
+  assert.equal(doc.body.find("cx"), null);
+  doc.body.find("cacts").children[0].click();
+  await second;
+});

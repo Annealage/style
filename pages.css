@@ -71,7 +71,7 @@ button.drop, button.dropstrip { width: 100%; }
    content, and a pinned footer with Back and the one primary action.
    <main class="flow">
      <aside class="flowside"><h2 class="subhead">Setup</h2>
-       <ol class="flowsteps"><li class="flowstep" data-state="done|current|open|locked"><a href="#upload">
+       <ol class="flowsteps"><li class="flowstep" data-state="done|current|open|locked"><a href="#upload"> (or a <button type="button"> for a step that switches a view in place)
          <span class="mk">1</span><span class="name">Upload<svg class="ico tick">check</svg></span><span class="detail">3 files</span></a></li>…</ol>
        <div class="flowfacts"><h2 class="subhead">Design</h2><div class="paper thumb"><img></div><dl class="fl">…</dl></div></aside>
      <div class="flowmain"><section class="flowview [split]">
@@ -84,8 +84,9 @@ button.drop, button.dropstrip { width: 100%; }
 .flowside > .subhead, .flowfacts > .subhead { padding: 0; }
 .flowsteps { position: relative; margin-bottom: 14px; }
 .flowsteps::before { content: ""; position: absolute; left: 8.5px; top: 20px; bottom: 30px; border-left: 1px solid var(--rule-strong); }
-.flowstep a { display: grid; grid-template-columns: 18px minmax(0, 1fr); column-gap: 10px; align-items: center; padding: 6px 0 7px; }
-.flowstep a:hover .name { text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
+.flowstep :is(a, button) { display: grid; grid-template-columns: 18px minmax(0, 1fr); column-gap: 10px; align-items: center; padding: 6px 0 7px; }
+.flowstep button { width: 100%; margin: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.flowstep :is(a, button):hover .name { text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
 .flowstep .mk { --mk-edge: var(--rule-strong); --mk-fill: var(--ground); color: var(--ink-2); box-shadow: 0 0 0 3px var(--ground); }
 .flowstep .name { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
 .flowstep .tick { display: none; width: 14px; height: 14px; color: var(--quench); stroke-width: 1.75; }
@@ -94,9 +95,9 @@ button.drop, button.dropstrip { width: 100%; }
 .flowstep[data-state=done] .mk { --mk-edge: var(--ink-2); color: var(--ink); }
 .flowstep[data-state=current] .mk { --mk-edge: var(--temper); --mk-fill: var(--temper); color: var(--on-temper); }
 .flowstep[data-state=current] .name { font-weight: 600; }
-.flowstep[data-state=locked] a { cursor: default; }
+.flowstep[data-state=locked] :is(a, button) { cursor: default; }
 .flowstep[data-state=locked] :is(.name, .detail, .mk) { color: var(--ink-3); font-weight: 400; }
-.flowstep[data-state=locked] a:hover .name { text-decoration: none; }
+.flowstep[data-state=locked] :is(a, button):hover .name { text-decoration: none; }
 .flowfacts { margin-inline: -11px -16px; padding: 2px 16px 0 11px; border-top: 1px solid var(--rule); }
 .flowfacts .thumb { aspect-ratio: 2400 / 1697; margin-bottom: 10px; }
 .flowfacts .fl { --fl-label: 64px; font-size: var(--fs-small); }
@@ -331,8 +332,8 @@ a.p-name:hover { text-decoration: underline; text-decoration-color: var(--rule-s
   .flowside > .subhead, .flowfacts { display: none; }
   .flowsteps { display: flex; justify-content: space-between; margin: 0; }
   .flowsteps::before { content: none; }
-  .flowstep a { display: flex; gap: 6px; height: 36px; padding: 2px 0 0; border-bottom: 2px solid transparent; margin-bottom: -1px; font-size: var(--fs-small); }
-  .flowstep[data-state=current] a { border-bottom-color: var(--temper-text); }
+  .flowstep :is(a, button) { display: flex; gap: 6px; height: 36px; padding: 2px 0 0; border-bottom: 2px solid transparent; margin-bottom: -1px; font-size: var(--fs-small); }
+  .flowstep[data-state=current] :is(a, button) { border-bottom-color: var(--temper-text); }
   .flowstep .mk { --cut: 4px; width: 16px; height: 16px; box-shadow: none; font-size: 10px; }
   .flowstep .tick { width: 12px; height: 12px; }
   .flowstep .name { gap: 4px; }

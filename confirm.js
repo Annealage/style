@@ -12,6 +12,8 @@
 //     action: "Delete",                    // the confirming button's label
 //     danger: true,                        // destructive: danger text, focus on Cancel
 //     cancel: "Cancel",                    // optional label
+//     extra: node,                         // optional DOM node or array: warnings, a Details
+//                                          // disclosure; sits between the detail and the actions
 //     into: panelElement,                  // optional: append the row here
 //   });
 //
@@ -28,7 +30,7 @@ const LONG_DETAIL = 120;
 let current = null;
 let serial = 0;
 
-export function confirmRow(anchor, { title, detail, fields, action, danger = false, cancel = "Cancel", into } = {}) {
+export function confirmRow(anchor, { title, detail, fields, action, danger = false, cancel = "Cancel", extra, into } = {}) {
   if (current) current.close(false);
   const doc = anchor.ownerDocument;
   const make = (tag, cls, text) => {
@@ -84,6 +86,12 @@ export function confirmRow(anchor, { title, detail, fields, action, danger = fal
       list.appendChild(make("dd", "", value));
     }
     row.appendChild(list);
+  }
+  const extras = extra ? (Array.isArray(extra) ? extra : [extra]) : [];
+  if (extras.length) {
+    const slot = make("div", "cx");
+    for (const node of extras) slot.appendChild(node);
+    row.appendChild(slot);
   }
   const cancelButton = make("button", "btn quiet", cancel);
   cancelButton.setAttribute("type", "button");
