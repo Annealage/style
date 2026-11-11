@@ -1864,7 +1864,15 @@ html .pj-modal {
      reachable from any pane. Everything else in it is dropped. */
   .wb > .statusbar > :not(.conn, .alert) { display: none; }
   .wb > .statusbar { gap: 12px; }
-  .wb > .statusbar .alert { margin-left: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  /* The connection is its lamp alone here (the word is still there for a screen
+     reader), so a view's own "Live" is not repeated. */
+  .wb > .statusbar .conn { font-size: 0; }
+  /* A block, not a flex box, so a long label ends in an ellipsis. The element is
+     24px high (the tap target) with the 18px chamfered fill inset inside it. */
+  .wb > .statusbar .alert { display: block; margin-left: auto; min-width: 0; max-width: 100%; height: var(--h-status); padding-block: 3px; line-height: 18px; overflow: hidden; text-overflow: ellipsis; }
+  .wb > .statusbar .alert::before { inset: 3px 0; }
+  /* On the Agent tab the pane shows the connection and the approval itself. */
+  .wb[data-agent-open] > .statusbar { display: none; }
   .titlebar:has(> .tb-left) { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
   .titlebar:has(> .tb-left):has(> .cmd) { grid-template-columns: minmax(0, 1fr) auto auto; }
   .tb-left { min-width: 0; }

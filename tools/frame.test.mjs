@@ -405,6 +405,9 @@ test("the status bar's approval alert shows the Agent pane at 900px and below, a
   assert.equal(p.els.chat.style.display, "");
   assert.equal(p.els.view.style.display, "none");
   assert.equal(p.els.tab_agent.getAttribute("aria-selected"), "true");
+  assert.equal(p.root.getAttribute("data-agent-open"), "");
+  f.activateTab("drawing");
+  assert.equal(p.root.getAttribute("data-agent-open"), null);
 
   const w = page();
   const wbar = new El(w.doc, "footer");
