@@ -166,6 +166,40 @@ const log = document.getElementById("chatLog");
 const pin = () => { if (log && !body.classList.contains("spec")) log.scrollTop = log.scrollHeight; };
 pin();
 
+// ---- Command palette (../palette.js, loaded by the page). These are SAMPLE
+// commands built from controls that exist on the page, so the reference shows
+// the palette with real rows; a product registers its own. ?palette=1 opens it
+// on load, and any other ?palette= value opens it with that as the query.
+const palette = window.annealagePalette;
+if (palette) {
+  const visible = (btn) => btn.offsetParent !== null;
+  const sample = [
+    { id: "sample.scheme.system", title: "Follow the system colours", group: "View", keywords: ["theme", "scheme", "auto"], run: () => window.annealageScheme?.set("system") },
+    { id: "sample.scheme.light", title: "Use light colours", group: "View", keywords: ["theme", "scheme"], run: () => window.annealageScheme?.set("light") },
+    { id: "sample.scheme.dark", title: "Use dark colours", group: "View", keywords: ["theme", "scheme"], run: () => window.annealageScheme?.set("dark") },
+  ];
+  for (const btn of $$("[data-layout-set]")) {
+    sample.push({
+      id: `sample.layout.${btn.dataset.layoutSet}`, title: `Layout: ${btn.getAttribute("aria-label")}`, group: "View", keywords: ["focus", "pane"],
+      enabled: () => visible(btn), disabledReason: "One pane at a time at this width", run: () => btn.click(),
+    });
+  }
+  const panelBtn = document.getElementById("panelBtn");
+  if (panelBtn) {
+    sample.push({
+      id: "sample.panel", title: `Toggle ${panelBtn.getAttribute("aria-label").toLowerCase()}`, group: "View", keywords: ["panel", "inspector"],
+      enabled: () => visible(panelBtn), disabledReason: "Not shown at this width", run: () => panelBtn.click(),
+    });
+  }
+  for (const route of routes) {
+    sample.push({ id: `sample.go.${route}`, title: `Go to ${route[0].toUpperCase()}${route.slice(1)}`, group: "Go to", keywords: ["step"], run: () => { location.hash = route; } });
+  }
+  sample.push({ id: "sample.export", title: "Export report", group: "Actions", keywords: ["download", "pdf"], enabled: false, disabledReason: "Nothing reviewed yet", run: () => {} });
+  palette.register(sample);
+  const ask = q.get("palette");
+  if (ask) palette.open({ query: ask === "1" ? "" : ask });
+}
+
 // ---- For the screenshot script: fonts in, every image decoded.
 const images = $$("img").map((img) => img.complete ? Promise.resolve() : new Promise((done) => {
   img.addEventListener("load", done, { once: true });

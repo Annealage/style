@@ -40,7 +40,7 @@
         </template>
       </span>
     </div>
-    <button class="cmd" type="button"><svg class="ico"><use href="../icons.svg#i-search"/></svg><span>Search or run a command</span><kbd>Ctrl K</kbd></button>
+    <button class="cmd" type="button" aria-label="Search or run a command"><svg class="ico"><use href="../icons.svg#i-search"/></svg><span>Search or run a command</span><kbd>Ctrl K</kbd></button>
     <div class="tb-right">
       <span class="conn" data-state="live">Live</span>
       <button class="btn quiet" id="pauseBtn" type="button" aria-pressed="false" title="Pause live updates"><svg class="ico"><use href="../icons.svg#i-pause"/></svg><span class="lbl" data-label>Pause</span></button>
@@ -609,6 +609,7 @@ content: NUT_SLOT = 5.7</pre>
   </div>
 </div>
 <script src="../frame.js" data-auto></script>
+<script src="../palette.js"></script>
 <script type="module" src="demo.js"></script>
 <script type="module" src="confirm-demo.js"></script>
 </body>
