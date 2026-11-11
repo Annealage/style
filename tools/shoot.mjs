@@ -76,6 +76,16 @@ const clockScript = (iso) => `(() => { const T = new Date(${JSON.stringify(iso)}
 const ref = (name, path, scheme, w, h, shape, extra = {}) => ({ name, file: name, path, schemes: [scheme], viewports: [[w, h]], shape, ...extra });
 const wb = (product, scheme) => ref(`workbench-${product}-${scheme}`, `workbench.html?product=${product}&theme=${scheme}`, scheme, 1600, 1000, 'workbench');
 
+// States for the reference table: click a selector; press ArrowLeft n times on a column handle (n = 0 only focuses it, by keyboard).
+const click = (sel) => async (tab) => { await tab.evaluate(`document.querySelector(${JSON.stringify(sel)}).click()`); };
+const grip = (key, n) => async (tab) => {
+  await tab.run(async ({ page }, k, times) => {
+    await page.keyboard.press('Shift');
+    await page.evaluate((kk) => document.querySelector(`[data-grip="${kk}"]`).focus(), k);
+    for (let i = 0; i < times; i++) await page.keyboard.press('ArrowLeft');
+  }, { args: [key, n] });
+};
+
 export const SHOTS_REFERENCE = [
   ref('components-light', 'components.html?theme=light', 'light', 1440, 1000, 'components', { full: true }),
   ref('components-dark', 'components.html?theme=dark', 'dark', 1440, 1000, 'components', { full: true }),
@@ -83,7 +93,6 @@ export const SHOTS_REFERENCE = [
   wb('trace', 'light'), wb('trace', 'dark'),
   wb('canvas', 'light'), wb('canvas', 'dark'),
   wb('mesh', 'light'), wb('mesh', 'dark'),
-  ref('workbench-mesh-timeline-light', 'workbench.html?product=mesh&theme=light&side=timeline&preview=1', 'light', 1600, 1000, 'workbench'),
   ref('workbench-loom-phone', 'workbench.html?product=loom&theme=light', 'light', 400, 860, 'workbench'),
   ref('flow-upload-light', 'flow.html?theme=light#upload', 'light', 1440, 1000, 'flow'),
   ref('flow-datasheets-light', 'flow.html?theme=light#datasheets', 'light', 1440, 1000, 'flow'),
@@ -98,6 +107,39 @@ export const SHOTS_REFERENCE = [
   ref('list-phone-light', 'list.html?theme=light#list', 'light', 400, 860, 'list'),
   ref('settings-overview-light', 'settings.html?theme=light#overview', 'light', 1440, 1000, 'settings'),
   ref('settings-security-dark', 'settings.html?theme=dark#security', 'dark', 1440, 1000, 'settings'),
+  // Ember's reference page (S1): its four routes, and ?ember=0 (ember's own sheets dropped).
+  // Shape 'ember' has no entry in conformance.json: the page is a workbench with ember's views, so it is left out of the structural check.
+  ...['project', 'rename', 'dialog', 'settings'].map((r) => ref(`ember-${r}`, `ember.html?product=loom#${r}`, 'light', 1600, 1000, 'ember', { conform: false })),
+  ...['project', 'rename', 'dialog', 'settings'].map((r) => ref(`ember-${r}-dark`, `ember.html?product=loom&theme=dark#${r}`, 'dark', 1600, 1000, 'ember', { conform: false })),
+  ref('ember-project-phone', 'ember.html?product=loom#project', 'light', 400, 860, 'ember', { conform: false }),
+  ref('ember-noember-light', 'ember.html?product=loom&ember=0#project', 'light', 1600, 1000, 'ember', { conform: false }),
+  ref('ember-noember-dark', 'ember.html?product=loom&theme=dark&ember=0#project', 'dark', 1600, 1000, 'ember', { conform: false }),
+  // Confirm row (S3): ?confirm=1 opens the first visible one.
+  ref('flow-confirm-light', 'flow.html?theme=light&confirm=1#datasheets', 'light', 1440, 1000, 'flow'),
+  ref('flow-confirm-dark', 'flow.html?theme=dark&confirm=1#datasheets', 'dark', 1440, 1000, 'flow'),
+  ref('settings-confirm-light', 'settings.html?theme=light&confirm=1#security', 'light', 1440, 1000, 'settings'),
+  ref('settings-confirm-dark', 'settings.html?theme=dark&confirm=1#security', 'dark', 1440, 1000, 'settings'),
+  ref('workbench-confirm-light', 'workbench.html?product=loom&theme=light&confirm=1', 'light', 1600, 1000, 'workbench'),
+  ref('workbench-confirm-dark', 'workbench.html?product=loom&theme=dark&confirm=1', 'dark', 1600, 1000, 'workbench'),
+  ref('components-confirm-light', 'components.html?theme=light&confirm=1', 'light', 1440, 1000, 'components', { full: true }),
+  // Palette (S12): open, filtered ("la"), and the go-to query; desktop and phone.
+  ...['workbench.html?product=loom&', 'flow.html?', 'components.html?'].flatMap((p) => {
+    const page = p.split('.')[0];
+    const shape = page;
+    return ['1', 'la', 'go'].flatMap((v) => [[1600, 1000], [400, 860]].flatMap(([w, h]) => ['light', 'dark'].map((s) =>
+      ref(`${page}-palette-${v === '1' ? 'open' : v}-${s}-${w}`, `${p}theme=${s}&palette=${v}${page === 'flow' ? '#datasheets' : ''}`, s, w, h, shape, { ready: '.palette-box' }))));
+  }),
+  // Frame (S2): layout focus, inspector closed and reopened, dragged columns, keyboard focus on a handle, phone tab bar.
+  ...[['drawing', 'drawing'], ['agent', 'agent']].flatMap(([id]) => ['light', 'dark'].map((s) =>
+    ref(`workbench-layout-${id}-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: click(`[data-layout-set="${id}"]`) }))),
+  ...['light', 'dark'].flatMap((s) => [
+    ref(`workbench-inspector-closed-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: click('#panelBtn') }),
+    ref(`workbench-inspector-wide-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: grip('insp', 8) }),
+    ref(`workbench-agent-wide-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: grip('chat', 12) }),
+    ref(`workbench-grip-focus-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: grip('insp', 0) }),
+  ]),
+  ...['review', 'agent'].flatMap((t) => ['light', 'dark'].map((s) =>
+    ref(`workbench-phone-tab-${t}-${s}`, `workbench.html?product=loom&theme=${s}`, s, 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`) }))),
 ];
 
 // Every PNG a table produces: one job per entry, scheme and viewport.
