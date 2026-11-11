@@ -32,6 +32,10 @@
 .pagehead .sortbtn { color: var(--ink-2); font-weight: 400; }
 .pagehead .sortbtn span { color: var(--ink); }
 .pagehead .btn.primary { margin-left: 8px; }
+.pagehead .chips { padding: 0; margin-left: 12px; }
+.pagebody > .notice { margin-bottom: 10px; }
+.pagebody > .blk-h { margin-top: 24px; }
+.pagebody .empty { padding-inline: 0; }
 
 /* A section of a page, where a card used to be: a hairline, a heading row,
    then the content. No box. <section class="card"><h2>Share</h2><p>…</p>…</section> */
@@ -46,6 +50,28 @@
 .linkrow { display: grid; grid-template-columns: var(--fl-label, 180px) minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 40px; border-top: 1px solid var(--rule); }
 .linkrow > span { color: var(--ink-2); }
 .linkrow .input { font: 400 var(--fs-small)/1 var(--mono); }
+
+/* A form opened in place, under the thing it acts on: a table row's .dt-detail, or
+   the title row. A ruled region, not a box; it shares the confirm row's title,
+   line and actions so a form and an approval read as one family.
+   <form class="inlineform"><h3 class="ch">Send Dual stepper driver to another product</h3><p class="cd">One line of help.</p>
+     <dl class="fl form">…</dl> [<details class="disc"><summary>Options</summary><div class="disc-body"><dl class="fl form">…</dl></div></details>]
+     [<p class="notice notice--danger" role="alert">…</p>] [<dl class="fl form" role="status">the result of the action</dl>]
+     <div class="cacts"><button class="btn quiet" type="button">Close</button><button class="btn primary">Send</button></div></form>
+   Directly in .pagebody it spans the page with a hairline above and below. */
+.inlineform { min-width: 0; padding: 4px 0 16px; }
+.inlineform > * { max-width: 640px; }
+.inlineform .ch { margin: 0; font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); overflow-wrap: anywhere; }
+.inlineform .cd { margin: 2px 0 12px; color: var(--ink-2); font-size: var(--fs-small); line-height: 17px; }
+.inlineform .disc { margin-top: 6px; }
+.inlineform .disc-body { padding-top: 4px; }
+.inlineform .disc-body .fl.form { --fl-label: 120px; }
+.inlineform .notice { margin-top: 8px; }
+.inlineform .fl.form[role=status] { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--rule); }
+.inlineform .fl.form[role=status] > dd { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: var(--ctl); }
+.inlineform .cacts { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.pagebody > .inlineform { margin-inline: calc(-1 * var(--gutter)) calc(-1 * var(--s-5)); padding: 12px var(--s-5) 16px var(--gutter); border-block: 1px solid var(--rule); }
+.dt-detail > .inlineform { padding-top: 0; }
 
 /* --------------------------------------------------------------- drop zone */
 /* Dropping files is the way in, so it is an input and may have an edge: wide,
@@ -302,6 +328,9 @@ a.p-name:hover { text-decoration: underline; text-decoration-color: var(--rule-s
   .pagehead .sortbtn span { display: none; }
   .pagehead .seg { order: 7; }
   .pagehead .btn.primary { margin-left: auto; }
+  .pagehead .chips { order: 5; flex-basis: 100%; margin-left: 0; }
+  .pagehead .crumbs { flex: 1 0 100%; flex-wrap: wrap; white-space: normal; }
+  .pagebody > .inlineform { margin-inline: -12px; padding-inline: 12px; }
   .dropstrip { height: 40px; margin-bottom: 8px; }
   .linkrow { grid-template-columns: minmax(0, 1fr) auto; padding-block: 6px; }
   .linkrow > span { grid-column: 1 / -1; }

@@ -196,7 +196,8 @@ input[type=range] { accent-color: var(--ink); }
 
 /* Chips: presets, example queries and filters, as small toggles in a wrapping
    row. aria-pressed=true for a chosen one. Not pills: no border at rest.
-   <div class="chips"><button class="chip" aria-pressed="true">All</button>...</div> */
+   <div class="chips"><button class="chip" aria-pressed="true">All</button>...</div>
+   A filter that is a link to another URL holds the chosen one with aria-current instead. */
 .chips { display: flex; flex-wrap: wrap; gap: 2px; padding: 2px 12px 6px; }
 .chip {
   display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 7px;
@@ -204,7 +205,7 @@ input[type=range] { accent-color: var(--ink); }
   font: 400 var(--fs-small)/1 var(--sans); color: var(--ink-2); white-space: nowrap; cursor: pointer;
 }
 .chip:hover { color: var(--ink); background: var(--hover); }
-.chip[aria-pressed=true] { background: var(--press); color: var(--ink); font-weight: 500; }
+.chip[aria-pressed=true], .chip[aria-current] { background: var(--press); color: var(--ink); font-weight: 500; }
 .chip code, .chip.mono { font: 400 11.5px/1 var(--mono); }
 /* A count: on a tab, a chip or a heading. A quiet mono number, not a badge. */
 .n { font: 400 11.5px/1 var(--mono); font-variant-numeric: tabular-nums; color: var(--ink-3); }
@@ -227,6 +228,24 @@ input[type=range] { accent-color: var(--ink); }
 .fl.ruled > dt, .fl.ruled > dd { padding: 6px 0; border-top: 1px solid var(--rule); }
 .fl.ruled > dd { padding-left: 12px; text-align: right; }
 .fl.cols2 { grid-template-columns: var(--fl-label, 104px) minmax(0, 300px) var(--fl-label, 104px) minmax(0, 1fr); }
+
+/* A field list that holds controls: the label sits at the control's height and
+   the control is the value, with a .hint under it. A choice between options is a
+   .choices row of label.check. --fl-label sets the label width. One column on a phone.
+   <dl class="fl form"><dt><label for="p">Product</label></dt><dd><select id="p" class="input">…</select></dd>
+     <dt>Destination</dt><dd><div class="choices"><label class="check"><input type="radio" name="d" checked>New project</label>…</div><p class="hint">…</p></dd></dl> */
+.fl.form { --fl-label: 140px; row-gap: 8px; align-items: start; }
+.fl.form > dt { padding: 0; line-height: var(--ctl); }
+.fl.form > dd { display: grid; gap: 4px; justify-items: start; padding: 0; }
+.fl.form .input { width: 100%; max-width: 420px; }
+.fl.form .choices { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; min-height: var(--ctl); }
+.fl.form .hint { font-size: var(--fs-small); line-height: 17px; }
+.fl.form .hint:empty { display: none; }
+@media (max-width: 640px) {
+  .fl.form { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+  .fl.form > dt { line-height: 18px; }
+  .fl.form > dd { margin-bottom: 10px; }
+}
 
 /* ------------------------------------------------ lamps, markers, readouts */
 /* A status lamp: a small square, never a round dot.
@@ -362,6 +381,26 @@ summary { cursor: pointer; }
 .discs { border-top: 1px solid var(--rule); }
 .discs > .disc { border-bottom: 1px solid var(--rule); }
 .discs > .disc > summary { height: var(--h-row); }
+
+/* A file tree: nested lists with a <details> per folder, so it needs no script.
+   <ul class="tree"><li><details open><summary><span class="mono">sheets</span><span class="hint"><span class="mono">3</span> files</span></summary>
+       <ul><li class="file"><span class="mono" title="…">power.kicad_sch</span></li>…</ul></details></li>
+     <li class="file"><span class="mono">circuit.py</span></li></ul>
+   Names are paths from the project root, so they are mono data; a folder's
+   chevron is its summary's, and a file's name lines up with a folder's. Indent
+   guides are hairlines. A detail that belongs to a file (its hash) goes in the
+   name's title, not on the row. */
+.tree, .tree ul { list-style: none; margin: 0; padding: 0; }
+.tree ul { margin-left: 8px; padding-left: 11px; border-left: 1px solid var(--rule); }
+.tree summary, .tree .file { display: flex; align-items: center; gap: 8px; height: 28px; }
+.tree summary { list-style: none; }
+.tree summary::-webkit-details-marker { display: none; }
+.tree summary::before { content: ""; width: 5px; height: 5px; margin: 0 4px 0 3px; flex: none; border: solid var(--ink-3); border-width: 0 1.5px 1.5px 0; transform: rotate(-45deg); }
+.tree details[open] > summary::before { transform: rotate(45deg) translate(-1px, -1px); }
+.tree .file { padding-left: 20px; }
+.tree :is(summary, .file):hover { background: var(--hover); }
+.tree .hint { font-size: var(--fs-small); white-space: nowrap; }
+.tree .hint .mono { color: var(--ink); }
 
 /* -------------------------------------------------------------- panel text */
 /* .empty for "nothing here yet", .hint for guidance, .subhead for a heading
@@ -1715,13 +1754,13 @@ html .pj-modal {
   .titlebar:has(> .tb-left):has(> .cmd) { grid-template-columns: minmax(0, 1fr) auto auto; }
   .tb-left { min-width: 0; }
   .titlebar { padding-right: 4px; }
-  .titlebar .doc, .titlebar .stageline, .titlebar .tsep, .crumbs a, .crumbs .sep, .crumbs .btn { display: none; }
+  .titlebar .doc, .titlebar .stageline, .titlebar .tsep, .titlebar .crumbs a, .titlebar .crumbs .sep, .titlebar .crumbs .btn { display: none; }
   /* The command field becomes its icon: a quiet square button, no words, no key. */
   .titlebar .cmd { width: var(--ctl); padding: 0; justify-content: center; border-color: transparent; background: none; color: var(--ink-2); }
   .titlebar .cmd:hover { background: var(--hover); color: var(--ink); }
   .titlebar .cmd > :is(span, kbd) { display: none; }
-  .crumbs { overflow: hidden; margin-left: 10px; }
-  .crumbs .here { overflow: hidden; text-overflow: ellipsis; }
+  .titlebar .crumbs { overflow: hidden; margin-left: 10px; }
+  .titlebar .crumbs .here { overflow: hidden; text-overflow: ellipsis; }
   .tb-right .conn { padding: 0 4px; font-size: 0; }
   /* One pane shows at a time, so the layout focus control has nothing to do. */
   .wb > .titlebar .tb-right > :is(.seg, .gap) { display: none; }
