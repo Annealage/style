@@ -20,8 +20,11 @@
 // code redraws on it instead of watching matchMedia itself.
 //
 // Any <button data-scheme-toggle> cycles System, Light, Dark. It holds one
-// <svg data-for="system|light|dark"> per state and theme.css shows the one
-// matching the button's data-scheme.
+// <svg class="ico"><use href=".../icons.svg#i-auto"/></svg>, and the icon is
+// swapped to match the choice (i-auto, i-sun, i-moon; the sprite path in the
+// href is kept). The earlier markup still works: one
+// <svg data-for="system|light|dark"> per state, of which theme.css shows the
+// one matching the button's data-scheme.
 //
 // The marks' <picture><source media="(prefers-color-scheme: dark)"> would
 // follow the OS and ignore a forced scheme, so those sources get their media
@@ -35,6 +38,7 @@
   // A mark's dark source: its original media, or the one kept once rewritten.
   var SOURCES = "picture > source[media*='prefers-color-scheme'], picture > source[data-scheme-media]";
   var LABEL = { system: "Colours: follow the system", light: "Colours: light", dark: "Colours: dark" };
+  var ICON = { system: "i-auto", light: "i-sun", dark: "i-moon" };
 
   function stored() {
     try {
@@ -70,6 +74,11 @@
       btns[i].setAttribute("data-scheme", c);
       btns[i].setAttribute("aria-label", LABEL[c] + ". Switch to " + next + ".");
       btns[i].title = LABEL[c];
+      var use = btns[i].querySelector("svg:not([data-for]) > use");
+      if (use) {
+        var href = use.getAttribute("href") || "";
+        use.setAttribute("href", href.slice(0, href.indexOf("#") + 1) + ICON[c]);
+      }
     }
   }
 
