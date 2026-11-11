@@ -285,7 +285,7 @@ a.p-name:hover { text-decoration: underline; text-decoration-color: var(--rule-s
   .page > .titlebar:has(> .tb-left) { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
   .page > .titlebar { padding-right: 4px; }
   .page > .titlebar .tb-left { min-width: 0; }
-  .page > .titlebar .cmd { display: none; }
+  .page > .titlebar:has(> .tb-left):has(> .cmd) { grid-template-columns: minmax(0, 1fr) auto auto; }
   .page > .titlebar .crumbs { overflow: hidden; }
   .page > .titlebar .crumbs .here { overflow: hidden; text-overflow: ellipsis; }
   .page > .statusbar { gap: 12px; }

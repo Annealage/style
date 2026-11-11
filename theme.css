@@ -599,6 +599,46 @@ body:not(.panel-open) .colgrip[data-grip=insp], .wb[data-layout=agent] .colgrip,
 .cmd:hover { border-color: var(--rule-strong); }
 .cmd > span { flex: 1; }
 .titlebar > .cmd:not(:has(~ .tb-right)) { margin-inline: auto; }
+/* The command palette (palette.js): a menu-family box under the title bar over a
+   transparent layer that catches outside clicks. It does not dim the page.
+   <div class="palette"><div class="palette-box" role="dialog" aria-label="Command palette">
+     <input class="input palette-input" role="combobox">
+     <div class="palette-list" role="listbox">
+       <div class="palette-group" role="presentation">Group</div>
+       <div class="palette-row" role="option" aria-selected="true"><span class="palette-title">Title</span><span class="palette-hint">hint</span><kbd>V</kbd></div>
+       <div class="palette-row" role="option" aria-disabled="true">...the hint is the reason it cannot run</div>
+       <div class="palette-empty" role="presentation">No commands match</div>
+     </div><div class="sr" aria-live="polite">2 commands</div></div></div>
+   .palette-box.static sits in the flow, for a specimen. The layer is the catch
+   layer only; the page behind keeps its look. */
+.palette { position: fixed; inset: 0; z-index: 50; }
+.palette-box {
+  position: absolute; top: calc(var(--h-bar) + var(--s-3)); left: 0; right: 0; margin-inline: auto;
+  width: min(560px, calc(100% - 16px)); padding: 4px; text-align: left;
+  border: 1px solid var(--rule-strong); border-radius: var(--r);
+  background: var(--field); box-shadow: var(--shadow-menu);
+}
+.palette-box.static { position: static; margin-inline: 0; width: 100%; max-width: 560px; }
+.palette-input { width: 100%; }
+.palette-list { max-height: calc(8.5 * var(--ctl)); margin-top: 4px; overflow-y: auto; overscroll-behavior: contain; }
+.palette-group { padding: 8px 8px 4px; color: var(--ink-2); font-size: var(--fs-small); font-weight: 500; }
+.palette-group:first-child { padding-top: 4px; }
+.palette-row {
+  display: flex; align-items: center; gap: 8px; height: var(--ctl); padding: 0 8px;
+  border-radius: var(--r-sm); color: var(--ink); cursor: default;
+}
+.palette-row[aria-selected=true] { background: var(--press); }
+.palette-row[aria-disabled=true] { color: var(--ink-3); }
+/* ink-3 is not used on the pressed tone (tools/contrast.py), so the selected row steps up to ink-2. */
+.palette-row[aria-selected=true][aria-disabled=true], .palette-row[aria-selected=true] :is(.palette-hint, kbd) { color: var(--ink-2); }
+.palette-row > .ico { flex: none; color: var(--ink-2); }
+.palette-title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.palette-hint { flex: 0 1 auto; max-width: 45%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-3); font-size: var(--fs-small); }
+.palette-row > kbd { flex: none; }
+.palette-empty { padding: 8px; color: var(--ink-3); }
+@media (max-width: 640px) {
+  .palette-box:not(.static) { top: var(--h-bar); width: 100%; border-width: 0 0 1px; border-radius: 0 0 var(--r) var(--r); }
+}
 /* Product switch on platform pages: text tabs that sit on the bar's own rule.
    <nav class="prodtabs"><a href aria-current="page">Trace</a><a href>Loom</a></nav> */
 .prodtabs { display: flex; height: 100%; gap: 16px; }
@@ -1659,9 +1699,14 @@ html .pj-modal {
   }
   .wb > .statusbar, #panelBtn, .colgrip { display: none; }
   .titlebar:has(> .tb-left) { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .titlebar:has(> .tb-left):has(> .cmd) { grid-template-columns: minmax(0, 1fr) auto auto; }
   .tb-left { min-width: 0; }
   .titlebar { padding-right: 4px; }
-  .titlebar .cmd, .titlebar .doc, .titlebar .stageline, .titlebar .tsep, .crumbs a, .crumbs .sep, .crumbs .btn { display: none; }
+  .titlebar .doc, .titlebar .stageline, .titlebar .tsep, .crumbs a, .crumbs .sep, .crumbs .btn { display: none; }
+  /* The command field becomes its icon: a quiet square button, no words, no key. */
+  .titlebar .cmd { width: var(--ctl); padding: 0; justify-content: center; border-color: transparent; background: none; color: var(--ink-2); }
+  .titlebar .cmd:hover { background: var(--hover); color: var(--ink); }
+  .titlebar .cmd > :is(span, kbd) { display: none; }
   .crumbs { overflow: hidden; margin-left: 10px; }
   .crumbs .here { overflow: hidden; text-overflow: ellipsis; }
   .tb-right .conn { padding: 0 4px; font-size: 0; }
