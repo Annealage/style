@@ -866,7 +866,7 @@ body:not(.panel-open) .colgrip[data-grip=insp], .wb[data-layout=agent] .colgrip,
    .subtabs on the bottom edge. A half is a pane of its own on a phone: a tab target. */
 .canvas.split.even { --cut-at: var(--split-user, var(--split, 50%)); grid-template-columns: var(--cut-at) minmax(0, 1fr); }
 .half { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
-.half + .half { border-left: 1px solid var(--rule); }
+.half ~ .half { border-left: 1px solid var(--rule); }
 .half > .vhead { height: var(--h-pane); padding-left: 12px; }
 body:not(.panel-open) .wb[data-insp=left] .half:first-child > .vhead { padding-left: var(--gutter); }
 .half > .stage { flex: 1; }
@@ -1895,7 +1895,7 @@ html .pj-modal {
   /* A split view's halves are panes of their own: the tab bar shows one, and the view
      itself goes when none of its halves is the one showing. */
   .canvas.split.even { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
-  .half + .half { border-left: 0; }
+  .half ~ .half { border-left: 0; }
   .view:has(.half):not(:has(.half:not([style*="none"]))) { display: none; }
   .wb[data-insp=left] .inspector > .ihead, body:not(.panel-open) .wb[data-insp=left] .half:first-child > .vhead { padding-left: 12px; }
   .wb[data-insp=left] .inspector .tree { --tree-in: 9px; }
