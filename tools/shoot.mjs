@@ -150,6 +150,10 @@ const CANVAS = [
   // Between 900 and 1200px wide the halves stack (editor over screen).
   ...['light', 'dark'].map((s) => ref(`workbench-canvas-narrow-${s}`, `workbench.html?product=canvas&theme=${s}`, s, 1100, 800, 'workbench', { conform: canvasConform() })),
   ref('workbench-canvas-narrow-capture-light', 'workbench.html?product=canvas&theme=light&state=capture', 'light', 1000, 700, 'workbench', { conform: canvasConform() }),
+  ref('workbench-canvas-narrow-capture-1100-light', 'workbench.html?product=canvas&theme=light&state=capture', 'light', 1100, 800, 'workbench', { conform: canvasConform() }),
+  ref('workbench-canvas-narrow-capture-901-light', 'workbench.html?product=canvas&theme=light&state=capture', 'light', 901, 700, 'workbench', { conform: canvasConform() }),
+  // With the tree closed there is room at 1200px, so the halves stay side by side.
+  ref('workbench-canvas-narrow-tree-closed-light', 'workbench.html?product=canvas&theme=light', 'light', 1200, 800, 'workbench', { state: click('#panelBtn'), conform: canvasConform(['0px', null, '400px'], 'the file tree toggle closes the left column') }),
   // Phone: the tab bar is Files, Editor, Screen, Agent; one pane at a time.
   ref('workbench-canvas-phone', 'workbench.html?product=canvas&theme=light', 'light', 400, 860, 'workbench', { conform: canvasPhone('files') }),
   ...['files', 'editor', 'screen', 'agent'].flatMap((t) => ['light', 'dark'].filter((s) => !(t === 'files' && s === 'light')).map((s) =>
@@ -161,12 +165,16 @@ const CANVAS = [
   ...['editor', 'screen'].map((t) => ref(`workbench-canvas-phone-capture-${t}-light`, 'workbench.html?product=canvas&theme=light&state=capture', 'light', 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: canvasPhone(t) })),
 ];
 
+// The other workbenches between 900 and 1200px wide: the frame's mid-width look, which the Canvas layout's rules must not touch.
+const MID = [['loom', 'light'], ['loom', 'dark'], ['trace', 'light'], ['mesh', 'light']].map(([p, s]) => ref(`workbench-${p}-1100-${s}`, `workbench.html?product=${p}&theme=${s}`, s, 1100, 800, 'workbench'));
+
 export const SHOTS_REFERENCE = [
   ref('components-light', 'components.html?theme=light', 'light', 1440, 1000, 'components', { full: true }),
   ref('components-dark', 'components.html?theme=dark', 'dark', 1440, 1000, 'components', { full: true }),
   wb('loom', 'light'), wb('loom', 'dark'),
   wb('trace', 'light'), wb('trace', 'dark'),
   ...CANVAS,
+  ...MID,
   wb('mesh', 'light'), wb('mesh', 'dark'),
   // A title bar without .cmd keeps its right controls at the right edge (?cmd=none removes the field).
   ref('workbench-nocmd-light', 'workbench.html?product=loom&theme=light&cmd=none', 'light', 1600, 1000, 'workbench'),
