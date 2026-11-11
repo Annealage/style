@@ -216,7 +216,7 @@ async function run(o) {
       for (const s of result.shots) {
         if (!s.collected || entryOf.get(s.entry).conform === false || !s.shape) continue;
         n++;
-        s.conformance = compareShot(doc, s);
+        s.conformance = compareShot(doc, s, entryOf.get(s.entry).conform);
         if (s.conformance.length) {
           failed = true;
           lines.push(`CONFORMANCE ${s.name} (${s.shape}, ${s.scheme}, ${s.w}):`);

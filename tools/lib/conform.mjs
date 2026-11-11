@@ -64,19 +64,60 @@ function diffValue(exp, act, tol) {
   return sameValue(exp, act, tol) ? null : { expected: exp, actual: String(act) };
 }
 
+// An entry's `conform` override says what a state variant changes on purpose, so the rest
+// of the page shape is still checked. Shape (every key optional, `reason` required):
+//   { reason: 'why',
+//     except: { '<check selector>': ['prop', ...] | '*' },     // not asserted (a prop, or the whole selector)
+//     expect: { '<check selector>': 'absent' | { prop: value } } }  // asserted instead of the shape's value
+// A selector is the `selector` of an entry in `checks`; a prop is one of that check's `props`.
+// A value is a string, or an array of strings with null for a track not asserted (grid tracks).
+// 'absent' says the element is not drawn (a phone tab view has no .vhead).
+function checkOverride(doc, o) {
+  const bad = (msg) => [{ selector: '(entry)', prop: 'conform', expected: 'a valid override', actual: msg }];
+  if (typeof o !== 'object' || o === null || Array.isArray(o)) return { error: bad('conform must be false or an object { reason, except?, expect? }') };
+  if (typeof o.reason !== 'string' || !o.reason.trim()) return { error: bad('conform override has no reason') };
+  const unknown = Object.keys(o).filter((k) => !['reason', 'except', 'expect'].includes(k));
+  if (unknown.length) return { error: bad(`unknown conform key ${unknown.join(', ')}`) };
+  const bySel = new Map(doc.checks.map((c) => [c.selector, c]));
+  const clean = { except: new Map(), expect: new Map() };
+  for (const [sel, props] of Object.entries(o.except ?? {})) {
+    const c = bySel.get(sel);
+    if (!c) return { error: bad(`except: no check with selector ${sel}`) };
+    if (props !== '*' && !(Array.isArray(props) && props.length && props.every((p) => c.props.includes(p)))) return { error: bad(`except ${sel}: '*' or a list of ${c.props.join(', ')}`) };
+    clean.except.set(c.id, props === '*' ? new Set(c.props) : new Set(props));
+  }
+  for (const [sel, want] of Object.entries(o.expect ?? {})) {
+    const c = bySel.get(sel);
+    if (!c) return { error: bad(`expect: no check with selector ${sel}`) };
+    if (want !== 'absent' && !(typeof want === 'object' && want !== null && !Array.isArray(want) && Object.keys(want).length && Object.keys(want).every((p) => c.props.includes(p)))) return { error: bad(`expect ${sel}: 'absent' or { prop: value } with props of ${c.props.join(', ')}`) };
+    clean.expect.set(c.id, want);
+  }
+  return clean;
+}
+
 // -> [{ selector, prop, expected, actual }] (selector is a CSS selector or a token name)
-export function compareShot(doc, shot) {
+// `override` is the entry's `conform` object (see checkOverride); false is handled by the caller.
+export function compareShot(doc, shot, override) {
   const diffs = [];
   const got = shot.collected;
   if (!got) return [{ selector: '(page)', prop: 'read', expected: 'computed style', actual: 'not read' }];
   const exp = doc.expected[shot.shape]?.[classOf(doc, shot.w)]?.[shot.scheme];
   if (!exp) return [{ selector: shot.shape, prop: 'shape', expected: `an entry in tools/conformance.json for ${shot.scheme} ${classOf(doc, shot.w)}`, actual: 'none (shape not derived)' }];
+  const ov = override === undefined ? null : checkOverride(doc, override);
+  if (ov?.error) return ov.error;
   for (const c of doc.checks) {
-    const want = exp.checks[c.id];
-    if (!want) continue; // the reference page of this shape does not draw it
     const have = got.checks[c.id];
-    if (!have) { diffs.push({ selector: c.selector, prop: '(element)', expected: 'present', actual: 'missing' }); continue; }
+    const instead = ov?.expect.get(c.id);
+    if (instead === 'absent') {
+      if (have) diffs.push({ selector: c.selector, prop: '(element)', expected: 'absent', actual: 'present' });
+      continue;
+    }
+    const skip = ov?.except.get(c.id);
+    const want = instead ? { ...(exp.checks[c.id] ?? {}), ...instead } : exp.checks[c.id];
+    if (!want) continue; // the reference page of this shape does not draw it
+    if (!have) { if (!(skip && c.props.every((p) => skip.has(p)))) diffs.push({ selector: c.selector, prop: '(element)', expected: 'present', actual: 'missing' }); continue; }
     for (const [p, v] of Object.entries(want)) {
+      if (skip?.has(p)) continue;
       const d = diffValue(v, have[p], c.tolerancePx ?? doc.tolerancePx);
       if (d) diffs.push({ selector: c.selector, prop: p, ...d });
     }

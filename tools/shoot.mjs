@@ -34,7 +34,13 @@
 //   clock      ISO time to freeze Date at (a page that shows the time)
 //   tolerance  fraction of pixels allowed to differ from the baseline (default 0.001),
 //              with toleranceReason, a mandatory comment saying why it is loosened
-//   conform    false to leave the entry out of the structural check (give a reason in a comment)
+//   conform    false to leave the entry out of the structural check (give a reason in a comment), or
+//              an override { reason, except?, expect? } for a state variant that differs from its
+//              shape on purpose, so the rest of the shape is still checked:
+//                except  { '<selector>': ['prop', ...] | '*' }   not asserted
+//                expect  { '<selector>': 'absent' | { prop: value } }   asserted instead of the shape's value
+//              a selector is one of `checks` in tools/conformance.json; a value is a string, or an array
+//              of tracks with null for a fluid one; reason is mandatory (tools/lib/conform.mjs)
 //
 // Generic readiness: document.fonts.ready, every <link rel=stylesheet> loaded, every
 // <img> complete, window.__shotReady === true when the page defines it, then the entry's
@@ -75,6 +81,16 @@ const clockScript = (iso) => `(() => { const T = new Date(${JSON.stringify(iso)}
 
 const ref = (name, path, scheme, w, h, shape, extra = {}) => ({ name, file: name, path, schemes: [scheme], viewports: [[w, h]], shape, ...extra });
 const wb = (product, scheme) => ref(`workbench-${product}-${scheme}`, `workbench.html?product=${product}&theme=${scheme}`, scheme, 1600, 1000, 'workbench');
+
+// Structural conformance for a state variant: what it changes on purpose, as an override of its shape (see `conform` above).
+// .wb columns are [rail, centre, inspector, agent]; 'drawing' and 'agent' are the layout focus buttons (the rail stays, the other columns collapse or take the width).
+const wbCols = (cols, reason) => ({ reason, expect: { '.wb': { gridTemplateColumns: cols } } });
+const FOCUS_DRAWING = wbCols(['40px', null, '300px', '0px'], 'layout focus "drawing" closes the agent column; the inspector keeps its width');
+const FOCUS_AGENT = wbCols(['0px', '0px', '0px', null], 'layout focus "agent" gives the agent column the whole window and collapses the rail, centre and inspector');
+const INSPECTOR_CLOSED = wbCols(['40px', null, '0px', '400px'], 'the inspector toggle collapses the inspector column; the centre takes its width');
+const INSPECTOR_WIDE = wbCols(['40px', null, '428px', '400px'], 'inspector column dragged (8 steps of the handle) from 300px to 428px');
+const AGENT_WIDE = wbCols(['40px', null, '300px', '592px'], 'agent column dragged (12 steps of the handle) from 400px to 592px');
+const PHONE_TAB = { reason: 'a phone tab view fills the page below the title bar; the desktop .vhead is not drawn', expect: { '.vhead': 'absent' } };
 
 // States for the reference table: click a selector; press ArrowLeft n times on a column handle (n = 0 only focuses it, by keyboard).
 const click = (sel) => async (tab) => { await tab.evaluate(`document.querySelector(${JSON.stringify(sel)}).click()`); };
@@ -131,15 +147,15 @@ export const SHOTS_REFERENCE = [
   }),
   // Frame (S2): layout focus, inspector closed and reopened, dragged columns, keyboard focus on a handle, phone tab bar.
   ...[['drawing', 'drawing'], ['agent', 'agent']].flatMap(([id]) => ['light', 'dark'].map((s) =>
-    ref(`workbench-layout-${id}-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: click(`[data-layout-set="${id}"]`) }))),
+    ref(`workbench-layout-${id}-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: click(`[data-layout-set="${id}"]`), conform: id === 'drawing' ? FOCUS_DRAWING : FOCUS_AGENT }))),
   ...['light', 'dark'].flatMap((s) => [
-    ref(`workbench-inspector-closed-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: click('#panelBtn') }),
-    ref(`workbench-inspector-wide-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: grip('insp', 8) }),
-    ref(`workbench-agent-wide-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: grip('chat', 12) }),
+    ref(`workbench-inspector-closed-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: click('#panelBtn'), conform: INSPECTOR_CLOSED }),
+    ref(`workbench-inspector-wide-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: grip('insp', 8), conform: INSPECTOR_WIDE }),
+    ref(`workbench-agent-wide-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: grip('chat', 12), conform: AGENT_WIDE }),
     ref(`workbench-grip-focus-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: grip('insp', 0) }),
   ]),
   ...['review', 'agent'].flatMap((t) => ['light', 'dark'].map((s) =>
-    ref(`workbench-phone-tab-${t}-${s}`, `workbench.html?product=loom&theme=${s}`, s, 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`) }))),
+    ref(`workbench-phone-tab-${t}-${s}`, `workbench.html?product=loom&theme=${s}`, s, 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: PHONE_TAB }))),
 ];
 
 // Every PNG a table produces: one job per entry, scheme and viewport.
