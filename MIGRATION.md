@@ -103,6 +103,7 @@ status  status  status  status         24px
 - `.crumbs` for "Projects / name" with a Rename pencil; `.stageline` with a `.stagebar` for a staged job; `.prodtabs` for the product switch on platform pages.
 - `.cmd` is the command field, on workbench and flow pages only. List, account and chooser pages do not draw it: their title bar carries the product name and the account area. `palette.js` makes it work (S12); the commands each product registers are still to decide.
 - `.conn` shows a square lamp. In the title bar it no longer needs extra padding rules.
+- The account menu (R4): a page served by hosted puts `<span class="menuwrap" data-account-menu hidden></span>` last in `.tb-right` and loads `account.js` (README "The account menu"). From 901px up the bar gives room in this order, so the menu is never off screen: the command field shrinks to 200px and drops its key under 1440px, the stage line goes under 1360px, the menu's name goes under 1000px (and at 640px and below), then the crumbs and `.doc` label end in an ellipsis. A product's own bar rules must not undo that (`min-width: max-content` on `.tb-left`, a fixed `.cmd` width).
 
 ### A control that cannot act
 
@@ -187,6 +188,8 @@ Rules that apply to every port, from `planning/ui-port/00_context.md`:
 
 ### Loom (`loom/src/loom/web/static/`, `S/` below)
 
+Account menu (R4, not yet adopted in Loom): put the place last in `page.html`'s `.tb-right` after Settings, load `account.js` only when served hosted, and remove the hidden `#projectsLink` workaround if the crumbs cover it. Loom's bar is the widest; check 901, 1100 and 1280px.
+
 Read at `loom` feb00d9e23 (`main`). Survey: `20261111_survey-loom.md`.
 
 - **Files.** `page.html` (workbench, 34 scripts, entry `js/main.js`), `front.html` and `js/front.js` (local project list, `loom --projects` only), `css/loom.css` (769 lines), `css/front.css` (80). `src/loom/viewer.py` (a developer KiCanvas browser with its own inline CSS) is not a product surface; decide in or out before a ticket names it. Hosted Loom never serves `front.html`: the hosted chooser and waiting page are `hosted/` surfaces.
@@ -205,6 +208,8 @@ Read at `loom` feb00d9e23 (`main`). Survey: `20261111_survey-loom.md`.
 
 ### Trace (`trace/src/annealage_trace/static/`)
 
+Account menu (R4, done): the empty hidden place last in `.tb-right` of `workbench.html` and `setup.html`; the hosted workbench page loads `account.js`, the standalone one does not.
+
 Read at `trace` f14a822560 (`main`). Survey: `20261111_survey-trace.md`. Trace's own `lib/style` pin is 62c7e0d by a local-path URL, two commits behind `main`; re-point it at the GitHub URL when it is bumped. Trace links no ember static and has no agent pane.
 
 - **Pages.** `workbench.html` (the product and, inside it, `section.setup-page#guidedSetup`, shown for `?view=setup`), `setup.html` and `draft_setup.js` (hosted only, served from the product bundle by the hosted front, not by Trace), `upload.html`, `projects.html`, `admin.html`. The report is generated (`review/report_template/`, `review/report_html.py`).
@@ -222,6 +227,8 @@ Read at `trace` f14a822560 (`main`). Survey: `20261111_survey-trace.md`. Trace's
 
 ### Canvas (`annealage-canvas/studio/`)
 
+Account menu (R4, done): `<studio-header>` draws the place only when hosted and calls `annealageAccount.draw()`; it replaces the Account and Sign out buttons and the `/auth/session` read.
+
 Read at `annealage-canvas` b37d5b5d1a (`canvas-product-bundle`). Survey: `20261111_survey-canvas.md`. **The Canvas workbench reference is `demo/workbench.html?product=canvas`, redrawn by C0 for Q26 (a)**: the file tree is the inspector moved to the left (`.wb[data-insp=left]`, no rail), the view is a split of the editor and the screen (`.canvas.split.even` with two `.half` columns and a frame.js handle), the agent column stays at the right, and the phone tab bar is Files, Editor, Screen, Agent. Every Studio state is a `?state=` on that page (the template's comment lists them; `demo/canvas-demo.js` draws them). Compare each Canvas ticket with it. The decisions behind the drawing are in `planning/ui-port/20261112_canvas-frame.md`. Library additions it needed, all in `README.md`: `data-insp=left`, `.half`, the `.vtab` file-tab children (`.vname`, `.dirty`, `.x`), the `.tree` current-row wash and `--tree-in`, `.hpin.cap` and `.hbox`, `.menu.at`, `.half[data-preview]`, `i-panel-l`, and in `frame.js` the left inspector, the split handle and `split()`/`setSplit()`.
 
 - **Surfaces.** The Studio SPA (Vite 8, TypeScript, Lit; `studio/index.html`, `studio/src/**`), served on :5051 by `studio_launcher.py` or by the managed host in `canvas_host/app.py`; the harness viewer, a Python string `VIEWER_HTML` in `annealage_canvas/server.py` frozen into firmware (S2, S2b inside Studio); the agent chat page built by ember's `render_agent_page` in `canvas_host/app.py` (S3); the favicon. `tools/wasm/demo/index.html` is a spike and out of scope.
@@ -236,6 +243,8 @@ Read at `annealage-canvas` b37d5b5d1a (`canvas-product-bundle`). Survey: `202611
 - **Docs and images.** `docs/studio-spec.md`, `docs/studio.md`, the repo `CLAUDE.md`, 11 images in `docs/screenshots/` and 7 in `docs/screenshots/bench-console/` show the old look.
 
 ### Mesh (`mesh/src/annealage_mesh/static/`)
+
+Account menu (R4): the hidden place is in `viewer.html`; Mesh has no hosted serving yet, so it does not load `account.js` (vendored with the other runtime files) until it does.
 
 Read at `mesh` e9aaff1d48 (`agent-extract`). Survey: `20261111_survey-mesh.md`, which predates Q23. Q23 (DECIDED): `origin/main` (d4c3ad7) already carries the six `workbench-theme` port commits, so M0 rebases `agent-extract` onto it and the port builds from `main`.
 

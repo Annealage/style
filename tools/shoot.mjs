@@ -120,6 +120,12 @@ const canvasShot = (state, scheme, extra = {}) => ref(
   `workbench-canvas${state ? `-${state}` : ''}-${scheme}`,
   `workbench.html?product=canvas&theme=${scheme}${state ? `&state=${state}` : ''}`,
   scheme, 1600, 1000, 'workbench', { conform: canvasConform(), ...extra });
+// A state that fails the shot when the account menu is clipped by the window or the title bar overflows.
+const menuFits = async (tab) => {
+  const r = await tab.evaluate(`(() => { const m = [...document.querySelectorAll('.titlebar .menuwrap')].find((e) => e.offsetParent); const t = document.querySelector('.titlebar');
+    return { right: m ? Math.round(m.getBoundingClientRect().right) : null, w: innerWidth, sw: t.scrollWidth, cw: t.clientWidth }; })()`);
+  if (r.right === null || r.right > r.w || r.sw > r.cw) throw new Error(`the account menu is clipped: right edge ${r.right} in a ${r.w}px window, title bar ${r.sw} of ${r.cw}px`);
+};
 // A handle: focus it from the keyboard and press the key that grows its pane n times.
 const gripBy = (key, n, arrow) => async (tab) => {
   await tab.run(async ({ page }, k, times, a) => {
@@ -215,6 +221,12 @@ export const SHOTS_REFERENCE = [
   ...['light', 'dark'].map((s) =>
     ref(`workbench-canvas-hosted-menu-${s}`, `workbench.html?product=canvas&theme=${s}&state=hosted`, s, 1600, 1000, 'workbench', { state: click('.titlebar [data-menu]'), conform: canvasConform() })),
   ref('workbench-canvas-phone-hosted-menu-light', 'workbench.html?product=canvas&theme=light&state=hosted', 'light', 400, 860, 'workbench', { state: click('.titlebar [data-menu]'), conform: canvasPhone('files') }),
+  // The title bar at the widths where it is short of room (R4): the account menu must stay on screen, and nothing may overflow the
+  // bar, so each of these fails the run if the menu is clipped. Loom's bar is the widest; Canvas draws the menu when hosted.
+  ...[1280, 1100, 901].flatMap((w) => [
+    ['loom', ''], ['trace', ''], ['mesh', ''], ['pod', ''], ['canvas', 'hosted'], ['canvas', 'viewonly'],
+  ].map(([p, st]) => ref(`workbench-fit-${p}${st ? `-${st}` : ''}-${w}`, `workbench.html?product=${p}&theme=light${st ? `&state=${st}` : ''}`, 'light', w, 800, 'workbench',
+    { state: menuFits, conform: p === 'canvas' ? canvasConform() : p === 'pod' ? false : undefined }))),
   ref('components-confirm-light', 'components.html?theme=light&confirm=1', 'light', 1440, 1000, 'components', { full: true }),
   // Palette (S12): open, filtered ("la"), and the go-to query; desktop and phone.
   ...['workbench.html?product=loom&', 'flow.html?', 'components.html?'].flatMap((p) => {
