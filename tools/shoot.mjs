@@ -208,6 +208,13 @@ export const SHOTS_REFERENCE = [
   ref('settings-confirm-dark', 'settings.html?theme=dark&confirm=1#workspaces', 'dark', 1440, 1000, 'settings'),
   ref('workbench-confirm-light', 'workbench.html?product=loom&theme=light&confirm=1', 'light', 1600, 1000, 'workbench'),
   ref('workbench-confirm-dark', 'workbench.html?product=loom&theme=dark&confirm=1', 'dark', 1600, 1000, 'workbench'),
+  // The account menu (R4): last item of the title bar's right side, open. Loom's workbench, and Canvas Studio's hosted state
+  // (the menu a hosted session has, with the sign-out refusal). The phone shows the user icon alone.
+  ...[[1600, 1000], [400, 860]].flatMap(([w, h]) => ['light', 'dark'].map((s) =>
+    ref(`workbench-account-menu-${s}-${w}`, `workbench.html?product=loom&theme=${s}`, s, w, h, 'workbench', { state: click('.titlebar [data-menu]') }))),
+  ...['light', 'dark'].map((s) =>
+    ref(`workbench-canvas-hosted-menu-${s}`, `workbench.html?product=canvas&theme=${s}&state=hosted`, s, 1600, 1000, 'workbench', { state: click('.titlebar [data-menu]'), conform: canvasConform() })),
+  ref('workbench-canvas-phone-hosted-menu-light', 'workbench.html?product=canvas&theme=light&state=hosted', 'light', 400, 860, 'workbench', { state: click('.titlebar [data-menu]'), conform: canvasPhone('files') }),
   ref('components-confirm-light', 'components.html?theme=light&confirm=1', 'light', 1440, 1000, 'components', { full: true }),
   // Palette (S12): open, filtered ("la"), and the go-to query; desktop and phone.
   ...['workbench.html?product=loom&', 'flow.html?', 'components.html?'].flatMap((p) => {

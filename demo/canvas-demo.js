@@ -159,7 +159,19 @@ function draw() {
     toast.textContent = "Couldn't rename widgets.py. theme.py already exists.";
   }
   if (has("pausefail")) $("#err").textContent = "Couldn't pause the agent. The harness answered with an error.";
-  if (has("signoutfail")) { states.add("hosted"); $$("[data-only~=hosted]").forEach((el) => { el.hidden = false; }); $("#err").textContent = "Couldn't sign out. Try again."; }
+  // A refused sign out says so inside the account menu, which stays open (account.js draws the same note).
+  if (has("signoutfail")) {
+    states.add("hosted");
+    $$("[data-only~=hosted]").forEach((el) => { el.hidden = false; });
+    const wrap = $("[data-account-menu]");
+    wrap.setAttribute("data-open", "");
+    $("[data-menu]", wrap).setAttribute("aria-expanded", "true");
+    const note = document.createElement("span");
+    note.className = "menu-note";
+    note.setAttribute("role", "alert");
+    note.textContent = "Couldn't sign out. Try again.";
+    $(".menu", wrap).append(note);
+  }
   if (has("connecting") || has("bootfail")) {
     const conn = $("#statusConn");
     conn.dataset.state = has("connecting") ? "connecting" : "down";

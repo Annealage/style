@@ -32,6 +32,8 @@ for (const slot of $$("[data-product-slot]")) {
   if (pick) slot.replaceWith(pick.content.cloneNode(true));
   else slot.remove();
 }
+// The account menu's product links: the page's own product is the current one.
+for (const a of $$('.menu a[href*="?product="]')) if (a.getAttribute("href").endsWith(`?product=${product}`)) a.setAttribute("aria-current", "page");
 // Canvas puts its file tree in the inspector column, at the left (data-insp, theme.css).
 if (product === "canvas") document.querySelector(".wb")?.setAttribute("data-insp", "left");
 

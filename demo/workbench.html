@@ -47,9 +47,6 @@
     <div data-product-slot>
       <template data-for-product="canvas">
         <div class="tb-right">
-          <a class="btn quiet wide" href="settings.html#security" data-only="hosted" hidden>Account</a>
-          <button class="btn quiet wide" type="button" data-only="hosted" title="Sign out of Canvas" hidden>Sign out</button>
-          <span class="gap wide" data-only="hosted" hidden></span>
           <span class="state" data-kind="good" id="runState">Running</span>
           <span class="gap"></span>
           <button class="btn" id="pauseBtn" type="button" aria-pressed="false" title="Pause the agent"><svg class="ico"><use href="../icons.svg#i-pause"/></svg><span class="lbl" data-label>Pause agent</span></button>
@@ -62,6 +59,7 @@
           <span class="gap"></span>
           <button class="btn icon" id="panelBtn" type="button" aria-pressed="true" aria-label="File tree" title="File tree"><svg class="ico"><use href="../icons.svg#i-panel-l"/></svg></button>
           <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="../icons.svg#i-auto"/></svg></button>
+          <span class="menuwrap" data-account-menu data-only="hosted" hidden><button class="btn" type="button" data-menu aria-haspopup="menu" aria-expanded="false" aria-label="Account menu, Alex Engineer"><svg class="ico"><use href="../icons.svg#i-user"/></svg><span class="wide">Alex Engineer</span><svg class="ico ico--sm"><use href="../icons.svg#i-chev-d"/></svg></button><span class="menu" role="menu"><span class="menu-note">alex@example.com</span><a role="menuitem" href="settings.html">Account</a><a role="menuitem" href="settings.html#security">Security</a><hr><span class="menu-note">Products</span><a role="menuitem" href="workbench.html?product=canvas">Canvas</a><a role="menuitem" href="workbench.html?product=trace">Trace</a><a role="menuitem" href="workbench.html?product=loom">Loom</a><a role="menuitem" href="workbench.html?product=mesh">Mesh</a><hr><button type="button" role="menuitem">Sign out</button></span></span>
         </div>
       </template>
       <template data-default>
@@ -78,6 +76,7 @@
         <button class="btn icon" id="panelBtn" type="button" aria-pressed="true" aria-label="Review inspector" title="Review inspector"><svg class="ico"><use href="../icons.svg#i-review"/></svg></button>
         <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="../icons.svg#i-auto"/></svg></button>
         <button class="btn icon" type="button" aria-label="Settings" title="Settings"><svg class="ico"><use href="../icons.svg#i-settings"/></svg></button>
+        <span class="menuwrap" data-account-menu><button class="btn" type="button" data-menu aria-haspopup="menu" aria-expanded="false" aria-label="Account menu, Alex Engineer"><svg class="ico"><use href="../icons.svg#i-user"/></svg><span class="wide">Alex Engineer</span><svg class="ico ico--sm"><use href="../icons.svg#i-chev-d"/></svg></button><span class="menu" role="menu"><span class="menu-note">alex@example.com</span><a role="menuitem" href="settings.html">Account</a><a role="menuitem" href="settings.html#security">Security</a><hr><span class="menu-note">Products</span><a role="menuitem" href="workbench.html?product=canvas">Canvas</a><a role="menuitem" href="workbench.html?product=trace">Trace</a><a role="menuitem" href="workbench.html?product=loom">Loom</a><a role="menuitem" href="workbench.html?product=mesh">Mesh</a><hr><button type="button" role="menuitem">Sign out</button></span></span>
       </div>
       </template>
     </div>
@@ -527,7 +526,8 @@ content: NUT_SLOT = 5.7</pre>
            empty loading    a project with no files, and the tree while it loads
            forcedelete toast    the force-delete row after a 409 (a folder with files), the menu's error toast
            screenerror bootfail connecting    the screen's own error line, the error row above the status bar, the whole-window Connecting line
-           pausefail signoutfail    the floating failure messages (#err)
+           pausefail    the floating failure message (#err)
+           hosted signoutfail    a hosted session: the account menu in the title bar; signoutfail opens it with the sign-out refusal
          ?confirm=1 opens the first confirmation (confirm-demo.js), here the discard prompt. -->
     <template data-for-product="canvas">
       <main class="view" aria-label="Editor and screen">

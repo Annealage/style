@@ -20,7 +20,7 @@ Settled rule 6, and what each page really links today (the per-product sections 
 | 6 | the viewer's `board.css` | Loom links it after the theme, so it beats the theme at equal specificity: S10 cuts it to what the theme lacks. |
 | 7 | the product's CSS | |
 
-Scripts, each a classic script at the end of `<body>` unless noted (`confirm.js` is an ES module, see below): `frame.js` (layout focus, Panel button, phone tab bar, column resizers; replaces ember's `layout.js`), `palette.js` (the command palette behind `.cmd`, S12), `confirm.js` (an ES module: `export function confirmRow`, the inline confirm row instead of the browser's `confirm()`; load it with `<script type="module">` or `import()`, and the product serves it like the other runtime files). `runtime-files.txt` lists what a product serves and ships; the docs, `demo/` and `tools/` are not in it.
+Scripts, each a classic script at the end of `<body>` unless noted (`confirm.js` is an ES module, see below): `frame.js` (layout focus, Panel button, phone tab bar, column resizers; replaces ember's `layout.js`), `palette.js` (the command palette behind `.cmd`, S12), `account.js` (the account menu and product switch of a title bar, for a page served by hosted, R4), `confirm.js` (an ES module: `export function confirmRow`, the inline confirm row instead of the browser's `confirm()`; load it with `<script type="module">` or `import()`, and the product serves it like the other runtime files). `runtime-files.txt` lists what a product serves and ships; the docs, `demo/` and `tools/` are not in it.
 
 | Before | Now |
 |---|---|

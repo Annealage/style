@@ -4,6 +4,7 @@ pages.css
 scheme.js
 icons.svg
 frame.js
+account.js
 palette.js
 fonts
 marks

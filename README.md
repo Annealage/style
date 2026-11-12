@@ -11,6 +11,7 @@ The look is **Hairline + plate**. Everything sits on one surface divided by 1px 
 - `pages.css`: what sits outside the workbench frame. The project register and tiles, a guided flow with its step spine and pinned footer, the settings or account layout, the drop zone. `--reg-cols` is the register's column hook: set it on `.reg` to replace the default `grid-template-columns` of `.reg-head` and the list rows (one track per cell). `pages.css` has no global selectors, so it may also be linked inside the workbench frame for `.drop`, `.dropstrip`, `.measure`, `.ready`, `.segbar`, `dl.figs` and `.ready-r`.
 - `scheme.js`: light and dark follow the OS unless the user picks one, remembered per origin in localStorage under `annealage.scheme`. It sets `<html data-theme>`, keeps the marks' `<picture>` sources in step, drives any `<button data-scheme-toggle>` (System, Light, Dark), and fires `schemechange` on `<html>` (detail `{scheme, choice}`) on every effective change. `window.annealageScheme` has `choice()`, `get()` and `set('light'|'dark'|null)`.
 - `frame.js`: the page frame's driver (layout focus, the Panel button, the phone tab bar, column resizers). See "The frame driver" below.
+- `account.js`: the account menu and product switch of a title bar served by Annealage hosted, filled from `GET /_front/me`. See "The account menu" below.
 - `palette.js`: the command palette behind the title bar's `.cmd` field, and the registry products put their commands in. See "The command palette" below.
 - `icons.svg`: a sprite of 16px stroke icons with round joins, used as `<svg class="ico"><use href="icons.svg#i-pin"/></svg>`.
 - `fonts/`: Instrument Sans (400, 500, 600) and Red Hat Mono (400, 500), latin and latin-ext, under the SIL Open Font License (`fonts/OFL-InstrumentSans.txt`, `fonts/OFL-RedHatMono.txt`).
@@ -62,6 +63,23 @@ Load `frame.js` as a classic script at the end of `<body>`. With `data-auto` (`<
 It keeps two settings in `localStorage` per origin and per product (`<html data-product>`, else `platform`), and only after the user changes something: `annealage.frame.<product>` (`{layout, insp, chat}`, and `split` on a page that has a split view) and `annealage.frame.<product>.panel` (`"open"` or `"closed"`). The widths are written as `--insp-w-user` and `--chat-w-user` on `.wb`, which the theme reads while that column is open, and the split as `--split-user` (a percentage); with nothing stored no property is written, so a product's own `--insp-w`, `--chat-w` and `--split` stay the defaults.
 
 `annealageFrame(options)` returns, and keeps as `annealageFrame.current`: `layout()`, `setLayout(v)`, `widths()` and `setWidths({insp, chat})` (pixels, or `null` for the theme's default; clamped), `split()` and `setSplit(f)` (the first half's share, 0.2 to 0.8, or `null`; always `null` on a page with no split view), `panelOpen()`, `setPanelOpen(b)`, `isNarrow()`, `activeTab()`, `activateTab(id)`, `reset()` (removes both stored keys and goes back to the markup) and `destroy()`. A `framechange` event fires on `.wb` after each change, detail `{layout, insp, chat, panelOpen, activeTab}` (plus `split` on a page that has a split view): a canvas or WebGL view resizes on it. Options are `root`, `storage`, `product` and `tabs`. `inert`, focus rescue and `visualViewport` handling stay with the product.
+
+### The account menu
+
+Inside a product page served by Annealage hosted the page does not know who is signed in. `account.js` asks hosted, which answers `GET /_front/me` itself on every product host (never the product's worker), and draws the title bar's account menu and, if the page asks, the product switch. Load it as a classic script at the end of `<body>`, and give the title bar a place for each:
+
+```html
+<div class="tb-right">… <button data-scheme-toggle …> <span class="menuwrap" data-account-menu hidden></span></div>
+<nav class="prodtabs" data-product-switch hidden></nav>   <!-- platform pages only -->
+<script src="/style/account.js"></script>
+```
+
+- **Where it goes.** The menu is the last item of `.tb-right`, after the Settings button, as `demo/workbench.html` draws it (the user icon alone at 640px and below, `.wide` hides the name). In a workbench the product switch is a "Products" group in the menu, not tabs; a page that holds a `[data-product-switch]` place gets the tabs instead and no group. The group is left out when the deployment serves one product.
+- **When it draws.** A place that is empty and a 200 answer of version 1. Anything else (a standalone run, where there is no `/_front/me`; a public or capability visitor, whose answer is 401; a failed or slow request; scripts off) draws nothing, shows nothing and reports nothing, and a place that carries `hidden` keeps it. A product that serves its page both ways loads the script only in the hosted one, so a standalone run makes no request. The page's `connect-src` and `script-src` need `'self'` and nothing else; there is no inline script or style.
+- **Draws later.** A page that makes its title bar after it has parsed calls `annealageAccount.draw(root)` once the places exist. One request serves every call.
+- **The answer** (`v: 1`): `display`, `email` (or null), `account_url`, `security_url`, `projects_url`, `signout` (`{method: "POST", url: "/auth/logout"}`) and `products` (`{key, name, url, current}` each, one current on a product host). Nothing else: no principal id, workspace id, role or session. Names and emails are put in as text; a link that is not http, https or relative is dropped.
+- **Behaviour.** It toggles `data-open` on the `.menuwrap` and `aria-expanded` on the button itself, closes on a click outside and on Escape, and signs out by a POST to the named URL followed by a move to `/`. A refused sign out puts "Couldn't sign out. Try again." in the menu. Do not load it on a page whose own script already toggles every `[data-menu]` (`demo/demo.js` does): the two would toggle twice.
+- **Reference.** `demo/workbench.html` holds the markup it draws, once in the default title bar and once in Canvas's (`?state=hosted`); `tools/account.test.mjs` fails if the script's markup and the page's drift apart. Hosted's own pages draw the same menu on the server (a `details.more`) and do not load the script.
 
 ### The command palette
 
