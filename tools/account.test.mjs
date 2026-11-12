@@ -268,7 +268,7 @@ test("a link that is not http, https or relative is not drawn", async () => {
 });
 
 test("a sign-out the answer does not describe as a same-origin POST is not offered", async () => {
-  for (const signout of [undefined, null, { method: "GET", url: "/auth/logout" }, { method: "POST", url: "https://evil.example/x" }, { method: "POST", url: "//evil.example/x" }]) {
+  for (const signout of [undefined, null, { method: "GET", url: "/auth/logout" }, { method: "POST", url: "https://evil.example/x" }, { method: "POST", url: "//evil.example/x" }, { method: "POST", url: "/\\evil.example/x" }, { method: "POST", url: "/" }]) {
     const p = page({ answer: { ...ME, signout } });
     await flush();
     assert.equal(labels(p.els.menu).includes("Sign out"), false);
