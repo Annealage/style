@@ -1,0 +1,5 @@
+/* Copied from annealage-ember static/agent-page.css at 4863e70e78 (read only). */
+/* The page shell of a page built by embed.render_agent_page: the chat pane
+   fills the window. The look and the pane layout are the Annealage theme's. */
+html,body{height:100%}
+#chat{height:100%}

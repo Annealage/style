@@ -1,0 +1,4 @@
+/* The chat-in-an-iframe reference page: the product's view and a framed pane on the right. Nothing here is part of the theme. */
+body.chatframe { display: flex; height: 100%; }
+.cf-view { flex: 1; min-width: 0; padding: 16px; background: var(--well); }
+.cf-frame { flex: none; height: 100%; border: 0; border-left: 1px solid var(--rule); }

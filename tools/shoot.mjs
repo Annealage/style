@@ -246,6 +246,14 @@ export const SHOTS_REFERENCE = [
   ]),
   ...['review', 'agent'].flatMap((t) => ['light', 'dark'].map((s) =>
     ref(`workbench-phone-tab-${t}-${s}`, `workbench.html?product=loom&theme=${s}`, s, 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: PHONE_TAB }))),
+  // The More menu in a narrow chat column (the pane's narrowest width, and a phone) and in an iframe: every item stays inside the pane.
+  ...['light', 'dark'].flatMap((s) => [
+    ref(`workbench-loom-chat-menu-${s}`, `workbench.html?product=loom&theme=${s}`, s, 1600, 1000, 'workbench', { state: async (tab) => { await gripBy('chat', 20, 'ArrowRight')(tab); await click('#chatMore > summary')(tab); }, conform: wbCols(['40px', null, '300px', '320px'], 'the agent column dragged to its narrowest') }),
+    ref(`workbench-mesh-chat-menu-${s}`, `workbench.html?product=mesh&theme=${s}`, s, 1600, 1000, 'workbench', { state: async (tab) => { await gripBy('chat', 20, 'ArrowRight')(tab); await click('#chatMore > summary')(tab); }, conform: { reason: 'the agent column dragged to its narrowest', expect: { '.wb': { gridTemplateColumns: [null, null, null, '320px'] } } } }),
+    ref(`workbench-phone-menu-${s}`, `workbench.html?product=loom&theme=${s}`, s, 400, 860, 'workbench', { state: async (tab) => { await click('#tabbar [data-tab="agent"]')(tab); await click('#chatMore > summary')(tab); }, conform: PHONE_TAB }),
+    ref(`chat-frame-canvas-menu-${s}`, `chat-frame.html?product=canvas&theme=${s}&w=240&menu=open`, s, 1400, 800, 'chatframe', { conform: false }),
+  ]),
+  ref('chat-frame-canvas-menu-600-light', 'chat-frame.html?product=canvas&theme=light&w=600&menu=open', 'light', 1400, 800, 'chatframe', { conform: false }),
   // The compact status bar on a phone: the connection and the approval alert stay; tapping the alert opens the Agent tab.
   ref('workbench-loom-phone-dark', 'workbench.html?product=loom&theme=dark', 'dark', 400, 860, 'workbench'),
   ...['light', 'dark'].map((s) =>

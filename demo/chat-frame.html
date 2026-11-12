@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" data-product="loom">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat in a frame, Annealage style reference</title>
+<!-- A product's own page with the agent chat page in an iframe beside its view.
+     ?w=240..600 is the frame's width, the rest (?product=, ?theme=, ?menu=open)
+     goes to the framed page. -->
+<script src="../scheme.js"></script>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="demo.css">
+<link rel="stylesheet" href="chat-frame.css">
+</head>
+<body class="chatframe">
+<main class="cf-view"><p class="hint">The product's own view.</p></main>
+<iframe class="cf-frame" title="Agent" height="800"></iframe>
+<script type="module" src="demo.js"></script>
+<script type="module" src="chat-frame.js"></script>
+</body>
+</html>

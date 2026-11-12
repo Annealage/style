@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" data-product="loom">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat page, Annealage style reference</title>
+<!-- The page annealage-ember's embed.render_agent_page makes, which a product
+     frames in an iframe (Canvas hosted): the chat pane fills the window and is
+     its own document. ?menu=open opens the More menu. chat-frame.html frames
+     it at a chosen width.  ?product=  ?theme=light|dark -->
+<script src="../scheme.js"></script>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="assets/ember/agent.css">
+<link rel="stylesheet" href="assets/ember/agent-page.css">
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="demo.css">
+</head>
+<body class="chatpage">
+      <aside id="chat" aria-label="Agent" data-pending="1" data-working data-turn-started="0">
+        <header><h1>Agent</h1><span class="chatwho">andrew</span><span class="chatusage">22% context, $0.41</span><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
+          <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b id="chatWorkingTime">1:12</b></span>
+          <span class="spacer"></span>
+          <span id="connIndicator" class="conn" data-state="live">Live</span>
+          <details id="chatMore" class="more"><summary class="hdrbtn">More</summary><div class="menu"><button id="pauseAgent" type="button" class="hdrbtn" aria-pressed="false"><span data-label>Pause</span></button><button id="settingsBtn" type="button" class="hdrbtn">Settings</button><button id="chatExport" type="button" class="hdrbtn">Export</button></div></details>
+        </header>
+        <div id="chatBanner" class="chatbanner" hidden><span id="chatBannerText"></span><button id="chatBannerClose" type="button" aria-label="Dismiss">&times;</button></div>
+        <div id="chatLog" aria-live="polite">
+          <div class="turn" data-turn="1">
+            <div class="msg user"><div class="text">Pin 1: swap the transceiver for the MCP2562FD on 3V3 VIO, and look at the termination while you're there.</div><div class="attachthumbs"></div><div class="contextchips"></div></div>
+            <div class="msg assistant"><div class="segments">
+              <div class="text">The MCP2562FD takes VIO straight from 3V3, so the R19/R20 divider on RXD can go. The MCP2515 stays on 5 V.</div>
+              <details class="toolgroup" open><summary>3 tool calls</summary><div class="tools">
+                <details class="toolcard"><summary>loom: read_circuit</summary><pre class="toolinput">sheet: CAN</pre><pre class="toolresult">ok</pre></details>
+                <details class="toolcard"><summary>loom: add_callout</summary><pre class="toolinput">ref: R21</pre><pre class="toolresult">#2 on R21</pre></details>
+                <details class="toolcard" open><summary>loom: build_sketch</summary><pre class="toolinput">sheets: CAN</pre><pre class="toolresult">ok, 0 errors, 1 defect, 1 warning</pre></details>
+              </div></details>
+              <div class="text">Before I swap U10: the MCP2562FD's pin 5 becomes VIO, so C45 moves to 3V3 and R19/R20 are deleted. I've left callout 2 on R21, the termination is always fitted, which is wrong for a node mid-bus. J7 already has CANH/CANL labels, so I'm resolving your comment 3.</div>
+            </div><div class="turnerrors"></div></div>
+          </div>
+        </div>
+        <div class="side">
+          <div id="chatPending">
+            <div class="permcard" data-request-id="r1">
+              <div class="porigin" hidden></div>
+              <div class="ptool">loom: resolve_comment</div>
+              <pre class="toolinput">id: 3
+resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre>
+              <div class="pactions"><button type="button" class="allow">Allow</button><button type="button">Always allow (this project)</button><textarea class="preason" rows="1" placeholder="Reason (sent to the agent if you deny)"></textarea><button type="button" class="danger">Deny</button></div>
+              <div class="pstatus"></div>
+            </div>
+          </div>
+          <div id="chatComposer">
+            <div id="chatAttachStrip" class="attachstrip" hidden></div>
+            <div id="chatComposerRow"><input id="chatFileInput" type="file" multiple hidden>
+              <button id="chatAttachBtn" type="button" class="attachbtn" aria-label="Attach an image" title="Attach an image"><svg class="ico"><use href="../icons.svg#i-attach"/></svg></button>
+              <textarea data-palette-ignore id="chatInput" rows="2" aria-label="Message" placeholder="Message the agent"></textarea>
+              <div class="chatbtns"><button id="chatInterrupt" type="button" title="Stop the current turn">Interrupt</button><button id="chatSend" type="button" class="primary">Steer</button></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+<script type="module" src="demo.js"></script>
+<script type="module" src="chatpage.js"></script>
+</body>
+</html>
