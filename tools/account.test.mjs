@@ -59,7 +59,7 @@ class El {
     ev.target ||= this;
     for (let n = this; n; n = n.parentNode) for (const fn of [...(n.listeners[ev.type] || [])]) fn(ev);
   }
-  focus() { this.focused = true; }
+  focus() { this.focused = true; if (this.ownerDocument) this.ownerDocument.activeElement = this; }
 }
 
 const flush = async () => { for (let i = 0; i < 6; i++) await new Promise((r) => setImmediate(r)); };
@@ -124,7 +124,7 @@ function page({ places = ["menu"], answer = ME, src = "../account.js", loading =
   const win = {
     document: doc,
     URL,
-    location: { href: "https://trace.example/w/wsp_1/p/prj_1/", assign: (u) => assigned.push(u) },
+    location: { href: "https://trace.example/w/wsp_1/p/prj_1/", origin: "https://trace.example", assign: (u) => assigned.push(u) },
     fetch: fetchStub,
   };
   win.window = win;
@@ -135,8 +135,17 @@ function page({ places = ["menu"], answer = ME, src = "../account.js", loading =
   // A click reaches the element's own listeners and then the document's, as a real one bubbles up.
   const press = (el) => { el.dispatch({ type: "click" }); for (const fn of docListeners.click || []) fn({ type: "click", target: el }); };
   const key = (k) => { for (const fn of docListeners.keydown || []) fn({ type: "keydown", key: k }); };
+  // A key on an element: its own listeners and its ancestors', then the document's. Returns the event.
+  const keyOn = (el, k) => {
+    const ev = { type: "keydown", key: k, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; } };
+    el.dispatch(ev);
+    for (const fn of docListeners.keydown || []) fn({ ...ev, target: el });
+    return ev;
+  };
+  // Focus moves from `from` to `to` (null: outside the page): focusout on `from` with the new target.
+  const focusMove = (from, to) => { from.dispatch({ type: "focusout", relatedTarget: to }); if (to) to.focus(); };
   const ready = () => { for (const fn of docListeners.DOMContentLoaded || []) fn({}); };
-  return { ctx, doc, els, calls, assigned, run, press, key, ready };
+  return { ctx, doc, els, calls, assigned, run, press, key, keyOn, focusMove, ready };
 }
 const place = (p, attrs = {}) => {
   const e = new El(p.doc, "span");
@@ -268,7 +277,9 @@ test("a link that is not http, https or relative is not drawn", async () => {
 });
 
 test("a sign-out the answer does not describe as a same-origin POST is not offered", async () => {
-  for (const signout of [undefined, null, { method: "GET", url: "/auth/logout" }, { method: "POST", url: "https://evil.example/x" }, { method: "POST", url: "//evil.example/x" }, { method: "POST", url: "/\\evil.example/x" }, { method: "POST", url: "/" }]) {
+  for (const signout of [undefined, null, { method: "GET", url: "/auth/logout" }, { method: "POST", url: "https://evil.example/x" }, { method: "POST", url: "//evil.example/x" }, { method: "POST", url: "/\\evil.example/x" },
+    { method: "POST", url: "/\t/evil.example/x" }, { method: "POST", url: "/\n/evil.example/x" }, { method: "POST", url: "/\r/evil.example/x" },
+    { method: "POST", url: "/\\\t/evil.example/x" }, { method: "POST", url: "\t/auth/logout" }, { method: "POST", url: "auth/logout" }, { method: "POST", url: 7 }]) {
     const p = page({ answer: { ...ME, signout } });
     await flush();
     assert.equal(labels(p.els.menu).includes("Sign out"), false);
@@ -447,4 +458,83 @@ test("an email of null leaves the note out, and an empty name falls back to the 
   const c = page({ answer: { ...ME, display: "", email: null } });
   await flush();
   assert.equal(c.els.menu.querySelector("[data-menu]").children[1].text, "Account");
+});
+
+test("a sign-out path with a query is offered", async () => {
+  const ok = page({ answer: { ...ME, signout: { method: "POST", url: "/auth/logout?x=1" } } });
+  await flush();
+  assert.equal(labels(ok.els.menu).includes("Sign out"), true);
+});
+
+test("Down on the button opens the menu onto the first item, Up onto the last", async () => {
+  const p = page();
+  await flush();
+  const m = p.els.menu;
+  const button = m.querySelector("[data-menu]");
+  const list = m.querySelectorAll("[role=menuitem]");
+  const down = p.keyOn(button, "ArrowDown");
+  assert.equal(down.defaultPrevented, true);
+  assert.equal(m.hasAttribute("data-open"), true);
+  assert.equal(button.getAttribute("aria-expanded"), "true");
+  assert.equal(p.doc.activeElement, list[0]);
+  p.press(button);  // close
+  p.keyOn(button, "ArrowUp");
+  assert.equal(p.doc.activeElement, list.at(-1));
+  assert.equal(p.keyOn(button, "x").defaultPrevented, false);
+});
+
+test("Up, Down, Home and End move between the items and wrap", async () => {
+  const p = page();
+  await flush();
+  const m = p.els.menu;
+  const list = m.querySelectorAll("[role=menuitem]");
+  const at = () => list.indexOf(p.doc.activeElement);
+  p.keyOn(m.querySelector("[data-menu]"), "ArrowDown");
+  assert.equal(at(), 0);
+  p.keyOn(list[0], "ArrowDown");
+  assert.equal(at(), 1);
+  p.keyOn(list[1], "End");
+  assert.equal(at(), list.length - 1);
+  p.keyOn(list.at(-1), "ArrowDown");
+  assert.equal(at(), 0);
+  p.keyOn(list[0], "ArrowUp");
+  assert.equal(at(), list.length - 1);
+  p.keyOn(list.at(-1), "Home");
+  assert.equal(at(), 0);
+  assert.equal(p.keyOn(list[0], "q").defaultPrevented, false);
+  assert.equal(at(), 0);
+});
+
+test("focus leaving the menu closes it; focus moving inside it does not", async () => {
+  const p = page();
+  await flush();
+  const m = p.els.menu;
+  const button = m.querySelector("[data-menu]");
+  const list = m.querySelectorAll("[role=menuitem]");
+  p.press(button);
+  p.focusMove(button, list[0]);
+  assert.equal(m.hasAttribute("data-open"), true);
+  p.focusMove(list[0], list[1]);
+  assert.equal(m.hasAttribute("data-open"), true);
+  p.focusMove(list.at(-1), p.els.right);  // Tab out
+  assert.equal(m.hasAttribute("data-open"), false);
+  assert.equal(button.getAttribute("aria-expanded"), "false");
+  p.press(button);
+  p.focusMove(button, null);  // focus left the page
+  assert.equal(m.hasAttribute("data-open"), false);
+});
+
+test("a refused sign out keeps the menu open for its note even if the button loses focus", async () => {
+  const p = page({ answer: signoutAnswer(() => status(500)) });
+  await flush();
+  const m = p.els.menu;
+  const button = m.querySelector("[data-menu]");
+  const out = m.querySelectorAll("[role=menuitem]").at(-1);
+  p.press(button);
+  click(p, out);
+  p.focusMove(out, null);  // the disabled button gives up focus while the request runs
+  assert.equal(m.hasAttribute("data-open"), true);
+  await flush();
+  assert.equal(m.querySelectorAll("[role=alert]").length, 1);
+  assert.equal(m.hasAttribute("data-open"), true);
 });
