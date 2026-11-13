@@ -36,6 +36,18 @@ for (const slot of $$("[data-product-slot]")) {
 for (const a of $$('.menu a[href*="?product="]')) if (a.getAttribute("href").endsWith(`?product=${product}`)) a.setAttribute("aria-current", "page");
 // Canvas puts its file tree in the inspector column, at the left (data-insp, theme.css).
 if (product === "canvas") document.querySelector(".wb")?.setAttribute("data-insp", "left");
+// ?agent=viewer-only: a run with no agent, as ember draws it. The composer and the model
+// field cannot act, each with its reason.
+if (q.get("agent") === "viewer-only") {
+  const why = "This server runs viewer-only, with no agent, so there is nothing to send a message to.";
+  for (const el of $$("#chatInput, #chatAttachBtn, #chatSend, #chatModelInput, #chatInterrupt")) { el.disabled = true; el.title = why; }
+  for (const el of $$("#agentStatus")) { el.dataset.state = "unavailable"; el.textContent = "Viewer only"; }
+  // No agent, so no conversation, usage or approvals.
+  for (const el of $$("#chatLog, #chatPending")) el.replaceChildren();
+  for (const el of $$("#chat .chatusage, #chat .chathint, .statusbar .alert")) el.hidden = true;
+  for (const el of $$("#chat")) el.dataset.pending = "0";
+  for (const span of $$(".statusbar > span")) if (span.firstChild?.textContent.startsWith("Agent")) span.querySelector("b").textContent = "Viewer only";
+}
 
 // ---- Scheme: ?theme= forces one for this page without touching the stored choice.
 const theme = q.get("theme");

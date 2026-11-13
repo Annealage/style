@@ -167,6 +167,8 @@ const CANVAS = [
   // A hosted view-only session on a phone: the title bar drops the account controls, the review bar wraps.
   ...['files', 'editor', 'screen'].flatMap((t) => ['light', 'dark'].map((s) =>
     ref(`workbench-canvas-phone-viewonly-${t}-${s}`, `workbench.html?product=canvas&theme=${s}&state=viewonly`, s, 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: canvasPhone(t) }))),
+  // The error line on a phone sits above the toast, clear of the title and tab bars.
+  ref('workbench-canvas-phone-pausefail-light', 'workbench.html?product=canvas&theme=light&state=pausefail', 'light', 400, 860, 'workbench', { conform: canvasPhone('files') }),
   ref('workbench-canvas-phone-standalone-agent-light', 'workbench.html?product=canvas&theme=light&state=standalone', 'light', 400, 860, 'workbench', { state: click('#tabbar [data-tab="agent"]'), conform: canvasPhone('agent') }),
   ...['editor', 'screen'].map((t) => ref(`workbench-canvas-phone-capture-${t}-light`, 'workbench.html?product=canvas&theme=light&state=capture', 'light', 400, 860, 'workbench', { state: click(`#tabbar [data-tab="${t}"]`), conform: canvasPhone(t) })),
 ];
@@ -182,6 +184,8 @@ export const SHOTS_REFERENCE = [
   ...CANVAS,
   ...MID,
   wb('mesh', 'light'), wb('mesh', 'dark'),
+  // A viewer-only run (no agent): the composer, Attach and the model field are disabled, each with its reason.
+  ...['light', 'dark'].map((s) => ref(`workbench-mesh-vieweronly-${s}`, `workbench.html?product=mesh&theme=${s}&agent=viewer-only`, s, 1600, 1000, 'workbench')),
   // A title bar without .cmd keeps its right controls at the right edge (?cmd=none removes the field).
   ref('workbench-nocmd-light', 'workbench.html?product=loom&theme=light&cmd=none', 'light', 1600, 1000, 'workbench'),
   ref('workbench-nocmd-dark', 'workbench.html?product=loom&theme=dark&cmd=none', 'dark', 1600, 1000, 'workbench'),
@@ -205,6 +209,8 @@ export const SHOTS_REFERENCE = [
   ...['project', 'rename', 'dialog', 'settings'].map((r) => ref(`ember-${r}`, `ember.html?product=loom#${r}`, 'light', 1600, 1000, 'ember', { conform: false })),
   ...['project', 'rename', 'dialog', 'settings'].map((r) => ref(`ember-${r}-dark`, `ember.html?product=loom&theme=dark#${r}`, 'dark', 1600, 1000, 'ember', { conform: false })),
   ref('ember-project-phone', 'ember.html?product=loom#project', 'light', 400, 860, 'ember', { conform: false }),
+  // The settings window on a phone: .setpair stacks to one column.
+  ref('ember-settings-phone', 'ember.html?product=loom#settings', 'light', 400, 860, 'ember', { conform: false }),
   ref('ember-noember-light', 'ember.html?product=loom&ember=0#project', 'light', 1600, 1000, 'ember', { conform: false }),
   ref('ember-noember-dark', 'ember.html?product=loom&theme=dark&ember=0#project', 'dark', 1600, 1000, 'ember', { conform: false }),
   // Confirm row (S3): ?confirm=1 opens the first visible one.

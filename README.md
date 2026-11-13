@@ -18,7 +18,7 @@ The look is **Hairline + plate**. Everything sits on one surface divided by 1px 
 - `marks/`: the parent mark and the product marks, each with a `-dark` variant. They are exported from the brand repo and used as they are, never redrawn or recoloured.
 - `demo/`: the reference pages. Serve the repo root and open them (`python3 -m http.server 8793 -d .`, then `http://127.0.0.1:8793/demo/components.html`).
   - `components.html`: every component and every state, grouped and titled. This is the visual spec.
-  - `workbench.html`: the frame assembled, with each product's kind of content. `?product=canvas` is the Canvas Studio layout (file tree at the left, editor and screen split, agent at the right); its comment lists the `?state=` values `canvas-demo.js` draws.
+  - `workbench.html`: the frame assembled, with each product's kind of content. `?agent=viewer-only` draws a run with no agent (the composer and model field disabled). `?product=canvas` is the Canvas Studio layout (file tree at the left, editor and screen split, agent at the right); its comment lists the `?state=` values `canvas-demo.js` draws.
   - `flow.html`: a guided setup (`#upload`, `#inventory`, `#datasheets`, `#review`).
   - `list.html`: the project register (`#list`, `#tiles`).
   - `settings.html`: an account page (`#overview`, `#usage`, `#security`, `#workspaces`, `#danger`).
