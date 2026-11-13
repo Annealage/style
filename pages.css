@@ -205,7 +205,7 @@ button.drop, button.dropstrip { width: 100%; }
 .p-name { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 a.p-name:hover { text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
 .p-thumb { display: block; aspect-ratio: 2400 / 1692; }
-.p-thumb.blank { display: grid; place-items: center; background: var(--paper); color: #565D63; font-size: var(--fs-small); }
+.p-thumb.blank { display: grid; place-items: center; background: var(--paper); color: var(--paper-ink-2); font-size: var(--fs-small); }
 .p-rev, .p-parts, .p-nets { white-space: nowrap; }
 .p-state { display: grid; grid-template-columns: 8px auto minmax(0, 1fr); column-gap: 8px; align-items: center; white-space: nowrap; }
 .p-state .sd { color: var(--ink-2); }
@@ -365,7 +365,7 @@ a.p-name:hover { text-decoration: underline; text-decoration-color: var(--rule-s
   .flowsteps::before { content: none; }
   .flowstep :is(a, button) { display: flex; gap: 6px; height: 36px; padding: 2px 0 0; border-bottom: 2px solid transparent; margin-bottom: -1px; font-size: var(--fs-small); }
   .flowstep[data-state=current] :is(a, button) { border-bottom-color: var(--temper-text); }
-  .flowstep .mk { --cut: 4px; width: 16px; height: 16px; box-shadow: none; font-size: 10px; }
+  .flowstep .mk { --cut: 4px; min-width: 16px; height: 16px; box-shadow: none; font-size: 10px; }
   .flowstep .tick { width: 12px; height: 12px; }
   .flowstep .name { gap: 4px; }
   .flowstep .detail { display: none; }

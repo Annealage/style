@@ -217,7 +217,7 @@ Each component's markup is in the comment above its rules.
 
 **Controls** (`theme.css`)
 - Buttons: `.btn` with `.quiet`, `.primary`, `.danger`, `.icon`, `.sm`, `.edge`; `aria-pressed=true` or `.on` for a held state; `.btn.ember` for Allow; `.hdrbtn` in a pane header; `.linkish` for a text link that is a button.
-- Fields: `.input` (on an input, select or textarea), `.inputwrap`, the command field `.cmd` and its palette (`.palette`, `.palette-box`, `.palette-input`, `.palette-list`, `.palette-group`, `.palette-row`, `.palette-title`, `.palette-hint`, `.palette-empty`), `kbd`.
+- Fields: `.input` (on an input, select or textarea; a select draws its own chevron; a disabled field drops its field tone to a hairline edge on the ground with ink-3 text, and so do ember's `.setinput` and `#chatModelInput`), `.inputwrap`, the command field `.cmd` and its palette (`.palette`, `.palette-box`, `.palette-input`, `.palette-list`, `.palette-group`, `.palette-row`, `.palette-title`, `.palette-hint`, `.palette-empty`), `kbd`.
 - Checkboxes and radios are styled wherever they are; `input.switch` is a toggle, 36 x 20, off an outlined track with a quiet thumb, on solid ink, the global focus ring, 50% when disabled; `label.check` lays one out with its text.
 - `.seg` (segmented control, `.icons`, `.sm`), `.chips` and `.chip` (`aria-pressed=true`, or `aria-current` on a chip that is a link; `.pagehead .chips` puts them in a title row), the count `.n`, the label `.tag`.
 - `[data-scheme-toggle]`, the scheme button.
@@ -225,7 +225,7 @@ Each component's markup is in the comment above its rules.
 
 **Lamps, markers, readouts**
 - `.lamp` with `.ok`, `.warn`, `.bad`, `.none`, `.run`; `.state[data-kind=good|busy|gap|bad|pending|waiting]` (an `a.state` is underlined as a link); `.conn[data-state]`; `.agentstatus[data-state]`.
-- `.mk`, the plate marker, with `.mk--human`, `.mk--agent` (or `.open`), `.sel`, `.resolved`; severity marks `.mk--sev` with `.mk--defect` or `.mk--warning`.
+- `.mk`, the plate marker (18px square; a longer label such as `A100` widens it to the right, and a `.row`'s marker column follows), with `.mk--human`, `.mk--agent` (or `.open`), `.sel`, `.resolved`; severity marks `.mk--sev` with `.mk--defect` or `.mk--warning`.
 - `.readout` holding a `.val` and a `.lg`; `.val.zero`, `.val.lg`.
 - `.pline` (`.p10` to `.p100`, `.indet`, `.steady`), `progress.meter`.
 - `.paper` for a sheet or thumbnail.
@@ -254,9 +254,9 @@ Each component's markup is in the comment above its rules.
 - Status bar: `.statusbar` with `.conn`, `.alert`, `.push`, `.k`, `b`, `.pv`. At 900px and below the bar stays but shows only `.conn` and `.alert` (the rest is dropped); frame.js makes a click on `.alert` open the tab whose target is `#chat`, so a pending approval is reachable from any pane. The alert's own jump to the card stays the page's.
 
 **Agent pane and settings** (annealage-ember's markup)
-- `#chat` with its header (`.agentstatus`, `.chatwho`, `.chatusage`, `.working`, `.conn`, `.hdrbtn`, `details.more`), `.chatbanner[data-kind]`, `#chatLog` (`.turn`, `.msg.user`, `.msg.assistant`, `.msg.action`, `.segments`, `.text`, `details.thinking`, `details.toolgroup`, `details.toolcard`, `pre.toolinput`, `pre.toolresult`, `.turnerrors`, `.chathistory`, `.attachthumbs`, `.contextchip`), `.side`, `.chathint`, `#chatPending` with `.permcard`, and `#chatComposer` (`.chatmodelrow`, `.attachstrip`, `.attachchip`, `#chatComposerRow`, `.attachbtn`, `#chatInput`, `.chatbtns`).
-- `.modal` (a `div` or a `<dialog class="modal">`, closed one hidden; the dialog's backdrop is not drawn, `.modal` paints the scrim; `.toolcard` single-line rows read as in `#chat`) and `.setpanel` with `.setwarn`, `.setbody`, `.setrow`, `.setlabel`, `.setinput`, `.setnote`, `.sethelp`, `.diagrow`, `.logrow`, `.logtail`, `.loginflow`.
-- `#toast` (class `ok` or `err`) and `#err`, which ember's `ui.js` writes: a floating message row with a lamp.
+- `#chat` with its header (`.agentstatus`, `.chatwho`, `.chatusage`, `.working`, `.conn`, `.hdrbtn`, `details.more`), `.chatbanner[data-kind]`, `#chatLog` (`.turn`, `.msg.user`, `.msg.assistant`, `.msg.action`, `.segments`, `.text`, `details.thinking`, `details.toolgroup`, `details.toolcard`, `pre.toolinput`, `pre.toolresult`, `.turnerrors`, `.chathistory`, `.attachthumbs`, `.contextchip`), `.side`, `.chathint`, `#chatPending` with `.permcard`, and `#chatComposer` (`.chatmodelrow`, `.attachstrip`, `.attachchip`, `#chatComposerRow`, `.attachbtn`, `#chatInput`, `.chatbtns`). A disabled `#chatInput` (a viewer-only run) takes the composer's field tone away and greys Attach, as a disabled field does.
+- `.modal` (a `div` or a `<dialog class="modal">`, closed one hidden; the dialog's backdrop is not drawn, `.modal` paints the scrim; `.toolcard` single-line rows read as in `#chat`) and `.setpanel` with `.setwarn`, `.setbody`, `.setrow` (two side by side in a `.setpair`, one column on a phone), `.setlabel`, `.setinput`, `.setnote`, `.sethelp`, `.diagrow`, `.logrow`, `.logtail`, `.loginflow`.
+- `#toast` (class `ok` or `err`) and `#err`, which ember's `ui.js` writes: a floating message row with a lamp. The theme places both and a product does not: the toast above the status bar, the error line under the title bar and the row under it (`--h-bar` plus `--h-pane`), and at 900px and below the error line above the toast.
 - The project views `project.js` builds, all `pj-*` classes: `.pj-header`, `.pj-history`, `.pj-lineage`, `.pj-projects` and the `.pj-modal` dialog. The theme draws their look and layout; `demo/ember.html` shows them under ember's real `agent.css` and `project.css`.
 
 **Review** (a product that runs a review rather than a chat)

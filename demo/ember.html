@@ -158,8 +158,12 @@
       <div class="setwarn">The saved settings could not be read; defaults are shown.</div>
       <div class="setbody">
         <section class="setmodels"><h3>Models and providers</h3><p class="sethelp">Which model each kind of work uses.</p><p class="setnote">Changes apply to the next session.</p>
-          <h4>Profile</h4>
-          <div class="setrow" data-key="model"><label class="setlabel" for="set-model">model</label><select id="set-model" class="setinput"><option>backend default</option><option>Other…</option></select><input id="set-custom-model" class="setinput" type="text" value="anthropic/claude-sonnet" aria-label="Custom model"><div class="setnote">Set in this project.</div><div class="sethelp">The model the main agent uses.</div></div></section>
+          <h4>Main agent</h4>
+          <div class="setpair"><div class="setrow" data-key="main_model"><label class="setlabel" for="set-main-model">Model</label><select id="set-main-model" class="setinput"><option>Other model…</option><option>Default (inherit)</option></select><input id="set-custom-main-model" class="setinput" type="text" value="anthropic/claude-sonnet" placeholder="provider/model" aria-label="Custom model"><div class="setnote">Set in this project.</div></div>
+          <div class="setrow" data-key="main_effort"><label class="setlabel" for="set-main-effort">Reasoning effort</label><select id="set-main-effort" class="setinput"><option>High</option><option>Default (inherit)</option></select></div></div>
+          <h4>Subagents</h4>
+          <div class="setpair"><div class="setrow" data-key="sub_model"><label class="setlabel" for="set-sub-model">Model</label><select id="set-sub-model" class="setinput" disabled title="Set by the host; not editable here."><option>Default (inherit)</option></select></div>
+          <div class="setrow" data-key="sub_effort"><label class="setlabel" for="set-sub-effort">Reasoning effort</label><select id="set-sub-effort" class="setinput"><option>Default (inherit)</option></select></div></div></section>
         <section><h3>Agent</h3>
           <div class="setrow" data-key="max_turns"><label class="setlabel" for="set-max">max_turns</label><input id="set-max" class="setinput" type="number" value="40"><div class="setnote">Default.</div><div class="sethelp">Stop a turn after this many tool calls.</div></div>
           <div class="setrow" data-key="auto_build"><label class="setlabel" for="set-auto">auto_build</label><input id="set-auto" class="setinput" type="checkbox" checked><div class="sethelp">Rebuild after every edit.</div></div>
