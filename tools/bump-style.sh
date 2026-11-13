@@ -7,9 +7,7 @@
 # The ref (default origin/main) is fetched into lib/style and checked out
 # detached. It must be an ancestor of origin/main: style `main` is the only
 # branch products pin from, so a local-only commit is refused. Every path in
-# runtime-files.txt must exist at the new commit, except those listed in
-# runtime-pending.txt (a file the library does not ship yet, if it has one).
-# Nothing is committed.
+# runtime-files.txt must exist at the new commit. Nothing is committed.
 set -euo pipefail
 
 repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
@@ -35,12 +33,7 @@ git -C "$sub" checkout -q --detach "$sha"
 missing=()
 while IFS= read -r path; do
     [[ -n $path && $path != \#* ]] || continue
-    [[ -e $sub/$path ]] && continue
-    if [[ -f $sub/runtime-pending.txt ]] && grep -qxF "$path" "$sub/runtime-pending.txt"; then
-        echo "bump-style: $path is pending in the library, skipped"
-        continue
-    fi
-    missing+=("$path")
+    [[ -e $sub/$path ]] || missing+=("$path")
 done <"$sub/runtime-files.txt"
 if ((${#missing[@]})); then
     git -C "$sub" checkout -q --detach "$old"

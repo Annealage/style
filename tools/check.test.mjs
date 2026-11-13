@@ -57,7 +57,7 @@ test('check-ok skips a line; runtime-files names a missing path', () => {
   const root = tree({
     'a.css': '/* check-ok: brand colour from the logo file */\n.x { color: #112233; }\n',
     'lib/style/runtime-files.txt': 'tokens.css\nframe.js\n',
-    'lib/style/runtime-pending.txt': 'frame.js\n',
+    'lib/style/frame.js': '',
   });
   try {
     const got = checkTree(root).findings;

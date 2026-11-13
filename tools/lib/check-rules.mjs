@@ -147,11 +147,9 @@ export function checkRuntimeFiles(styleDir, root) {
   const list = join(styleDir, 'runtime-files.txt');
   const rel = relative(root, styleDir) || '.';
   if (!existsSync(list)) return [{ file: rel, line: 0, rule: 'runtime-files', message: 'runtime-files.txt is missing' }];
-  const pendingFile = join(styleDir, 'runtime-pending.txt');
-  const pending = new Set(existsSync(pendingFile) ? readFileSync(pendingFile, 'utf8').split('\n').map((l) => l.trim()).filter(Boolean) : []);
   const out = [];
   for (const p of readFileSync(list, 'utf8').split('\n').map((l) => l.trim()).filter(Boolean)) {
-    if (pending.has(p) || existsSync(join(styleDir, p))) continue;
+    if (existsSync(join(styleDir, p))) continue;
     out.push({ file: `${rel}/runtime-files.txt`, line: 0, rule: 'runtime-files', message: `${p} is listed but not present` });
   }
   return out;
