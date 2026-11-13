@@ -231,7 +231,7 @@ Each component's markup is in the comment above its rules.
 - `.paper` for a sheet or thumbnail.
 
 **Menus, disclosures, text**
-- `.menuwrap` with a `[data-menu]` button and a `.menu`; `details.more` with a `.menu`. `.menu.at` is a menu opened where the pointer is (a right-click): no `.menuwrap`, the product sets `left` and `top` from script, and it shows while it is in the page.
+- `.menuwrap` with a `[data-menu]` button and a `.menu`; `details.more` with a `.menu`. `.menu.at` is a menu opened where the pointer is (a right-click): no `.menuwrap`, the product sets `left` and `top` from script, and it shows while it is in the page. A menu that asks for a name (Rename, New file) holds a `.menu-note`, a `.menu-field` with the `.input` and `.menu-acts` with Cancel and the action; a `.notice` in a menu is its error or warning line.
 - `details.disc` with `.disc-body`, stacked in `.discs`.
 - `ul.tree` (a file tree: nested lists, a `<details>` per folder, `li.file`, hairline guides; names are mono paths). A row's hover and `[aria-current]` wash (the open file: temper wash, no side rule) runs to the pane's edge at any depth; `[data-open]` is a file with a tab, one weight up; a `.lamp.warn` at the row's end is a file the agent changed. `--tree-in` insets the whole tree (a left inspector sets it so the names start on the 40px line).
 - `.subhead`, `.empty`, `.hint`, `.note`, `.metaline`, and `.notice` with `--warn`, `--danger` or `--ok`.

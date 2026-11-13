@@ -518,10 +518,10 @@ content: NUT_SLOT = 5.7</pre>
          ?state= takes a comma list, drawn by canvas-demo.js (the product's own script draws the real ones):
            capture     the snapshot review: pins and a rectangle on a capture, a comment field
            viewonly    a hosted view-only session: read-only review, Pause agent and the tools disabled
-           standalone  Studio with no agent: no chat, Capture and Export and the agent focus disabled
+           standalone  Studio with no agent: no chat, Capture and Export and the agent focus disabled (Pause agent stays: it blocks MCP write tools)
            merge deleted saving    the editor's conflict view, deleted-file message, saving marks
            paused error            the run state in the title bar (error adds the status bar's last error)
-           menu rename newfile newfolder delete    the tree's context menu (viewonly,menu: every item disabled) and its prompts
+           menu rename newfile newfolder delete    the tree's context menu (viewonly,menu: every item disabled); rename, newfile and newfolder ask for the name in the menu's box
            discard     closing a tab with unsaved edits
            empty loading    a project with no files, and the tree while it loads
            forcedelete toast    the force-delete row after a 409 (a folder with files), the menu's error toast
@@ -577,7 +577,7 @@ content: NUT_SLOT = 5.7</pre>
             <div class="merge" id="mergeView" hidden>
               <div class="edmsg">
                 <p class="notice notice--warn"><span>2 lines differ.</span></p>
-                <div class="acts"><button class="btn sm quiet" type="button">Keep mine</button><button class="btn sm quiet" type="button">Take theirs</button><button class="btn sm primary" type="button">Accept manual</button></div>
+                <div class="acts"><button class="btn sm quiet" type="button">Keep mine</button><button class="btn sm quiet" type="button">Take theirs</button><button class="btn sm primary" type="button">Use my merge</button></div>
               </div>
               <div class="mcols">
                 <section aria-label="Mine"><h3>Mine</h3>
@@ -631,7 +631,7 @@ content: NUT_SLOT = 5.7</pre>
               <form class="composer" aria-label="Comment on pin 2" data-hide="viewonly">
                 <div class="where">Pin 2 at <span class="mono">310, 120</span></div>
                 <textarea rows="2" aria-label="Comment">The set point matters more than the clock. Make it the largest thing here.</textarea>
-                <div class="acts"><button class="btn sm quiet danger" type="button">Delete pin</button><button class="btn sm quiet" type="button">Cancel</button><button class="btn sm" type="button">Save</button></div>
+                <div class="acts"><button class="btn sm quiet" type="button">Cancel</button><button class="btn sm" type="button">Save</button></div>
               </form>
             </div>
             <nav class="subtabs" aria-label="Live screen and captures">
@@ -639,7 +639,7 @@ content: NUT_SLOT = 5.7</pre>
               <button class="subtab" type="button" data-capture data-hide="standalone"><span class="mono">14:32</span></button>
               <button class="subtab" type="button" data-hide="standalone"><span class="mono">14:18</span></button>
               <button class="subtab" type="button" data-hide="standalone"><span class="mono">13:57</span></button>
-              <div class="right"><span class="zoom"><button class="btn icon sm" type="button" aria-label="Zoom out"><svg class="ico"><use href="../icons.svg#i-minus"/></svg></button><span class="mono">100%</span><button class="btn icon sm" type="button" aria-label="Zoom in"><svg class="ico"><use href="../icons.svg#i-plus"/></svg></button></span></div>
+              <div class="right"><div class="seg sm" role="group" aria-label="Scale"><button type="button" aria-pressed="false">50%</button><button type="button" aria-pressed="false">75%</button><button type="button" aria-pressed="false">100%</button><button type="button" aria-pressed="true">Fit</button></div></div>
             </nav>
           </section>
 
@@ -678,7 +678,6 @@ content: NUT_SLOT = 5.7</pre>
               </ul></details></li>
             <li class="file" data-open data-file="main.py"><span class="mono">main.py</span></li>
             <li class="file"><span class="mono">boot.py</span></li>
-            <li class="tin" id="treeInput" hidden><form id="treeForm"><input class="input mono" id="treeName" type="text" value="widgets.py" spellcheck="false" autocomplete="off" aria-label="New name"></form><p class="hint">Enter renames, Escape cancels</p></li>
             <li class="tin" id="treeConfirm" hidden></li>
           </ul>
           <p class="empty" id="treeEmpty" hidden>No files yet. <button class="linkish" type="button">New file</button></p>
@@ -691,6 +690,11 @@ content: NUT_SLOT = 5.7</pre>
           <button type="button" role="menuitem">New file</button>
           <button type="button" role="menuitem">New folder</button>
           <button type="button" id="ctxForce" hidden data-confirm='{"title":"Delete assets and everything in it","detail":"It holds 3 files.","action":"Delete all","danger":true}' data-confirm-into="#treeConfirm">Delete all</button>
+        </span>
+        <span class="menu at" id="ctxPrompt" role="menu" aria-label="widgets.py" hidden>
+          <span class="menu-note mono" id="ctxPromptNote">Rename widgets.py</span>
+          <div class="menu-field"><input class="input mono" id="treeName" type="text" value="widgets.py" spellcheck="false" autocomplete="off" aria-label="New name"></div>
+          <div class="menu-acts"><button class="btn sm" type="button">Cancel</button><button class="btn sm primary" type="button" id="ctxPromptGo">Rename</button></div>
         </span>
       </aside>
 

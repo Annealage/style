@@ -215,7 +215,6 @@ body[data-route=missing] :is(.prodtabs, .tsep, .menuwrap, .statusbar) { display:
 .mcols h3 { gap: 6px; }
 .mcols h3 .hint { font-weight: 400; }
 .tree .tin { padding: 0 12px 4px 20px; }
-.tree .tin .hint { padding: 2px 0 0; font-size: var(--fs-small); }
 .tree #treeConfirm { padding: 0 12px 6px 0; }
 .tree .file[data-context]::after { background: var(--hover); }
 .stage .composer { left: 0; right: 0; margin-inline: auto; bottom: 32px; width: 19rem; max-width: calc(100% - 16px); }

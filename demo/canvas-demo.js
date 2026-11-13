@@ -64,7 +64,6 @@ function draw() {
     disable($("#captureBtn"), why);
     disable($("#exportBtn"), why);
     disable($('[data-layout-set="agent"]'), why);
-    disable($("#pauseBtn"), why);
   }
 
   // ---- The editor.
@@ -104,29 +103,25 @@ function draw() {
 
   // ---- The tree: a project with no files, loading, the context menu and its prompts.
   const row = (name) => $(`#fileTree [data-file="${name}"]`);
-  const prompt = $("#treeInput");
-  const name = $("#treeName");
-  const hint = $(".hint", prompt);
-  const ask = (label, value, placeholder, text) => {
+  // Rename, New file and New folder ask for a name in the menu's own box, where it opened.
+  const ask = (target, note, label, value, placeholder, go) => {
+    const box = target.getBoundingClientRect();
+    const menu = $("#ctxPrompt");
+    const name = $("#treeName");
+    $("#ctxPromptNote").textContent = note;
     name.value = value;
     name.placeholder = placeholder;
     name.setAttribute("aria-label", label);
-    hint.textContent = text;
-    prompt.hidden = false;
+    $("#ctxPromptGo").textContent = go;
+    $("#ctxPromptGo").disabled = !value;
+    menu.hidden = false;
+    menu.style.left = `${box.left + 56}px`;
+    menu.style.top = `${box.bottom - 4}px`;
+    target.setAttribute("data-context", "");
   };
-  if (has("rename")) {
-    row("widgets.py").hidden = true;
-    row("widgets.py").after(prompt);
-    ask("New name", "widgets.py", "", "Enter renames, Escape cancels");
-  }
-  if (has("newfile")) {
-    $("#fileTree details > ul").prepend(prompt);
-    ask("New file name", "", "File name", "Enter creates it, Escape cancels");
-  }
-  if (has("newfolder")) {
-    row("main.py").before(prompt);
-    ask("New folder name", "", "Folder name", "Enter creates it, Escape cancels");
-  }
+  if (has("rename")) ask(row("widgets.py"), "Rename widgets.py", "New name", "widgets.py", "", "Rename");
+  if (has("newfile")) ask(row("widgets.py"), "New file", "File name", "", "File name", "Create");
+  if (has("newfolder")) ask(row("main.py"), "New folder", "Folder name", "", "Folder name", "Create");
   if (has("menu")) {
     const target = row("widgets.py");
     const box = target.getBoundingClientRect();

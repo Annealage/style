@@ -380,6 +380,16 @@ a.state:hover { text-decoration-color: var(--ink); }
    left and top from script, and it shows while it is in the page. <span class="menu at" role="menu"> */
 .menu.at { position: fixed; top: auto; right: auto; display: block; }
 .menu .menu-note { display: block; padding: 6px 8px 4px; color: var(--ink-3); font-size: var(--fs-small); }
+/* A menu that asks for a name (Rename, New file): the item's menu turns into a
+   field and its actions, in the same box.
+   <span class="menu at"><span class="menu-note mono">Rename widgets.py</span>
+     <div class="menu-field"><input class="input mono"></div>
+     <div class="menu-acts"><button class="btn sm">Cancel</button><button class="btn sm primary">Rename</button></div></span> */
+.menu .menu-field { padding: 2px 4px 4px; }
+.menu .menu-field .input { width: 100%; min-width: 200px; }
+.menu .menu-acts { display: flex; justify-content: flex-end; gap: 6px; padding: 0 4px 4px; }
+.menu .menu-acts .btn { width: auto; height: var(--ctl-sm); padding: 0 10px; justify-content: center; }
+.menu .notice { margin: 0; padding: 6px 8px; white-space: normal; overflow-wrap: anywhere; }
 .menu .menu-note[role=alert] { color: var(--danger); }
 .menu a[aria-current] { font-weight: 600; }
 details.more { position: relative; }
