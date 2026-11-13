@@ -114,18 +114,15 @@ document.addEventListener("click", (e) => {
   closeMenus(wrap);
   if (wrap) trigger.setAttribute("aria-expanded", String(wrap.toggleAttribute("data-open")));
 
-  // Inspector tabs: data-side switches the inspector pane, aria-controls switches .ipane.
+  // Inspector tabs: aria-controls switches .ipane.
   const tab = e.target.closest(".ptabs button");
-  if (tab?.dataset.side) {
-    document.querySelector(".wb").dataset.side = tab.dataset.side;
-    for (const b of $$(".ptabs button[data-side]")) b.setAttribute("aria-selected", String(b.dataset.side === tab.dataset.side));
-  } else if (tab?.getAttribute("aria-controls")) {
+  if (tab?.getAttribute("aria-controls")) {
     for (const b of $$("button", tab.parentElement)) {
       b.setAttribute("aria-selected", String(b === tab));
       document.getElementById(b.getAttribute("aria-controls")).hidden = b !== tab;
     }
   }
-  // Timeline preview.
+  // Previewing an earlier state (.previewbar).
   const act = e.target.closest("[data-act]");
   if (act?.dataset.act === "preview") document.querySelector(".wb").dataset.preview = "";
   if (act?.dataset.act === "now") delete document.querySelector(".wb").dataset.preview;

@@ -16,7 +16,7 @@
      pane's markup exactly as annealage-ember's chat.js builds it.
      ?product=loom|trace|mesh|canvas|pod  ?theme=light|dark  ?preview=1  ?cmd=none (no command field) -->
 <body class="panel-open">
-<div class="wb" data-side="review" data-layout="split">
+<div class="wb" data-layout="split">
 
   <header class="titlebar">
     <div class="tb-left">
@@ -87,7 +87,7 @@
       <nav id="tabbar" role="tablist" aria-label="Panes"><button type="button" role="tab" aria-selected="true" data-tab="files" data-target=".inspector">Files</button><button type="button" role="tab" aria-selected="false" data-tab="editor" data-target="#editorHalf">Editor</button><button type="button" role="tab" aria-selected="false" data-tab="screen" data-target="#screenHalf">Screen</button><button type="button" role="tab" aria-selected="false" data-tab="agent" data-target="#chat">Agent</button></nav>
     </template>
     <template data-default>
-      <nav id="tabbar" role="tablist" aria-label="Panes"><button type="button" role="tab" aria-selected="true" data-tab="drawing" data-target=".view">Drawing</button><button type="button" role="tab" aria-selected="false" data-tab="review" data-target=".inspector:not(#timeline)">Review</button><button type="button" role="tab" aria-selected="false" data-tab="agent" data-target="#chat, .console">Agent</button></nav>
+      <nav id="tabbar" role="tablist" aria-label="Panes"><button type="button" role="tab" aria-selected="true" data-tab="drawing" data-target=".view">Drawing</button><button type="button" role="tab" aria-selected="false" data-tab="review" data-target=".inspector">Review</button><button type="button" role="tab" aria-selected="false" data-tab="agent" data-target="#chat, .console">Agent</button></nav>
     </template>
   </div>
 
@@ -203,7 +203,7 @@
       </aside>
 
       <aside id="chat" aria-label="Agent" data-pending="1" data-working data-turn-started="0">
-        <header><h1>Agent</h1><span class="chatwho">andrew</span><span class="chatusage">22% context, $0.41</span><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
+        <header><h1>Agent</h1><span class="chatwho">andrew</span><span class="chatusage"><span class="readout" data-usage="context"><span class="val">22%</span><span class="lg">context</span></span><span class="readout" data-usage="cost"><span class="val">$0.41</span><span class="lg">cost</span></span></span><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
           <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b id="chatWorkingTime">1:12</b></span>
           <span class="spacer"></span>
           <span id="connIndicator" class="conn" data-state="live">Live</span>
@@ -416,7 +416,7 @@ resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre>
       </main>
 
       <aside class="inspector" id="review" aria-label="Review">
-        <div class="ihead"><div class="ptabs" role="tablist" aria-label="Side panel"><button role="tab" type="button" data-side="review" aria-selected="true">Review</button></div><span>2 pins, 1 callout</span></div>
+        <div class="ihead"><div class="ptabs" role="tablist" aria-label="Side panel"><button role="tab" type="button" aria-selected="true">Review</button></div><span>2 pins, 1 callout</span></div>
         <div class="iscroll">
           <details class="sec" open>
             <summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Parts <span class="c">3</span></summary>
@@ -452,7 +452,7 @@ resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre>
       </aside>
 
       <aside id="chat" aria-label="Agent" data-pending="1">
-        <header><h1>Agent</h1><span class="chatusage">38% context, $0.19</span><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
+        <header><h1>Agent</h1><span class="chatusage"><span class="readout" data-usage="context"><span class="val">38%</span><span class="lg">context</span></span><span class="readout" data-usage="cost"><span class="val">$0.19</span><span class="lg">cost</span></span></span><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
           <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b id="chatWorkingTime"></b></span>
           <span class="spacer"></span>
           <span id="connIndicator" class="conn" data-state="live">Live</span>

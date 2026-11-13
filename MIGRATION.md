@@ -113,13 +113,13 @@ Show it disabled with a `title` saying why, not hidden and not left clickable (`
 
 `scheme.js` keeps its API, its `annealage.scheme` storage key and its `schemechange` event. Nothing that listens to it changes.
 
-The button can now be one icon:
+The button is one icon:
 
 ```html
 <button class="btn icon" type="button" data-scheme-toggle aria-label="Colours"><svg class="ico"><use href="style/icons.svg#i-auto"/></svg></button>
 ```
 
-`scheme.js` swaps the `<use>` to `i-auto`, `i-sun` or `i-moon`. The earlier markup, three `<svg data-for="system|light|dark">`, still works unchanged, so this is optional. `i-monitor` is still in the sprite.
+`scheme.js` swaps the `<use>` to `i-auto`, `i-sun` or `i-moon`. The earlier markup, three `<svg data-for="system|light|dark">`, is no longer drawn: replace it with the one icon. `i-monitor` is still in the sprite.
 
 ## Icons
 

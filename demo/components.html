@@ -307,7 +307,7 @@
   <div class="spec-grid">
     <h3>Pane <code>#chat</code><code>header, .chatbanner, #chatLog, .side</code></h3>
     <div class="spec-pane wide"><aside id="chat" aria-label="Agent" data-pending="2" data-working data-turn-started="0">
-      <header><h1>Agent</h1><span class="chatwho">andrew@example.com</span><span class="chatusage">22% context, $0.41</span><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
+      <header><h1>Agent</h1><span class="chatwho">andrew@example.com</span><span class="chatusage"><span class="readout" data-usage="context"><span class="val">22%</span><span class="lg">context</span></span><span class="readout" data-usage="cost"><span class="val">$0.41</span><span class="lg">cost</span></span></span><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
         <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b id="chatWorkingTime">1:12</b></span><span class="spacer"></span><span id="connIndicator" class="conn" data-state="polling">Polling</span>
         <details id="chatMore" class="more"><summary class="hdrbtn">More</summary><div class="menu"><button type="button" class="hdrbtn" aria-pressed="false"><span data-label>Pause</span></button><button type="button" class="hdrbtn">Settings</button><button type="button" class="hdrbtn" disabled>Export</button></div></details></header>
       <div id="chatBanner" class="chatbanner" data-kind="error"><span id="chatBannerText">The agent stopped: omp exited with status 1.</span><button id="chatBannerClose" type="button" aria-label="Dismiss">&times;</button><details class="chatbannerdetail" open><summary>What the agent backend said</summary><pre>Traceback (most recent call last):

@@ -48,7 +48,7 @@ code, pre, kbd, .mono { font-family: var(--mono); font-size: var(--fs-small); fo
 .grow, .spacer { flex: 1 1 auto; min-width: 0; }
 /* Anything a wash or a pressed tone sits under steps third-level ink up one,
    so it keeps AA there (tools/contrast.py checks the pairs this leaves). */
-[aria-selected=true], [aria-current], .is-selected, .is-preview, .on { --ink-3: var(--ink-2); }
+[aria-selected=true], [aria-current], .is-selected, .on { --ink-3: var(--ink-2); }
 
 /* Icons come from icons.svg: <svg class="ico"><use href=".../icons.svg#i-pin"/></svg>.
    They're 1.5px round-capped, round-joined strokes on a 16px grid. */
@@ -121,14 +121,7 @@ code, pre, kbd, .mono { font-family: var(--mono); font-size: var(--fs-small); fo
 
 /* The light/dark switch (scheme.js): <button class="btn icon" data-scheme-toggle>
    holding one <svg class="ico"><use href="icons.svg#i-auto"/></svg>, whose icon
-   scheme.js swaps (i-auto, i-sun, i-moon). The older markup, one
-   <svg data-for="system|light|dark"> each, still works: the one matching the
-   button's data-scheme shows. */
-[data-scheme-toggle] > svg[data-for] { display: none; }
-[data-scheme-toggle][data-scheme=system] > svg[data-for=system],
-[data-scheme-toggle][data-scheme=light] > svg[data-for=light],
-[data-scheme-toggle][data-scheme=dark] > svg[data-for=dark],
-[data-scheme-toggle]:not([data-scheme]) > svg[data-for=system] { display: block; }
+   scheme.js swaps (i-auto, i-sun, i-moon). */
 
 kbd {
   display: inline-block; padding: 0 4px;
@@ -1008,9 +1001,8 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 /* --------------------------------------------------------------- inspector */
 /* <aside class="inspector"><div class="ihead"><h2>Review</h2><span>CAN</span><button class="btn icon sm">x</button></div>
    <div class="iscroll"> sections </div><div class="ifoot">…</div></aside>
-   Two panes, #review and #timeline, switch with data-side on .wb and
-   aria-selected on .ptabs; more than two use .ptabs buttons with
-   aria-controls and .ipane children switched with the hidden attribute. */
+   Several panes are .ptabs buttons with aria-controls and .ipane children
+   switched with the hidden attribute. */
 .inspector { grid-area: insp; display: flex; flex-direction: column; min-width: 0; min-height: 0; border-right: 1px solid var(--rule); }
 .wb[data-console=none] .inspector, .wb[data-layout=drawing] .inspector { border-right: 0; }
 .wb[data-insp=left] .inspector { border-right: 1px solid var(--rule); }
@@ -1026,9 +1018,6 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 }
 .ptabs button:hover { color: var(--ink); }
 .ptabs button[aria-selected=true] { color: var(--ink); font-weight: 600; border-bottom-color: var(--temper-text); }
-#timeline { display: none; }
-.wb[data-side=timeline] #review { display: none; }
-.wb[data-side=timeline] #timeline { display: flex; }
 .ipane { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 .iscroll { flex: 1; min-height: 0; overflow: hidden auto; scrollbar-width: thin; }
 .toggles { display: grid; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--rule); }
@@ -1077,55 +1066,6 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 .ifoot b { color: var(--ink); font-weight: 600; }
 .ifoot .btn:first-of-type { margin-left: auto; }
 .ifoot.toggles { display: grid; gap: 8px; padding: 10px 12px; border-bottom: 0; }
-
-/* ---------------------------------------------------------------- timeline */
-/* One entry per event on a hairline spine. Restore points (each message you
-   send, and each build) are the larger square nodes; everything else is a
-   small one. The entry being previewed takes the temper wash, and whatever
-   came after it dims on a dashed spine: that is what a restore would set aside.
-   <ol class="tl"><li class="ev ck"><time>14:12</time><span class="node node--build"></span><div class="ebody">.eh, .eq, .ed, ul.chg, .eacts, form.restore</div></li> */
-.tlbar { display: flex; align-items: center; gap: 8px; padding: 6px 12px; flex: none; border-bottom: 1px solid var(--rule); font-size: var(--fs-small); color: var(--ink-2); }
-.tlscroll { flex: 1; min-height: 0; overflow: auto; scrollbar-width: thin; }
-.tl { padding: 8px 0 14px; }
-.ev { position: relative; display: grid; grid-template-columns: 40px 16px minmax(0, 1fr); column-gap: 8px; padding: 6px 12px 7px 4px; }
-.ev::before { content: ""; position: absolute; left: 59.5px; top: 0; bottom: 0; border-left: 1px solid var(--rule-strong); }
-.ev:first-child::before { top: 12px; }
-.ev:last-child::before { bottom: calc(100% - 12px); }
-.ev > time { font: 400 11.5px/18px var(--mono); color: var(--ink-2); text-align: right; }
-.node { position: relative; z-index: 1; justify-self: center; margin-top: 4px; width: 10px; height: 10px; border-radius: 1px; background: var(--ground); box-shadow: 0 0 0 3px var(--ground); }
-.node--msg { border: 1.5px solid var(--ink); }
-.node--build { background: var(--ink); }
-.node--ev { width: 6px; height: 6px; margin-top: 6px; background: var(--ink-3); }
-.node--wait { border: 1.5px dashed var(--ink); }
-.node--now { background: var(--temper-text); outline: 1.5px solid var(--temper-text); outline-offset: 2px; }
-.ev.is-preview .node { background-color: var(--ground); }
-.ebody { min-width: 0; }
-.eh b { font-weight: 600; }
-.eh .mk { display: inline-grid; vertical-align: -4px; margin-right: 2px; }
-.eq { margin-top: 2px; font-weight: 500; }
-.ed { color: var(--ink-2); font-size: var(--fs-small); }
-.chg { margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 2px 12px; font: 400 11.5px/16px var(--mono); color: var(--ink-2); }
-.chg code { color: var(--ink); }
-.chg ins { text-decoration: none; color: var(--quench); }
-.chg del { text-decoration: none; color: var(--danger); }
-.chg .def { color: var(--danger); }
-.chg .wrn { color: var(--warn); }
-.rp { font: 400 var(--fs-micro)/1 var(--mono); color: var(--ink-3); }
-.eacts { display: none; gap: 2px; margin: 4px 0 0 -8px; }
-.ev.ck:hover, .ev.ck:focus-within { background: var(--hover); }
-.ev.ck:hover .eacts, .ev.ck:focus-within .eacts { display: flex; }
-.ev.is-preview { background: var(--temper-wash); }
-.ev.is-preview .eacts { display: none; }
-/* The restore choice is a small form, so it has a field's edge. */
-.restore { display: none; }
-.ev.is-preview .restore { display: grid; gap: 8px; margin-top: 8px; padding: 10px 12px 12px; background: var(--field); border: 1px solid var(--rule-strong); border-radius: var(--r); }
-.restore h3 { font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); }
-.restore label { display: grid; grid-template-columns: 14px minmax(0, 1fr); column-gap: 8px; align-items: center; cursor: pointer; }
-.restore label[aria-disabled=true] { color: var(--ink-3); cursor: default; }
-.restore small { grid-column: 2; font-size: var(--fs-small); color: var(--ink-2); }
-.restore .racts { display: flex; gap: 6px; margin-top: 2px; }
-.wb[data-preview] .is-preview ~ .ev > * { opacity: 0.5; }
-.wb[data-preview] .is-preview ~ .ev::before { border-left-style: dashed; }
 
 /* Previewing an earlier state: a bar over the view and a temper frame round
    the drawing. The page sets data-preview on .wb and shows [data-then] overlays;
@@ -1209,15 +1149,9 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 /* Usage is a row of readouts, context and cost, each a .readout (a .val and a
    .lg) that chat.js hides while its figure is unknown:
    <span class="chatusage"><span class="readout" data-usage="context">…</span><span class="readout" data-usage="cost">…</span></span>
-   The wrapper takes no space when every readout is hidden. An older one-string
-   .chatusage (text, no readouts) is drawn as one boxed readout. */
+   The wrapper takes no space when every readout is hidden. */
 #chat .chatusage { order: 9; margin-left: auto; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-#chat .chatusage:has(> .readout):not(:has(> .readout:not([hidden]))) { display: none; }
-#chat .chatusage:not(:has(> .readout)) {
-  height: 20px; padding: 0 6px; border-radius: var(--r-xs);
-  background: var(--well); box-shadow: inset 0 0 0 1px var(--rule);
-  font: 400 var(--fs-small)/20px var(--sans); font-variant-numeric: tabular-nums; color: var(--ink);
-}
+#chat .chatusage:not(:has(> .readout:not([hidden]))) { display: none; }
 /* Pane layout the chat page (embed.render_agent_page) relies on, scoped to #chat:
    a log that keeps some height, a pending area and tool inputs that cap, a
    composer that wraps on a very narrow pane, and More showing a paused agent
@@ -1230,18 +1164,17 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 #chat #chatComposerRow textarea { min-width: 0; }
 @media (max-width: 420px) { #chat > header .conn { font-size: 0; } }
 @media (max-width: 520px) { #chat > header .chatusage { order: 10; flex: 1 1 100%; justify-content: flex-start; margin-left: 0; padding-left: 0; } }
-/* The agent's state: a lamp and a word. .agentstatus[data-state=ready|idle|connecting|unavailable]
-   (the class is doubled so these outrank agent.css's pill wherever the element sits). */
-.agentstatus.agentstatus {
+/* The agent's state: a lamp and a word. .agentstatus[data-state=ready|idle|connecting|unavailable] */
+.agentstatus {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 0; border: 0; border-radius: 0; background: none;
   font-size: var(--fs-small); font-weight: 400; color: var(--ink-2); white-space: nowrap;
 }
-.agentstatus.agentstatus::before { content: ""; width: 8px; height: 8px; border-radius: 1px; background: var(--ink-3); }
-.agentstatus.agentstatus[data-state=ready]::before { background: var(--quench); }
-.agentstatus.agentstatus[data-state=connecting]::before { background: none; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
-.agentstatus.agentstatus[data-state=unavailable] { color: var(--danger); }
-.agentstatus.agentstatus[data-state=unavailable]::before { background: var(--danger); }
+.agentstatus::before { content: ""; width: 8px; height: 8px; border-radius: 1px; background: var(--ink-3); }
+.agentstatus[data-state=ready]::before { background: var(--quench); }
+.agentstatus[data-state=connecting]::before { background: none; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.agentstatus[data-state=unavailable] { color: var(--danger); }
+.agentstatus[data-state=unavailable]::before { background: var(--danger); }
 /* Working: a 2px temper line along the header's bottom edge, and the time. */
 .working { display: none; align-items: center; gap: 6px; height: 28px; margin-top: -4px; color: var(--ink-2); }
 #chat[data-working] .working, .console[data-working] .working { display: inline-flex; }
@@ -1721,9 +1654,7 @@ ol.src > li::before { content: counter(line); text-align: right; color: var(--in
 /* annealage-ember's project.js builds the title bar's project name and Rename,
    the History pane, the "Send to" lineage bar, the project list and the
    confirming dialog out of pj-* classes. They are drawn here, from the page's
-   own tokens, with no --pj-* variable. Every rule sits under one of the five
-   roots (.pj-header, .pj-history, .pj-lineage, .pj-projects, .pj-modal) so it
-   outranks ember's single-class project.css whichever order the two load in.
+   own tokens, with no --pj-* variable; ember's project.css has no rules.
    .pj-btn is a text button (.btn), .pj-menu the menu, .pj-dialog the settings
    window's dialog. Rows are hairlines; only the dialog, the menu and inputs
    have an edge.
@@ -1733,138 +1664,138 @@ ol.src > li::before { content: counter(line); text-align: right; color: var(--in
    .pj-lineage > .pj-bar (h3.pj-lineage-title, .pj-menuwrap > .pj-btn + .pj-menu > .pj-menuitem, .pj-revnote, .pj-notice) .pj-result .pj-links > h4 + ul > li.pj-link
    .pj-projects > form.pj-new, .pj-cards > article.pj-card (header .pj-name code .pj-state, .pj-meta), p.pj-empty
    .pj-modal > .pj-dialog (header h2, .pj-modal-main > .pj-modal-body + .pj-error, footer) */
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) { color: var(--ink); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-hint { color: var(--ink-2); font-size: var(--fs-small); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-actions { display: flex; flex-wrap: wrap; gap: 2px; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn {
+.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal { color: var(--ink); }
+.pj-hint { color: var(--ink-2); font-size: var(--fs-small); }
+.pj-actions { display: flex; flex-wrap: wrap; gap: 2px; }
+.pj-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   height: var(--ctl); padding: 0 10px; flex: none;
   border: 0; border-radius: var(--r); background: none; color: var(--ink);
   font: 500 var(--fs-ui)/1 var(--sans); white-space: nowrap; cursor: pointer;
 }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn:hover:not(:disabled) { background: var(--hover); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn:active:not(:disabled) { background: var(--press); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn.pj-quiet { color: var(--ink-2); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn.pj-quiet:hover:not(:disabled) { color: var(--ink); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn.pj-sm { height: var(--ctl-sm); padding: 0 8px; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn.pj-danger { color: var(--danger); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn[aria-expanded=true] { background: var(--press); color: var(--ink); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-btn:disabled { background: none; color: var(--ink-3); cursor: default; }
+.pj-btn:hover:not(:disabled) { background: var(--hover); }
+.pj-btn:active:not(:disabled) { background: var(--press); }
+.pj-btn.pj-quiet { color: var(--ink-2); }
+.pj-btn.pj-quiet:hover:not(:disabled) { color: var(--ink); }
+.pj-btn.pj-sm { height: var(--ctl-sm); padding: 0 8px; }
+.pj-btn.pj-danger { color: var(--danger); }
+.pj-btn[aria-expanded=true] { background: var(--press); color: var(--ink); }
+.pj-btn:disabled { background: none; color: var(--ink-3); cursor: default; }
 
 /* Messages are rows with a square lamp, never boxes. */
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-error, :is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict {
+.pj-error, .pj-conflict {
   display: grid; grid-template-columns: 8px minmax(0, 1fr); column-gap: 8px; align-items: baseline;
   margin: 0; padding: 4px 0; color: var(--ink); font-size: var(--fs-ui); overflow-wrap: anywhere;
 }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-error::before, :is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict::before { content: ""; width: 8px; height: 8px; border-radius: 1px; background: var(--danger); transform: translateY(-1px); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-error > *, :is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict > * { grid-column: 2; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-error:empty, :is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-notice:empty { display: none; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-notice { margin: 0; padding: 4px 0; color: var(--ink-2); font-size: var(--fs-small); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict { margin: 8px 0; padding: 8px 0; border-block: 1px solid var(--rule); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict p { margin: 0 0 4px; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-conflict .pj-actions { margin-top: 2px; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-result {
+.pj-error::before, .pj-conflict::before { content: ""; width: 8px; height: 8px; border-radius: 1px; background: var(--danger); transform: translateY(-1px); }
+.pj-error > *, .pj-conflict > * { grid-column: 2; }
+.pj-error:empty, .pj-notice:empty { display: none; }
+.pj-notice { margin: 0; padding: 4px 0; color: var(--ink-2); font-size: var(--fs-small); }
+.pj-conflict { margin: 8px 0; padding: 8px 0; border-block: 1px solid var(--rule); }
+.pj-conflict p { margin: 0 0 4px; }
+.pj-conflict .pj-actions { margin-top: 2px; }
+.pj-result {
   display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px;
   margin: 8px 0; padding: 8px 0; border-block: 1px solid var(--rule); font-size: var(--fs-ui);
 }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-result::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 1px; background: var(--quench); }
+.pj-result::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 1px; background: var(--quench); }
 
 /* The project name in the title bar. */
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-titlerow { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pj-titlerow { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .pj-header { min-width: 0; }
 .pj-header .pj-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-nameedit {
+.pj-nameedit {
   height: var(--ctl); min-width: 16ch; width: 32ch; max-width: 40vw; padding: 0 8px;
   border: 1px solid var(--rule-strong); border-radius: var(--r);
   background: var(--field); color: var(--ink); font: 600 var(--fs-ui)/1 var(--sans);
 }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-nameedit:disabled { color: var(--ink-3); }
+.pj-nameedit:disabled { color: var(--ink-3); }
 
 /* History: a group of commits is a heading over hairline rows. */
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-bar { display: flex; align-items: center; gap: 12px; min-height: var(--h-row); margin: 0; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-bar .pj-refresh { margin-left: auto; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-now { color: var(--ink-2); font-size: var(--fs-small); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-group { margin: 0 0 12px; border: 0; border-top: 1px solid var(--rule); border-radius: 0; background: none; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-group > header { display: flex; align-items: center; gap: 10px; min-height: var(--h-row); padding: 0; border: 0; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-grouplabel { font-weight: 600; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-count { color: var(--ink-2); font-size: var(--fs-small); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-group > header .pj-btn { margin-left: auto; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-commit { padding: 8px 0; border-top: 1px solid var(--rule); background: none; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-commit:first-of-type { border-top: 0; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-commit + .pj-commit { border-top: 1px solid var(--rule); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-commithead { display: flex; align-items: center; gap: 4px 10px; margin: 0 0 2px; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-subject { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-meta { display: flex; flex-wrap: wrap; gap: 2px 12px; color: var(--ink-2); font-size: var(--fs-small); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-author { font-weight: 500; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-author-agent { color: var(--temper-text); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-author-human { color: var(--ink); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-more { margin-top: 4px; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) pre.pj-diff {
+.pj-bar { display: flex; align-items: center; gap: 12px; min-height: var(--h-row); margin: 0; }
+.pj-bar .pj-refresh { margin-left: auto; }
+.pj-now { color: var(--ink-2); font-size: var(--fs-small); }
+.pj-group { margin: 0 0 12px; border: 0; border-top: 1px solid var(--rule); border-radius: 0; background: none; }
+.pj-group > header { display: flex; align-items: center; gap: 10px; min-height: var(--h-row); padding: 0; border: 0; }
+.pj-grouplabel { font-weight: 600; }
+.pj-count { color: var(--ink-2); font-size: var(--fs-small); }
+.pj-group > header .pj-btn { margin-left: auto; }
+.pj-commit { padding: 8px 0; border-top: 1px solid var(--rule); background: none; }
+.pj-commit:first-of-type { border-top: 0; }
+.pj-commit + .pj-commit { border-top: 1px solid var(--rule); }
+.pj-commithead { display: flex; align-items: center; gap: 4px 10px; margin: 0 0 2px; }
+.pj-subject { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.pj-meta { display: flex; flex-wrap: wrap; gap: 2px 12px; color: var(--ink-2); font-size: var(--fs-small); }
+.pj-author { font-weight: 500; }
+.pj-author-agent { color: var(--temper-text); }
+.pj-author-human { color: var(--ink); }
+.pj-more { margin-top: 4px; }
+pre.pj-diff {
   max-height: 28em; margin: 6px 0 0; padding: 6px 8px; overflow: auto;
   border: 0; border-block: 1px solid var(--rule); border-radius: 0; background: var(--field);
   color: var(--ink); font-size: var(--fs-small);
 }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-d-add { color: var(--quench); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-d-del { color: var(--danger); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-d-hunk { color: var(--ink-3); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-d-file { color: var(--ink); font-weight: 600; }
+.pj-d-add { color: var(--quench); }
+.pj-d-del { color: var(--danger); }
+.pj-d-hunk { color: var(--ink-3); }
+.pj-d-file { color: var(--ink); font-weight: 600; }
 
 /* The project list: hairline rows, the state as a lamp and a word. */
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-new { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-new textarea, html .pj-modal textarea {
+.pj-new { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.pj-new textarea, .pj-modal textarea {
   width: 100%; padding: 5px 8px; border: 1px solid var(--rule-strong); border-radius: var(--r);
   background: var(--field); color: var(--ink); font: 400 var(--fs-ui)/var(--lh-ui) var(--sans);
 }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-new textarea { flex: 1 1 100%; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-cards { display: grid; gap: 0; border-top: 1px solid var(--rule); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-card { padding: 8px 0; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: none; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-card > header { display: flex; align-items: baseline; gap: 10px; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-name { font-weight: 600; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-state { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; color: var(--ink-2); font-size: var(--fs-small); white-space: nowrap; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-state::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 1px; background: var(--ink-3); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-empty { color: var(--ink-2); }
+.pj-new textarea { flex: 1 1 100%; }
+.pj-cards { display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.pj-card { padding: 8px 0; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: none; }
+.pj-card > header { display: flex; align-items: baseline; gap: 10px; }
+.pj-name { font-weight: 600; }
+.pj-state { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; color: var(--ink-2); font-size: var(--fs-small); white-space: nowrap; }
+.pj-state::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 1px; background: var(--ink-3); }
+.pj-empty { color: var(--ink-2); }
 
 /* "Send to" and "Derived from". */
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-lineage-title { margin: 0; font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); }
+.pj-lineage-title { margin: 0; font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); }
 .pj-lineage .pj-bar { flex-wrap: wrap; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menuwrap { position: relative; display: inline-flex; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menu {
+.pj-menuwrap { position: relative; display: inline-flex; }
+.pj-menu {
   position: absolute; top: calc(100% + 4px); left: 0; z-index: 20;
   display: flex; flex-direction: column; min-width: 200px; margin: 0; padding: 4px; text-align: left;
   border: 1px solid var(--rule-strong); border-radius: var(--r);
   background: var(--field); box-shadow: var(--shadow-menu);
 }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menuitem {
+.pj-menuitem {
   display: flex; align-items: center; gap: 8px; width: 100%; height: var(--ctl); padding: 0 8px;
   border: 0; border-radius: var(--r-sm); background: none; color: var(--ink);
   font: 400 var(--fs-ui)/1 var(--sans); white-space: nowrap; text-align: left; cursor: pointer;
 }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menuitem:hover:not(:disabled), :is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menuitem:focus-visible { background: var(--hover); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-menuitem:disabled { background: none; color: var(--ink-3); cursor: default; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-revnote { color: var(--ink-2); font-size: var(--fs-small); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-links h4 { margin: 12px 0 2px; font: 500 var(--fs-small)/1 var(--sans); color: var(--ink-2); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-links ul { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-link { padding: 6px 0; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: none; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-linkhead { display: flex; align-items: baseline; gap: 8px; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-chip { padding: 0; border: 0; border-radius: 0; font-size: var(--fs-small); color: var(--ink-2); white-space: nowrap; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-intent { overflow-wrap: anywhere; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-choices { display: grid; gap: 6px; margin: 0 0 8px; padding: 0; border: 0; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-choice { display: flex; align-items: baseline; gap: 8px; }
+.pj-menuitem:hover:not(:disabled), .pj-menuitem:focus-visible { background: var(--hover); }
+.pj-menuitem:disabled { background: none; color: var(--ink-3); cursor: default; }
+.pj-revnote { color: var(--ink-2); font-size: var(--fs-small); }
+.pj-links h4 { margin: 12px 0 2px; font: 500 var(--fs-small)/1 var(--sans); color: var(--ink-2); }
+.pj-links ul { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
+.pj-link { padding: 6px 0; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: none; }
+.pj-linkhead { display: flex; align-items: baseline; gap: 8px; }
+.pj-chip { padding: 0; border: 0; border-radius: 0; font-size: var(--fs-small); color: var(--ink-2); white-space: nowrap; }
+.pj-intent { overflow-wrap: anywhere; }
+.pj-choices { display: grid; gap: 6px; margin: 0 0 8px; padding: 0; border: 0; }
+.pj-choice { display: flex; align-items: baseline; gap: 8px; }
 
 /* The confirming dialog is the settings window's dialog. */
-html .pj-modal {
+.pj-modal {
   position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center;
   padding: 16px; background: light-dark(rgba(20, 23, 26, 0.35), rgba(0, 0, 0, 0.55));
 }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-dialog {
+.pj-dialog {
   display: flex; flex-direction: column; width: min(34em, 100%); max-height: min(90vh, 100%);
   border: 1px solid var(--rule-strong); border-radius: var(--r);
   background: var(--ground); color: var(--ink); box-shadow: var(--shadow-menu);
 }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-dialog header { flex: none; display: flex; align-items: center; min-height: var(--h-bar); padding: 0 16px; border: 0; border-bottom: 1px solid var(--rule); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-dialog h2 { margin: 0; font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); color: var(--ink); }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-modal-main { padding: 12px 16px; overflow: auto; }
-:is(.pj-history, .pj-header, .pj-projects, .pj-lineage, .pj-modal) .pj-dialog footer { flex: none; display: flex; justify-content: flex-end; gap: 8px; padding: 10px 16px; border: 0; border-top: 1px solid var(--rule); }
+.pj-dialog header { flex: none; display: flex; align-items: center; min-height: var(--h-bar); padding: 0 16px; border: 0; border-bottom: 1px solid var(--rule); }
+.pj-dialog h2 { margin: 0; font: 600 var(--fs-ui)/var(--lh-ui) var(--sans); color: var(--ink); }
+.pj-modal-main { padding: 12px 16px; overflow: auto; }
+.pj-dialog footer { flex: none; display: flex; justify-content: flex-end; gap: 8px; padding: 10px 16px; border: 0; border-top: 1px solid var(--rule); }
 
 /* ------------------------------------------------------------------- phone */
 /* .wide shows only above 640px and .narrow only at or below it. */
@@ -1873,7 +1804,7 @@ html .pj-modal {
   .wide { display: none !important; }
   .narrow { display: revert; }
 }
-/* At 900px and below frame.js (or annealage-ember's layout.js) shows one pane
+/* At 900px and below frame.js shows one pane
    at a time from the page's #tabbar, hiding the rest with an inline
    display:none. So every pane is laid out in the one main area here and shown
    by default. */
@@ -1926,8 +1857,8 @@ html .pj-modal {
   .vhead { padding-left: 12px; }
   .wb:has(> .view[style*="none"]) > .vhead { display: none; }
   .view, .inspector, #chat, .console { grid-area: main; border: 0; }
-  body:not(.panel-open) .inspector, #timeline, .wb[data-side=timeline] #review, .wb[data-layout=agent] :is(.view, .inspector), .wb[data-layout=drawing] #chat { display: flex; }
-  /* Review/Timeline come from the tab bar; an inspector with its own panes keeps its tabs. */
+  body:not(.panel-open) .inspector, .wb[data-layout=agent] :is(.view, .inspector), .wb[data-layout=drawing] #chat { display: flex; }
+  /* The pane's name comes from the tab bar; an inspector with its own panes keeps its tabs. */
   .ptabs:not(:has([aria-controls])) { display: none; }
   /* The rail becomes a tool strip floating along the bottom of the view. It
      goes with the view when another tab is showing. */
