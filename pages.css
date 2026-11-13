@@ -205,7 +205,9 @@ button.drop, button.dropstrip { width: 100%; }
 .p-name { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 a.p-name:hover { text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
 .p-thumb { display: block; aspect-ratio: 2400 / 1692; }
-.p-thumb.blank { display: grid; place-items: center; background: var(--paper); color: var(--paper-ink-2); font-size: var(--fs-small); }
+/* A thumbnail with no sheet yet is not paper: an empty slot in the well's tone, so a
+   register of them does not light up in dark. */
+.p-thumb.blank { display: grid; place-items: center; background: var(--well); color: var(--ink-3); font-size: var(--fs-small); }
 .p-rev, .p-parts, .p-nets { white-space: nowrap; }
 .p-state { display: grid; grid-template-columns: 8px auto minmax(0, 1fr); column-gap: 8px; align-items: center; white-space: nowrap; }
 .p-state .sd { color: var(--ink-2); }
