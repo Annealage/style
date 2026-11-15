@@ -785,10 +785,10 @@ body:not(.panel-open) .colgrip[data-grip=insp], .wb[data-layout=agent] .colgrip,
    in .tb-right, in the chat header or in the status bar. A square lamp and a word. */
 .conn { display: inline-flex; align-items: center; gap: 6px; padding: 0 8px; color: var(--ink-2); white-space: nowrap; }
 .conn::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 1px; background: var(--quench); }
-.conn:empty { display: none; }
+.conn:empty { display: none; } /* connecting, live and polling carry no label, so the pane shows nothing while it recovers */
 .conn[data-state=connecting]::before, .conn[data-state=idle]::before { background: none; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
 .conn[data-state=polling]::before { background: var(--warn); }
-.conn[data-state=refused]::before, .conn[data-state=reauth]::before, .conn[data-state=down]::before { background: var(--danger); }
+.conn[data-state=refused]::before, .conn[data-state=failed]::before, .conn[data-state=reauth]::before, .conn[data-state=down]::before { background: var(--danger); }
 
 /* --------------------------------------------------------------- view tabs */
 /* Plain text tabs with a temper underline on the current one, on the second
@@ -1155,9 +1155,9 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 
 /* ====================================================== the agent pane */
 /* annealage-ember's chat.js fills this scaffold (embed.py writes it):
-   <aside id="chat"><header> h1, #agentStatus.agentstatus, .working (.bar, "Working", b#chatWorkingTime),
+   <aside id="chat"><header> h1, #agentStatus.agentstatus (state, elapsed time and detail in one string), .working (.bar only),
      .spacer, #connIndicator.conn, [#sessionStart.hdrbtn.primary], details#chatMore.more > summary.hdrbtn + .menu </header>
-   #chatBanner.chatbanner, #chatLog, .side > [.chathint] #chatPending #chatComposer, #settingsModal.modal </aside>
+   [.subagents], #chatBanner.chatbanner, #chatLog, .side > #chatPending #chatComposer, #settingsModal.modal </aside>
    chat.js keeps data-working, data-turn-started and data-pending on #chat.
    The pane is a log, not a chat: no bubbles. The pending approval is the only
    bordered box in it. */
@@ -1177,12 +1177,14 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
   font: 600 var(--fs-ui)/1 var(--sans); color: var(--ink); text-transform: none; letter-spacing: normal;
 }
 /* chat.js inserts .chatwho and .chatusage before #agentStatus, so the order is
-   set here: name, who, status, then the connection and buttons at the right.
-   Working and usage wrap onto a second line of the header when they show. */
+   set here: name, who, status (which takes the spare width and truncates), then
+   the connection and buttons at the right. Usage wraps onto a second line of
+   the header when it shows. */
 #chat > header > *, .chead > * { order: 6; }
 #chat > header h1, .chead h1 { order: 0; }
 #chat .chatwho { order: 1; max-width: 12em; font-size: var(--fs-ui); color: var(--ink-2); }
-#chat > header .agentstatus { order: 2; }
+#chat > header .agentstatus, .chead .agentstatus { order: 2; flex: 1 1 0; min-width: 8em; }
+#chat > header .agentstatus ~ .spacer, .chead .agentstatus ~ .spacer { flex: 0 0 0; }
 #chat > header .spacer, .chead .spacer { order: 3; flex: 1; }
 #chat > header .conn { order: 4; padding: 0 4px; font-size: var(--fs-small); }
 #chat > header::after, .chead::after { content: ""; order: 7; flex-basis: 100%; height: 0; }
@@ -1205,21 +1207,28 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 #chat #chatComposerRow textarea { min-width: 0; }
 @media (max-width: 420px) { #chat > header .conn { font-size: 0; } }
 @media (max-width: 520px) { #chat > header .chatusage { order: 10; flex: 1 1 100%; justify-content: flex-start; margin-left: 0; padding-left: 0; } }
-/* The agent's state: a lamp and a word. .agentstatus[data-state=ready|idle|connecting|unavailable] */
+/* The agent's state: a lamp and one line of text, the state, its elapsed time
+   and what it is doing: "Working 4:12 · reviewing requirements", "Finished 10:36".
+   .agentstatus[data-state=starting|working|waiting|paused|idle|stopped]. The text
+   truncates with an ellipsis; chat.js writes it whole into the title. */
 .agentstatus {
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-block; min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis;
   padding: 0; border: 0; border-radius: 0; background: none;
-  font-size: var(--fs-small); font-weight: 400; color: var(--ink-2); white-space: nowrap;
+  font-size: var(--fs-small); font-weight: 400; font-variant-numeric: tabular-nums; color: var(--ink-2); white-space: nowrap;
 }
-.agentstatus::before { content: ""; width: 8px; height: 8px; border-radius: 1px; background: var(--ink-3); }
-.agentstatus[data-state=ready]::before { background: var(--quench); }
-.agentstatus[data-state=connecting]::before { background: none; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
-.agentstatus[data-state=unavailable] { color: var(--danger); }
-.agentstatus[data-state=unavailable]::before { background: var(--danger); }
-/* Working: a 2px temper line along the header's bottom edge, and the time. */
-.working { display: none; align-items: center; gap: 6px; height: 28px; margin-top: -4px; color: var(--ink-2); }
-#chat[data-working] .working, .console[data-working] .working { display: inline-flex; }
-.working b { font: 400 var(--fs-small)/1 var(--mono); color: var(--ink); }
+.agentstatus::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 6px; vertical-align: middle; border-radius: 1px; background: var(--ink-3); }
+.agentstatus[data-state=starting]::before { background: none; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.agentstatus[data-state=working] { color: var(--ink); }
+.agentstatus[data-state=working]::before { background: var(--temper-text); animation: pline-breathe 1.6s ease-in-out infinite alternate; }
+.agentstatus[data-state=waiting] { font-weight: 600; color: var(--ink); }
+.agentstatus[data-state=waiting]::before { background: var(--ink); }
+.agentstatus[data-state=paused]::before { background: var(--warn); }
+.agentstatus[data-state=stopped] { color: var(--danger); }
+.agentstatus[data-state=stopped]::before { background: var(--danger); }
+/* Working: a 2px temper line along the header's bottom edge, and nothing else;
+   the elapsed time is in .agentstatus. <span class="working" aria-hidden="true"><span class="bar"></span></span> */
+.working { display: none; }
+#chat[data-working] .working, .console[data-working] .working { display: contents; }
 .working .bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--temper-text); animation: pline-breathe 1.6s ease-in-out infinite alternate; }
 /* A small text button in a pane header: <button class="hdrbtn">Export</button>, .primary for Start session. */
 .hdrbtn, #chat .hdrbtn {
@@ -1258,6 +1267,39 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 #chat .chatbannerdetail summary { display: flex; align-items: center; height: 24px; list-style: none; font-size: var(--fs-small); color: var(--ink-2); opacity: 1; }
 #chat .chatbannerdetail summary::-webkit-details-marker { display: none; }
 #chat .chatbannerdetail pre { margin: 2px 0 0; max-height: 12em; overflow: auto; padding: 6px 8px; border-radius: var(--r-xs); background: var(--field); color: var(--ink); font: 400 11.5px/18px var(--mono); white-space: pre-wrap; word-break: break-word; }
+/* The fix for a failure, a text button on its own row under the message:
+   <button class="action" type="button">Sign in</button>. chat.js dispatches ember:failure-action from it. */
+#chat .chatbanner > button.action {
+  grid-column: 2 / -1; justify-self: start; width: auto; height: var(--ctl-sm); padding: 0 10px; margin-top: 2px;
+  border: 1px solid var(--rule-strong); border-radius: var(--r); background: none;
+  font: 500 var(--fs-small)/1 var(--sans); color: var(--ink); white-space: nowrap; cursor: pointer;
+}
+#chat .chatbanner > button.action:hover { background: var(--hover); color: var(--ink); }
+
+/* The subagents panel, a boxed list between the pane header and the feed. It is
+   drawn only while a run has subagents (the page sets hidden otherwise).
+   <section class="subagents" aria-label="Subagents"><h2>Subagents</h2><ul>
+     <li><button type="button" class="subagent" data-state="running"><span class="sname">Requirements reviewer</span><span class="sstate">Running since 10:31</span></button></li></ul></section>
+   data-state=queued|running|approved|rejected|cancelled|stopped: queued hollow, running the
+   temper line breathing, approved quench, rejected warn, cancelled neutral, stopped danger.
+   The state text carries the times and the verdict, "Finished 10:34: rejected, 6 findings". */
+.subagents { flex: none; max-height: 30%; overflow-y: auto; margin: 8px 12px 0; padding: 4px 0; border: 1px solid var(--rule-strong); border-radius: var(--r); background: var(--field); scrollbar-width: thin; }
+.subagents[hidden] { display: none; }
+.subagents > h2 { margin: 0; padding: 4px 12px 2px; font: 600 var(--fs-small)/16px var(--sans); text-transform: none; letter-spacing: normal; color: var(--ink-2); }
+.subagents > ul { margin: 0; padding: 0; list-style: none; }
+.subagents .subagent {
+  display: block; width: 100%; min-height: var(--ctl); padding: 5px 12px; border: 0; border-radius: 0; background: none;
+  text-align: left; font: 400 var(--fs-ui)/var(--lh-ui) var(--sans); color: var(--ink); cursor: pointer;
+}
+.subagents .subagent:hover { background: var(--hover); }
+.subagents .sname { display: block; font-weight: 500; overflow-wrap: anywhere; }
+.subagents .sstate { display: block; font-size: var(--fs-small); line-height: 16px; color: var(--ink-2); overflow-wrap: anywhere; }
+.subagents .sstate::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 6px; vertical-align: middle; border-radius: 1px; background: var(--ink-3); }
+.subagents .subagent[data-state=queued] .sstate::before { background: none; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.subagents .subagent[data-state=running] .sstate::before { background: var(--temper-text); animation: pline-breathe 1.6s ease-in-out infinite alternate; }
+.subagents .subagent[data-state=approved] .sstate::before { background: var(--quench); }
+.subagents .subagent[data-state=rejected] .sstate::before { background: var(--warn); }
+.subagents .subagent[data-state=stopped] .sstate::before { background: var(--danger); }
 
 /* The log. Your messages sit on a faint row under your name (a page with a
    signed-in name sets --chat-you: "andrew"); the agent's text is plain; a
@@ -1278,6 +1320,17 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 #chatLog .msg.user { align-self: auto; padding: 8px 16px 10px; background: var(--hover); white-space: pre-wrap; word-break: break-word; }
 #chatLog .msg.user::before { content: var(--chat-you, "You"); display: block; margin-bottom: 2px; font: 500 var(--fs-small)/16px var(--sans); color: var(--ink-2); }
 #chatLog .msg.user .author { margin-bottom: 2px; font-size: var(--fs-small); font-weight: 400; color: var(--ink-2); opacity: 1; }
+/* A message not yet confirmed by the server, drawn at the end of the feed from the
+   moment of sending: <div class="msg user sending"><div class="text">…</div><div class="sendmark">Sending</div></div>.
+   A refused or failed one is .notsent, its mark reading "Not sent" with a Retry button:
+   <div class="sendmark">Not sent <button class="retry" type="button">Retry</button></div> */
+#chatLog .msg.user .sendmark { margin-top: 2px; font-size: var(--fs-small); line-height: 16px; color: var(--ink-2); white-space: normal; }
+#chatLog .msg.user.notsent .sendmark { color: var(--danger); }
+#chatLog .msg.user .sendmark .retry {
+  display: inline; height: auto; min-height: 0; padding: 0; margin-left: 6px; border: 0; background: none;
+  font: 500 var(--fs-small)/16px var(--sans); color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; cursor: pointer;
+}
+#chatLog .msg.user .sendmark .retry:hover { text-decoration-color: var(--ink); }
 #chatLog .msg.assistant { padding: 10px 16px 6px; }
 #chatLog .segments > * + * { margin-top: 6px; }
 #chatLog .msg .text { word-break: break-word; }
@@ -1353,9 +1406,8 @@ table.props td { padding: 3px 0; font: 400 var(--fs-small)/var(--lh-ui) var(--mo
 #chatLog .msg.action[data-outcome=denied] .actionhead::before { background: none; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
 #chatLog .msg.action pre.toolresult { margin: 4px -16px 0; padding: 6px 16px; border-block: 1px solid var(--rule); }
 
-/* Under the log: the hint, the pending approval, the composer. */
+/* Under the log: the pending approval, the composer. */
 .side { display: flex; flex-direction: column; flex: none; min-width: 0; min-height: 0; max-height: 70%; }
-#chat .chathint { flex: none; padding: 6px 16px 2px; font-size: var(--fs-small); line-height: 17px; color: var(--ink-3); }
 #chatPending { flex: 0 1 auto; min-height: 0; max-height: none; overflow-y: auto; padding: 6px 12px 4px; }
 #chatPending:empty { display: none; padding: 0; }
 /* The approval: the one thing waiting on the human, so the one bordered box.

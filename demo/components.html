@@ -293,7 +293,7 @@
     <h3>Coverage <code>details.sec.cov</code><code>.covcounts .covlist .covhead</code></h3>
     <div class="spec-pane"><details class="sec cov" open><summary><svg class="ico ico--sm"><use href="../icons.svg#i-chev"/></svg>Power <span class="covcounts"><span>2 checked</span><span class="ne">1 no evidence</span></span></summary><div class="secbody"><div class="covhead">Quick</div><ul class="covlist"><li class="ck">Rail voltages against absolute maximums</li><li class="ne">Inrush on VBUS</li><li class="nc">Sequencing (not checked in Quick)</li></ul></div></details></div>
     <h3>Run console <code>section.console</code><code>.chead .cbody ol.steps li.step[data-state] pre.log</code></h3>
-    <div class="spec-pane wide"><section class="console" data-working><header class="chead"><h1>Review</h1><span>Quick</span><span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b>6:04</b></span><span class="spacer"></span><button class="hdrbtn" type="button">Stop</button></header>
+    <div class="spec-pane wide"><section class="console" data-working><header class="chead"><h1>Review</h1><span>Quick</span><span class="agentstatus" data-state="working">Working 6:04</span><span class="working" aria-hidden="true"><span class="bar"></span></span><span class="spacer"></span><button class="hdrbtn" type="button">Stop</button></header>
       <div class="cbody"><ol class="steps"><li class="step" data-state="done"><span class="name">Read the design</span><span class="meta">0:21</span></li><li class="step" data-state="running"><span class="name">Quick review</span><span class="meta">4:52</span></li><li><ol><li class="step" data-state="done"><span class="name">Power</span><span class="meta">3</span></li><li class="step" data-state="queued"><span class="name">Flash and boot</span></li></ol></li><li class="step" data-state="waiting"><span class="name">Verify findings</span><span class="meta">3 waiting</span></li><li class="step" data-state="failed"><span class="name">Export report</span><span class="meta">failed</span></li><li class="step" data-state="skipped"><span class="name">Detailed review</span><span class="meta">not selected</span></li><li class="step" data-state="cancelled"><span class="name">Verify findings</span><span class="meta">Stopped</span></li></ol>
       <pre class="log"><b>14:26:02</b> quick: power done, 3 candidate findings
 <span class="warn">14:28:11 quick: ABM8-272-T3 has no confirmed datasheet</span>
@@ -307,11 +307,20 @@
   <div class="spec-grid">
     <h3>Pane <code>#chat</code><code>header, .chatbanner, #chatLog, .side</code></h3>
     <div class="spec-pane wide"><aside id="chat" aria-label="Agent" data-pending="2" data-working data-turn-started="0">
-      <header><h1>Agent</h1><span class="chatwho">andrew@example.com</span><span class="chatusage"><span class="readout" data-usage="context"><span class="val">22%</span><span class="lg">context</span></span><span class="readout" data-usage="cost"><span class="val">$0.41</span><span class="lg">cost</span></span></span><span id="agentStatus" class="agentstatus" data-state="ready">Ready</span>
-        <span class="working" role="status"><span class="bar" aria-hidden="true"></span>Working <b id="chatWorkingTime">1:12</b></span><span class="spacer"></span><span id="connIndicator" class="conn" data-state="polling">Polling</span>
+      <header><h1>Agent</h1><span class="chatwho">andrew@example.com</span><span class="chatusage"><span class="readout" data-usage="context"><span class="val">22%</span><span class="lg">context</span></span><span class="readout" data-usage="cost"><span class="val">$0.41</span><span class="lg">cost</span></span></span><span id="agentStatus" class="agentstatus" data-state="working">Working 1:12 · reviewing requirements</span>
+        <span class="working" aria-hidden="true"><span class="bar"></span></span><span class="spacer"></span><span id="connIndicator" class="conn" data-state="polling"></span>
         <details id="chatMore" class="more"><summary class="hdrbtn">More</summary><div class="menu"><button type="button" class="hdrbtn" aria-pressed="false"><span data-label>Pause</span></button><button type="button" class="hdrbtn">Settings</button><button type="button" class="hdrbtn" disabled>Export</button></div></details></header>
+      <section class="subagents" aria-label="Subagents"><h2>Subagents</h2><ul>
+        <li><button type="button" class="subagent" data-state="running"><span class="sname">Requirements reviewer</span><span class="sstate">Running since 10:31</span></button></li>
+        <li><button type="button" class="subagent" data-state="rejected"><span class="sname">Power reviewer</span><span class="sstate">Finished 10:34: rejected, 6 findings</span></button></li>
+        <li><button type="button" class="subagent" data-state="approved"><span class="sname">CAN sheet reviewer</span><span class="sstate">Finished 10:34: approved</span></button></li>
+        <li><button type="button" class="subagent" data-state="cancelled"><span class="sname">Layout reviewer</span><span class="sstate">Cancelled 10:35: the files it was reviewing changed</span></button></li>
+        <li><button type="button" class="subagent" data-state="stopped"><span class="sname">Clock specialist</span><span class="sstate">Stopped 10:36: the agent stopped</span></button></li>
+        <li><button type="button" class="subagent" data-state="queued"><span class="sname">Connector specialist</span><span class="sstate">Queued</span></button></li>
+      </ul></section>
       <div id="chatBanner" class="chatbanner" data-kind="error"><span id="chatBannerText">The agent stopped: omp exited with status 1.</span><button id="chatBannerClose" type="button" aria-label="Dismiss">&times;</button><details class="chatbannerdetail" open><summary>What the agent backend said</summary><pre>Traceback (most recent call last):
   File "omp/session.py", line 212, in run</pre></details></div>
+      <div class="chatbanner" data-kind="error"><span>You're signed out.</span><button type="button" aria-label="Dismiss">&times;</button><button type="button" class="action">Sign in</button></div>
       <div class="chatbanner" data-kind="reset"><span>The conversation was reset because the context was full.</span><button type="button" aria-label="Dismiss">&times;</button></div>
       <div class="chatbanner" data-kind="info"><span>No session yet. Start one to let the agent work on this project.</span><button type="button" aria-label="Dismiss">&times;</button></div>
       <div class="chatbanner" data-kind="attention"><span>Sign in again to keep this session.</span><button type="button" aria-label="Dismiss">&times;</button></div>
@@ -336,9 +345,10 @@ U10["VIO"] += V3V3</code></pre>The MCP2515 stays on 5 V.</div>
         <div class="msg action" data-outcome="done"><div class="actionhead">Used thermal-budget.pdf as a private resource</div></div>
         <div class="msg action" data-outcome="failed"><div class="actionhead">Could not read bom.pdf</div><pre class="toolresult">The PDF has no text layer.</pre></div>
         <div class="msg action" data-outcome="denied"><div class="actionhead">Upload of notes.pdf was denied</div></div>
+        <div class="msg user sending"><div class="text">Check the clock tree against the datasheet too.</div><div class="sendmark">Sending</div></div>
+        <div class="msg user notsent"><div class="text">Then re-run the ERC.</div><div class="sendmark">Not sent <button type="button" class="retry">Retry</button></div></div>
       </div>
       <div class="side">
-        <div class="chathint">Approval cards appear here for actions outside this project folder, over the network, or that write files.</div>
         <div id="chatPending">
           <div class="permcard" data-request-id="r1"><div class="porigin">You asked for this from the Datasheets page.</div><div class="ptool">loom: resolve_comment</div><pre class="toolinput">id: 3
 resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre><div class="pactions"><button type="button" class="allow">Allow</button><button type="button">Always allow (this project)</button><textarea class="preason" rows="1" placeholder="Reason (sent to the agent if you deny)"></textarea><button type="button" class="danger">Deny</button></div><div class="pstatus"></div></div>
@@ -363,7 +373,7 @@ resolution: CANH and CANL net labels are at J7 pins 1 and 2.</pre><div class="pa
       </div>
     </aside></div>
     <h3>Status <code>.agentstatus[data-state]</code></h3>
-    <div class="spec-row" id="spec-status"><span class="agentstatus spec-as" data-state="ready">Ready</span><span class="agentstatus spec-as" data-state="idle">Idle</span><span class="agentstatus spec-as" data-state="connecting">Connecting…</span><span class="agentstatus spec-as" data-state="unavailable">Unavailable</span><span class="hint">Send reads Send, Queue or Steer; a dropped file outlines the pane (#chat.dragover).</span></div>
+    <div class="spec-row" id="spec-status"><span class="agentstatus spec-as" data-state="starting">Starting</span><span class="agentstatus spec-as" data-state="working">Working 4:12 · reviewing requirements</span><span class="agentstatus spec-as" data-state="waiting">Waiting for you</span><span class="agentstatus spec-as" data-state="paused">Paused</span><span class="agentstatus spec-as" data-state="idle">Finished 10:36</span><span class="agentstatus spec-as" data-state="stopped">Stopped 10:36: the agent exited</span><span class="hint">Send reads Send, Queue or Steer; a dropped file outlines the pane (#chat.dragover).</span></div>
   </div>
 </section>
 

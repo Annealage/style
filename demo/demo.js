@@ -41,10 +41,10 @@ if (product === "canvas") document.querySelector(".wb")?.setAttribute("data-insp
 if (q.get("agent") === "viewer-only") {
   const why = "This server runs viewer-only, with no agent, so there is nothing to send a message to.";
   for (const el of $$("#chatInput, #chatAttachBtn, #chatSend, #chatModelInput, #chatInterrupt")) { el.disabled = true; el.title = why; }
-  for (const el of $$("#agentStatus")) { el.dataset.state = "unavailable"; el.textContent = "Viewer only"; }
+  for (const el of $$("#agentStatus")) { el.dataset.state = "idle"; el.textContent = "Viewer only"; }
   // No agent, so no conversation, usage or approvals.
   for (const el of $$("#chatLog, #chatPending")) el.replaceChildren();
-  for (const el of $$("#chat .chatusage, #chat .chathint, .statusbar .alert")) el.hidden = true;
+  for (const el of $$("#chat .chatusage, .statusbar .alert")) el.hidden = true;
   for (const el of $$("#chat")) el.dataset.pending = "0";
   for (const span of $$(".statusbar > span")) if (span.firstChild?.textContent.startsWith("Agent")) span.querySelector("b").textContent = "Viewer only";
 }

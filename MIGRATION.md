@@ -88,7 +88,7 @@ status  status  status  status         24px
 - **`.subtabs`** are small text on the well with a temper underline. Cursor and zoom readouts can sit in a `.right` group inside it.
 - **`.hud`** has no plate behind it; it is second-level ink straight on the well. New corners: `.hud--tr`, `.hud--br`.
 - **Layout focus** is new: `data-layout="drawing|split|agent"` on `.wb`, driven by a three-icon `.seg` in the title bar.
-- **`#chat`** is a flex column: header, banner, log, then `.side` (hint, pending approval, composer) at the bottom. `.side` used to be a right-hand column of the docked console.
+- **`#chat`** is a flex column: header, banner, log, then `.side` (pending approval, composer) at the bottom. `.side` used to be a right-hand column of the docked console.
 - **`.console`** (Trace's run) takes the same column; `.cbody` stacks the steps over the log.
 - **The status bar** has gaps between items, no divider lines. Wrap a label in `.k` and a value in `<b>`.
 - **Phone** (900px and below) is as before: one pane at a time from `#tabbar`, now through `frame.js` (annealage-ember's `layout.js` is gone; the tab bar is `role="tablist"` with `aria-selected` tabs, each `button[data-tab][data-target]`). `frame.js` also drives the layout focus and the Panel button. A `.vhead` that is a child of `.wb` hides with the view.
@@ -159,7 +159,8 @@ Same name, but check the markup or the product's overrides:
 | `.permcard` | Still the bordered box. Its "Approval needed" heading and the Tool and Input labels are drawn by the theme. |
 | `.msg` | No name gutter. Your messages sit on a faint row under `--chat-you`; the agent's text has no label. |
 | `.toolcard` | A mono line with a chevron; no left rule. Its input and result have Input and Result labels drawn by the theme. |
-| `.working .bar` | The 2px temper line along the pane header's bottom edge, not a 56px bar. |
+| `.working .bar` | The 2px temper line along the pane header's bottom edge, not a 56px bar. `.working` holds only the bar now: its "Working" text and `#chatWorkingTime` are gone, and the elapsed time is inside `#agentStatus`. |
+| `.agentstatus` | One line: lamp, state, elapsed time and detail (`Working 4:12 · reviewing requirements`). States are `starting`, `working`, `waiting`, `paused`, `idle`, `stopped`; `ready`, `connecting` and `unavailable` are gone. |
 
 Removed:
 
