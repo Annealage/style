@@ -842,3 +842,42 @@ test("a page with no split or left inspector writes and reports what it did befo
   assert.equal("split" in p.events.at(-1), false);
   assert.equal(p.root.querySelector("[data-grip=split]"), null);
 });
+
+test("floating messages: the view column's edges and the error line's stack are mirrored onto <html>", () => {
+  const p = page({ wide: 1600 });
+  p.els.html.clientWidth = 1600;
+  p.els.view.rect = { left: 48, right: 900, top: 76, width: 852, height: 900 };
+  const err = new El(p.doc, "div");
+  err.setAttribute("id", "err");
+  p.els.body.appendChild(err);
+  const f = p.init();
+  const css = (k) => p.els.html.style.getPropertyValue(k);
+  assert.equal(css("--view-l"), "48px");
+  assert.equal(css("--view-r"), "700px");
+  assert.equal(css("--err-stack"), "0px");
+  err.offsetHeight = 34;
+  p.els.set_drawing.click();
+  assert.equal(css("--err-stack"), "42px");
+  // The Agent layout hides the view: no edges, so the theme falls back to the window.
+  p.els.view.rect = { left: 0, top: 0, width: 0, height: 0 };
+  p.els.set_agent.click();
+  assert.equal(css("--view-l"), "");
+  assert.equal(css("--view-r"), "");
+  // One pane at a time: no edges either, whatever the view measures.
+  p.els.view.rect = { left: 0, top: 76, width: 400, height: 700 };
+  p.setNarrow(true);
+  assert.equal(css("--view-l"), "");
+  f.destroy();
+  assert.equal(css("--err-stack"), "");
+});
+
+test("floating messages: a page with no view, no error line or no <html> style is left alone", () => {
+  const p = page({ wide: 1600 });
+  p.els.view.remove();
+  p.init();
+  assert.equal(p.els.html.style.getPropertyValue("--view-l"), "");
+  assert.equal(p.els.html.style.getPropertyValue("--err-stack"), "0px");
+  const q = page({ wide: 1600 });
+  q.els.html.style = undefined;
+  assert.doesNotThrow(() => q.init());
+});

@@ -186,6 +186,18 @@ export const SHOTS_REFERENCE = [
   wb('mesh', 'light'), wb('mesh', 'dark'),
   // A viewer-only run (no agent): the composer, Attach and the model field are disabled, each with its reason.
   ...['light', 'dark'].map((s) => ref(`workbench-mesh-vieweronly-${s}`, `workbench.html?product=mesh&theme=${s}&agent=viewer-only`, s, 1600, 1000, 'workbench')),
+  // The toast (?toast=ok|err) and the error line (?err=1) over a workbench: both hang at the top, the toast under the error line, clear of the
+  // inspector's footer, the composer and the view's bottom controls; above 900px centred over the view column, in the Agent layout over the window.
+  ...['light', 'dark'].flatMap((s) => [
+    ref(`workbench-mesh-toast-${s}`, `workbench.html?product=mesh&theme=${s}&toast=err`, s, 1600, 1000, 'workbench'),
+    ref(`workbench-mesh-toast-ok-${s}`, `workbench.html?product=mesh&theme=${s}&toast=ok&err=1`, s, 1600, 1000, 'workbench'),
+    ref(`workbench-loom-toast-${s}`, `workbench.html?product=loom&theme=${s}&toast=err`, s, 1600, 1000, 'workbench'),
+    ref(`workbench-mesh-toast-agent-${s}`, `workbench.html?product=mesh&theme=${s}&toast=err&err=1`, s, 1600, 1000, 'workbench', { state: click('[data-layout-set="agent"]'), conform: { reason: 'layout focus "agent" gives the agent column the whole window and collapses the rail, the view and the inspector', expect: { '.wb': { gridTemplateColumns: ['0px', '0px', '0px', null] } } } }),
+    ref(`workbench-mesh-toast-drawing-${s}`, `workbench.html?product=mesh&theme=${s}&toast=err`, s, 1600, 1000, 'workbench', { state: click('[data-layout-set="drawing"]'), conform: { reason: 'layout focus "drawing" closes the agent column', expect: { '.wb': { gridTemplateColumns: ['40px', null, '300px', '0px'] } } } }),
+    ref(`workbench-mesh-toast-panel-closed-${s}`, `workbench.html?product=mesh&theme=${s}&toast=err`, s, 1600, 1000, 'workbench', { state: click('#panelBtn'), conform: { reason: 'the Panel button closes the inspector column', expect: { '.wb': { gridTemplateColumns: ['40px', null, '0px', '400px'] } } } }),
+    ref(`workbench-mesh-phone-toast-agent-${s}`, `workbench.html?product=mesh&theme=${s}&toast=err&err=1`, s, 400, 860, 'workbench', { state: click('#tabbar [data-tab="agent"]'), conform: PHONE_TAB }),
+    ref(`workbench-mesh-phone-toast-review-${s}`, `workbench.html?product=mesh&theme=${s}&toast=err`, s, 400, 860, 'workbench', { state: click('#tabbar [data-tab="review"]'), conform: PHONE_TAB }),
+  ]),
   // A title bar without .cmd keeps its right controls at the right edge (?cmd=none removes the field).
   ref('workbench-nocmd-light', 'workbench.html?product=loom&theme=light&cmd=none', 'light', 1600, 1000, 'workbench'),
   ref('workbench-nocmd-dark', 'workbench.html?product=loom&theme=dark&cmd=none', 'dark', 1600, 1000, 'workbench'),

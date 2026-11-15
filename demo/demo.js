@@ -164,6 +164,15 @@ const wb = document.querySelector(".wb");
 if (wb && q.get("preview")) wb.dataset.preview = "";
 // ?cmd=none: a title bar without the command field (its right-hand controls stay at the right edge).
 if (q.get("cmd") === "none") document.querySelector(".titlebar > .cmd")?.remove();
+// ?toast=ok|err shows the floating toast and ?err=1 the error line over any workbench (#toast and #err are
+// outside .wb, as a product's ui.js writes them); both together show them stacked.
+const floating = (id, role) => document.getElementById(id) || body.appendChild(Object.assign(document.createElement("div"), { id, role }));
+if (q.get("toast") === "ok" || q.get("toast") === "err") {
+  const toast = floating("toast", "status");
+  toast.className = q.get("toast");
+  toast.textContent = q.get("toast") === "ok" ? "Submitted 2 pins" : "Could not submit: sign in again";
+}
+if (q.get("err") === "1") floating("err", "alert").textContent = "Couldn't pause the agent. The harness answered with an error.";
 for (const box of $$("[data-indeterminate]")) box.indeterminate = true;
 for (const s of $$(".swatch[data-c]")) s.style.background = s.dataset.c;
 
