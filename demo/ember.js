@@ -1,5 +1,5 @@
 // The ember reference page's switches: #rename shows the error once, as the toast, #project shows an ok toast, the dialog and the
-// settings window have neither; ?ember=0 removes ember's own two stylesheets
+// settings window have neither; ?ember=0 removes ember's own stylesheet
 // to show the page as it reads once ember has none (demo.js sets the route).
 const q = new URLSearchParams(location.search);
 if (q.get("ember") === "0") for (const link of document.querySelectorAll("link[data-ember]")) link.remove();

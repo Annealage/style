@@ -14,7 +14,6 @@ Settled rule 6:
 | 2 | `tokens.css` | Now holds the `@font-face` rules. |
 | 3 | ember `agent.css` | Only on a page with the agent pane. Trace and the hosted pages link none. |
 | 3a | ember `agent-page.css` | Only the chat-only page `render_agent_page` builds (Canvas's `/chat`), after `agent.css`: the page shell, no paint. |
-| 3b | ember `project.css` | Has no rules; the theme draws the project views. |
 | 4 | `theme.css` | |
 | 5 | `pages.css` | Only a page outside the workbench frame, and a workbench whose views use `.card` (Trace). |
 | 6 | the viewer's `board.css` | Loom links it after the theme; it holds only what the theme lacks. |

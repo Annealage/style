@@ -1690,7 +1690,7 @@ ol.src > li::before { content: counter(line); text-align: right; color: var(--in
 /* annealage-ember's project.js builds the title bar's project name and Rename,
    the History pane, the "Send to" lineage bar, the project list and the
    confirming dialog out of pj-* classes. They are drawn here, from the page's
-   own tokens, with no --pj-* variable; ember's project.css has no rules.
+   own tokens, with no --pj-* variable; ember ships no stylesheet for them.
    .pj-btn is a text button (.btn), .pj-menu the menu, .pj-dialog the settings
    window's dialog. Rows are hairlines; only the dialog, the menu and inputs
    have an edge.
