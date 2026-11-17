@@ -379,6 +379,10 @@ a.state:hover { text-decoration-color: var(--ink); }
 /* A menu opened where the pointer is (a right-click): no .menuwrap, the product sets
    left and top from script, and it shows while it is in the page. <span class="menu at" role="menu"> */
 .menu.at { position: fixed; top: auto; right: auto; display: block; }
+/* The shared controller keeps a long menu inside the viewport and above app UI. */
+.menu.at.context-menu { z-index: 2147483647; max-width: calc(100vw - 8px); max-height: calc(100vh - 8px); overflow: auto; }
+.context-menu button { min-width: 0; height: auto; min-height: var(--ctl); padding-block: 6px; white-space: normal; overflow-wrap: anywhere; }
+.context-menu button:focus-visible { background: var(--hover); outline: 2px solid var(--focus); outline-offset: -2px; }
 .menu .menu-note { display: block; padding: 6px 8px 4px; color: var(--ink-3); font-size: var(--fs-small); }
 /* A menu that asks for a name (Rename, New file): the item's menu turns into a
    field and its actions, in the same box.

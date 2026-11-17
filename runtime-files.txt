@@ -9,3 +9,4 @@ palette.js
 fonts
 marks
 confirm.js
+context-menu.js
