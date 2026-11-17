@@ -36,19 +36,25 @@ class EventTarget {
     const path = [];
     for (let node = this; node; node = node.parentNode) path.push(node);
     event.path = path;
+    const shadow = path.findIndex(node => node.nodeType === 11);
     const invoke = (node, capture) => {
+      event.target = shadow >= 0 && path.indexOf(node) > shadow ? path[shadow + 1] : this;
       for (const l of [...(node.listeners.get(event.type) || [])]) {
         if (l.capture !== capture) continue;
         l.fn(event);
         if (event.immediate) break;
       }
     };
-    for (const node of [...path].reverse()) { invoke(node, true); if (event.stopped) return !event.defaultPrevented; }
-    for (const node of path) {
-      invoke(node, false);
-      if (event.stopped || !event.bubbles) break;
+    try {
+      for (const node of [...path].reverse()) { invoke(node, true); if (event.stopped) return !event.defaultPrevented; }
+      for (const node of path) {
+        invoke(node, false);
+        if (event.stopped || !event.bubbles) break;
+      }
+      return !event.defaultPrevented;
+    } finally {
+      event.path = [];
     }
-    return !event.defaultPrevented;
   }
 }
 
@@ -106,7 +112,7 @@ function page(fallback) {
     navigator: { clipboard: { writeText: async value => { win.copied = value; } } },
     location: { href: 'https://example.test/page', reload() {} },
     getSelection: () => ({ toString: () => '', rangeCount: 0 }),
-    Event: FakeEvent, PointerEvent: FakeEvent,
+    Event: FakeEvent, PointerEvent: FakeEvent, CustomEvent: FakeEvent,
     setTimeout: fn => { const id = ++nextTimer; timers.set(id, fn); return id; },
     clearTimeout: id => timers.delete(id),
   });
@@ -334,28 +340,102 @@ test('a second touch cancels a pending long press', () => {
   p.controller.destroy();
 });
 
-test('only scrolling the anchor or its ancestors dismisses the menu or pending touch', () => {
+test('programmatic chat scrolling keeps actions usable; user scroll dismisses only affected menus', async () => {
   const p = page();
-  const sheet = p.el('div');
-  const target = p.el('button', sheet);
   const chat = p.el('div');
+  const target = p.el('button', chat);
+  const other = p.el('div');
+  let runs = 0;
+  p.controller.register(target, () => ({ items: [action('reply', 'Reply', () => runs++)] }));
   p.fire(target, 'contextmenu', { clientX: 10, clientY: 10 });
   const menu = p.menu();
+  target.rect = { left: 10, top: -80, width: 100, height: 40 };
   p.fire(chat, 'scroll');
   assert.equal(p.menu(), menu);
-  p.fire(menu, 'scroll');
+  p.fire(other, 'wheel');
+  p.fire(other, 'scroll');
   assert.equal(p.menu(), menu);
-  p.fire(sheet, 'scroll');
+  p.fire(items(menu)[0], 'click');
+  await Promise.resolve();
+  assert.equal(runs, 1);
   assert.equal(p.menu(), null);
-  p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 1 });
+  p.fire(target, 'contextmenu', { clientX: 10, clientY: 10 });
+  p.fire(target, 'wheel');
   p.fire(chat, 'scroll');
-  p.advanceTimers();
-  assert.ok(p.menu());
-  p.fire(sheet, 'scroll');
+  assert.equal(p.menu(), null);
   p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 2 });
-  p.fire(sheet, 'scroll');
+  p.fire(chat, 'scroll');
   p.advanceTimers();
   assert.equal(p.menu(), null);
+  p.controller.destroy();
+});
+
+test('long press retains the original shadow target and provider path after dispatch', () => {
+  const p = page();
+  const host = p.el('div');
+  const shadow = p.doc.createElement('shadow-root');
+  shadow.nodeType = 11;
+  shadow.parentNode = host;
+  const target = p.el('button', shadow);
+  let seen;
+  p.controller.register(shadow, context => { seen = context; return { items: [action('shadow', 'Shadow action')] }; });
+  const event = p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 7, clientX: 25, clientY: 30 });
+  assert.deepEqual(event.composedPath(), []);
+  p.advanceTimers();
+  assert.equal(seen.target, target);
+  assert.ok(seen.path.includes(shadow));
+  assert.equal(items(p.menu())[0].textContent, 'Shadow action');
+  p.controller.destroy();
+});
+
+test('closing notifies the original target after focus restoration or external dismissal', () => {
+  const p = page();
+  const target = p.el('input');
+  const notices = [];
+  target.addEventListener('context-menu-close', event => notices.push({ restored: event.detail.restoredFocus, active: p.doc.activeElement }));
+  target.focus();
+  p.fire(target, 'contextmenu', { clientX: 10, clientY: 10 });
+  p.fire(items(p.menu())[0], 'keydown', { key: 'Escape' });
+  assert.deepEqual(notices[0], { restored: true, active: target });
+  p.fire(target, 'contextmenu', { clientX: 10, clientY: 10 });
+  p.fire(p.win, 'blur');
+  assert.equal(notices[1].restored, false);
+  p.controller.destroy();
+});
+
+test('pointer dismissal restores the original field before notifying, but not on an outside click', () => {
+  const p = page();
+  const target = p.el('input');
+  const outside = p.el('button');
+  const notices = [];
+  target.addEventListener('context-menu-close', event => notices.push({ restored: event.detail.restoredFocus, active: p.doc.activeElement }));
+  target.focus();
+  p.fire(target, 'contextmenu', { clientX: 10, clientY: 10 });
+  p.fire(target, 'pointerdown', { pointerType: 'mouse' });
+  assert.equal(p.menu(), null);
+  assert.deepEqual(notices[0], { restored: true, active: target });
+  p.fire(target, 'contextmenu', { clientX: 10, clientY: 10 });
+  p.fire(outside, 'pointerdown', { pointerType: 'mouse' });
+  assert.equal(p.menu(), null);
+  assert.equal(notices[1].restored, false);
+  p.controller.destroy();
+});
+
+test('dismissal reports focus returned by an action and notifies a detached target', async () => {
+  const p = page();
+  const target = p.el('input');
+  const notices = [];
+  target.addEventListener('context-menu-close', event => notices.push(event.detail.restoredFocus));
+  p.controller.register(target, () => ({ items: [action('edit', 'Edit', () => target.focus())] }));
+  target.focus();
+  p.fire(target, 'contextmenu', { clientX: 10, clientY: 10 });
+  p.fire(items(p.menu())[0], 'click');
+  await Promise.resolve();
+  assert.deepEqual(notices, [true]);
+  p.fire(target, 'contextmenu', { clientX: 10, clientY: 10 });
+  target.remove();
+  p.fire(p.win, 'blur');
+  assert.deepEqual(notices, [true, false]);
   p.controller.destroy();
 });
 

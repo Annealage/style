@@ -10,19 +10,25 @@ export function createContextMenu({ document: doc, fallback } = {}) {
   let anchor = null;
   let touch = null;
   let suppress = null;
+  let scrollIntent = null;
   let keyboardAt = 0;
 
   function listen(target, type, handler, options) {
     target.addEventListener(type, handler, options);
     listeners.push(() => target.removeEventListener(type, handler, options));
   }
-  function close(restore = false) {
+  function close(restore = false, focusLost = false) {
     if (!menu) return;
+    const target = anchor.target;
     menu.remove();
     menu = null;
     anchor = null;
     if (restore && returnFocus?.isConnected) returnFocus.focus({ preventScroll: true });
+    const restoredFocus = !!(!focusLost && returnFocus?.isConnected && doc.activeElement === returnFocus);
     returnFocus = null;
+    target.dispatchEvent(new win.CustomEvent('context-menu-close', {
+      bubbles: true, composed: true, detail: { restoredFocus },
+    }));
   }
   function cancelTouch() {
     if (touch) win.clearTimeout(touch.timer);
@@ -92,7 +98,8 @@ export function createContextMenu({ document: doc, fallback } = {}) {
   }
   function open(context) {
     close();
-    const path = context.event.composedPath?.() || [];
+    scrollIntent = null;
+    const path = context.path;
     const roots = [...providers.keys()].filter(root => path.includes(root) || root === context.target || root.contains?.(context.target));
     roots.sort((a, b) => a === b ? 0 : a.contains?.(b) ? 1 : b.contains?.(a) ? -1 : path.indexOf(a) - path.indexOf(b));
     let primary = null;
@@ -113,7 +120,7 @@ export function createContextMenu({ document: doc, fallback } = {}) {
       return true;
     })).filter(items => items.length);
     if (!sections.length) return;
-    anchor = context.target;
+    anchor = context;
     returnFocus = doc.activeElement;
     menu = doc.createElement('div');
     menu.className = 'menu at context-menu';
@@ -164,17 +171,16 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     const node = event.composedPath?.()[0] || event.target;
     return node?.nodeType === 1 ? node : node?.parentElement || doc.documentElement;
   }
-  function openEvent(event, keyboard = false, x = event.clientX, y = event.clientY) {
-    const target = targetOf(event);
+  function openEvent(event, keyboard = false, x = event.clientX, y = event.clientY, target = targetOf(event), path = event.composedPath?.() || []) {
     if (keyboard) {
       const rect = target.getBoundingClientRect();
       x = rect.left + Math.min(24, rect.width / 2);
       y = rect.top + Math.min(24, rect.height / 2);
     }
-    open({ event, target, x, y, keyboard });
+    open({ event, target, path, x, y, keyboard });
   }
   function isSuppressed(event) {
-    return suppress && Date.now() < suppress.until && (event.target === suppress.target || suppress.target.contains?.(event.target) || event.target?.contains?.(suppress.target));
+    return suppress && Date.now() < suppress.until && (event.composedPath?.().includes(suppress.target) || event.target === suppress.target || suppress.target.contains?.(event.target) || event.target?.contains?.(suppress.target));
   }
   function cancelGesture(state) {
     state.target.dispatchEvent(new win.PointerEvent('pointercancel', {
@@ -216,7 +222,10 @@ export function createContextMenu({ document: doc, fallback } = {}) {
   }, true);
   listen(doc, 'pointerdown', event => {
     suppress = null;
-    if (menu && !menu.contains(event.target)) close();
+    if (menu && !menu.contains(event.target)) {
+      const path = event.composedPath?.() || [];
+      close(!!returnFocus && (path.includes(returnFocus) || returnFocus.contains?.(event.target)));
+    }
     if (event.pointerType === 'touch' && touch && event.pointerId !== touch.id) {
       cancelTouch();
       return;
@@ -225,17 +234,18 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     cancelTouch();
     if (menu?.contains(event.target)) return;
     const target = targetOf(event);
-    const state = { target, id: event.pointerId, x: event.clientX, y: event.clientY, timer: null };
+    const state = { target, path: event.composedPath?.() || [], id: event.pointerId, x: event.clientX, y: event.clientY, timer: null };
     state.timer = win.setTimeout(() => {
       if (touch !== state) return;
       touch = null;
       suppress = { target, pointerId: state.id, until: Date.now() + 1200 };
       cancelGesture(state);
-      openEvent(event, false, state.x, state.y);
+      openEvent(event, false, state.x, state.y, state.target, state.path);
     }, 550);
     touch = state;
   }, true);
   listen(doc, 'pointermove', event => {
+    if (event.pointerType === 'touch') scrollIntent = { path: event.composedPath?.() || [], until: Date.now() + 1000 };
     if (touch && event.pointerId === touch.id && Math.hypot(event.clientX - touch.x, event.clientY - touch.y) > 10) cancelTouch();
   }, true);
   listen(doc, 'pointerup', event => {
@@ -249,12 +259,21 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     if (!isSuppressed(event)) return;
     event.preventDefault(); event.stopImmediatePropagation();
   }, true);
-  listen(win, 'blur', () => { cancelTouch(); close(); });
+  listen(doc, 'wheel', event => {
+    scrollIntent = { path: event.composedPath?.() || [], until: Date.now() + 1000 };
+  }, true);
+  listen(doc, 'keydown', event => {
+    if (!menu?.contains(event.target) && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) {
+      scrollIntent = { path: event.composedPath?.() || [], until: Date.now() + 1000 };
+    }
+  }, true);
+  listen(win, 'blur', () => { cancelTouch(); close(false, true); });
   listen(win, 'resize', () => close());
   listen(doc, 'scroll', event => {
-    const affects = target => target && (event.target === doc || event.target === win || event.target?.contains?.(target));
-    if (affects(touch?.target)) cancelTouch();
-    if (affects(anchor)) close();
+    const affects = context => context && (event.target === doc || event.target === win || context.path.includes(event.target) || event.target?.contains?.(context.target));
+    if (affects(touch)) cancelTouch();
+    if (affects(anchor) && scrollIntent && Date.now() < scrollIntent.until &&
+        (event.target === doc || event.target === win || scrollIntent.path.includes(event.target))) close();
   }, true);
   return {
     register(root, provider) {
