@@ -9,6 +9,7 @@ export function createContextMenu({ document: doc, fallback } = {}) {
   let returnFocus = null;
   let anchor = null;
   let touch = null;
+  let nativeTouch = null;
   let suppress = null;
   let scrollIntent = null;
   let keyboardAt = 0;
@@ -39,6 +40,20 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     if (!el || el.disabled) return null;
     if (el.tagName === 'INPUT' && !['text', 'search', 'url', 'tel', 'email', 'password'].includes(el.type)) return null;
     return el;
+  }
+  // Mark only text regions, not their surrounding controls or empty space.
+  // Inspect the composed path so markers and editors inside shadow roots work.
+  function nativeTouchTarget(path) {
+    let editable;
+    for (const node of path) {
+      if (node.nodeType !== 1) continue;
+      if (node.hasAttribute('data-native-touch-selection')) return true;
+      if (textControl(node) === node) return true;
+      if (editable === undefined && node.hasAttribute('contenteditable')) {
+        editable = node.getAttribute('contenteditable') !== 'false';
+      }
+    }
+    return editable === true;
   }
   function generic(context) {
     const { target } = context;
@@ -182,6 +197,10 @@ export function createContextMenu({ document: doc, fallback } = {}) {
   function isSuppressed(event) {
     return suppress && Date.now() < suppress.until && (event.composedPath?.().includes(suppress.target) || event.target === suppress.target || suppress.target.contains?.(event.target) || event.target?.contains?.(suppress.target));
   }
+  function matchesGesture(event, state) {
+    return state && (event.composedPath?.().includes(state.target) || event.target === state.target ||
+      state.target.contains?.(event.target) || event.target?.contains?.(state.target));
+  }
   function cancelGesture(state) {
     state.target.dispatchEvent(new win.PointerEvent('pointercancel', {
       bubbles: true, composed: true, pointerId: state.id, pointerType: 'touch',
@@ -189,9 +208,16 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     }));
   }
   listen(doc, 'contextmenu', event => {
+    const isMouse = event.pointerType === 'mouse' || event.sourceCapabilities?.firesTouchEvents === false;
+    const isKeyboard = Date.now() - keyboardAt < 500 && event.clientX === 0 && event.clientY === 0;
+    if (!isMouse && !isKeyboard) {
+      const state = touch?.native ? touch : nativeTouch;
+      if (state && (!state.until || Date.now() < state.until) && matchesGesture(event, state)) return;
+    }
+    if (isMouse) suppress = null;
     event.preventDefault(); event.stopImmediatePropagation();
     if (menu?.contains(event.target)) return;
-    if (isSuppressed(event) || (Date.now() - keyboardAt < 500 && event.clientX === 0 && event.clientY === 0)) return;
+    if (isSuppressed(event) || isKeyboard) return;
     if (touch) {
       const state = touch;
       suppress = { target: state.target, pointerId: state.id, until: Date.now() + 1200 };
@@ -221,6 +247,7 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     }
   }, true);
   listen(doc, 'pointerdown', event => {
+    nativeTouch = null;
     suppress = null;
     if (menu && !menu.contains(event.target)) {
       const path = event.composedPath?.() || [];
@@ -234,7 +261,9 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     cancelTouch();
     if (menu?.contains(event.target)) return;
     const target = targetOf(event);
-    const state = { target, path: event.composedPath?.() || [], id: event.pointerId, x: event.clientX, y: event.clientY, timer: null };
+    const path = event.composedPath?.() || [];
+    const state = { target, path, id: event.pointerId, x: event.clientX, y: event.clientY, timer: null, native: nativeTouchTarget(path) };
+    if (state.native) { touch = state; return; }
     state.timer = win.setTimeout(() => {
       if (touch !== state) return;
       touch = null;
@@ -246,15 +275,21 @@ export function createContextMenu({ document: doc, fallback } = {}) {
   }, true);
   listen(doc, 'pointermove', event => {
     if (event.pointerType === 'touch') scrollIntent = { path: event.composedPath?.() || [], until: Date.now() + 1000 };
-    if (touch && event.pointerId === touch.id && Math.hypot(event.clientX - touch.x, event.clientY - touch.y) > 10) cancelTouch();
+    if (touch && !touch.native && event.pointerId === touch.id && Math.hypot(event.clientX - touch.x, event.clientY - touch.y) > 10) cancelTouch();
   }, true);
   listen(doc, 'pointerup', event => {
-    if (touch && event.pointerId === touch.id) cancelTouch();
+    if (touch && event.pointerId === touch.id) {
+      if (touch.native) nativeTouch = { ...touch, until: Date.now() + 1200 };
+      cancelTouch();
+    }
     if (suppress && Date.now() < suppress.until && event.pointerId === suppress.pointerId) {
       event.preventDefault(); event.stopImmediatePropagation();
     }
   }, true);
-  listen(doc, 'pointercancel', cancelTouch, true);
+  listen(doc, 'pointercancel', event => {
+    if (touch?.native && event.pointerId === touch.id) nativeTouch = { ...touch, until: Date.now() + 1200 };
+    cancelTouch();
+  }, true);
   listen(doc, 'click', event => {
     if (!isSuppressed(event)) return;
     event.preventDefault(); event.stopImmediatePropagation();

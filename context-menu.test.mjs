@@ -83,6 +83,7 @@ class Element extends EventTarget {
   contains(other) { for (let node = other; node; node = node.parentNode) if (node === this) return true; return false; }
   setAttribute(name, value) { this.attributes.set(name, String(value)); }
   getAttribute(name) { return this.attributes.get(name) ?? null; }
+  hasAttribute(name) { return this.attributes.has(name); }
   matches(selector) {
     if (selector === '[role="menu"]') return this.getAttribute('role') === 'menu';
     if (selector === '[role="menuitem"]') return this.getAttribute('role') === 'menuitem';
@@ -260,6 +261,101 @@ test('long press opens once, cancels the gesture, and suppresses the following n
   assert.equal(p.fire(target, 'contextmenu', { clientX: 25, clientY: 30 }).defaultPrevented, true);
   assert.equal(clicks, 0);
   assert.equal(opened, 1);
+  p.controller.destroy();
+});
+test('marked touch leaves native selection and contextmenu events untouched before and after pointerup', () => {
+  for (const timing of ['before', 'after', 'cancel']) {
+    const p = page();
+    const region = p.el('div');
+    region.setAttribute('data-native-touch-selection', '');
+    const target = p.el('span', region);
+    let reached = 0, cancelled = 0;
+    p.doc.addEventListener('contextmenu', () => reached++, true);
+    target.addEventListener('pointercancel', () => cancelled++);
+    const down = p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 7, clientX: 25, clientY: 30 });
+    p.advanceTimers();
+    assert.equal(down.defaultPrevented, false);
+    assert.equal(p.menu(), null);
+    assert.equal(cancelled, 0);
+    if (timing !== 'before') p.fire(target, timing === 'cancel' ? 'pointercancel' : 'pointerup', { pointerType: 'touch', pointerId: 7 });
+    const event = p.fire(target, 'contextmenu', { clientX: 25, clientY: 30 });
+    assert.equal(event.defaultPrevented, false);
+    assert.equal(event.stopped, false);
+    assert.equal(reached, 1);
+    assert.equal(p.menu(), null);
+    if (timing === 'before') assert.equal(p.fire(target, 'pointerup', { pointerType: 'touch', pointerId: 7 }).defaultPrevented, false);
+    p.controller.destroy();
+  }
+});
+
+test('marked content in a shadow tree is native for touch but custom for mouse and keyboard', () => {
+  const p = page();
+  const host = p.el('div');
+  const shadow = p.doc.createElement('shadow-root');
+  shadow.nodeType = 11;
+  shadow.parentNode = host;
+  const region = p.el('div', shadow);
+  region.setAttribute('data-native-touch-selection', '');
+  const target = p.el('span', region);
+  p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 7 });
+  p.fire(target, 'pointerup', { pointerType: 'touch', pointerId: 7 });
+  assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch', clientX: 25, clientY: 30 }).defaultPrevented, false);
+  const rightClick = p.fire(target, 'contextmenu', { pointerType: 'mouse', button: 2, clientX: 25, clientY: 30 });
+  assert.equal(rightClick.defaultPrevented, true);
+  assert.ok(p.menu());
+  p.fire(items(p.menu())[0], 'keydown', { key: 'Escape' });
+  const keyboard = p.fire(target, 'keydown', { key: 'ContextMenu' });
+  assert.equal(keyboard.defaultPrevented, true);
+  assert.ok(p.menu());
+  p.controller.destroy();
+});
+
+test('touch in editable controls and contenteditable descendants remains native', () => {
+  for (const kind of ['input', 'textarea', 'contenteditable']) {
+    const p = page();
+    const editor = p.el(kind === 'contenteditable' ? 'div' : kind);
+    if (kind === 'input') editor.type = 'text';
+    if (kind === 'contenteditable') editor.setAttribute('contenteditable', 'true');
+    const target = kind === 'contenteditable' ? p.el('span', editor) : editor;
+    p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 3 });
+    p.advanceTimers();
+    assert.equal(p.menu(), null);
+    p.fire(target, 'pointerup', { pointerType: 'touch', pointerId: 3 });
+    assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch' }).defaultPrevented, false);
+    p.controller.destroy();
+  }
+});
+
+test('unmarked siblings still use the custom menu and mouse clears stale touch suppression', () => {
+  const p = page();
+  const container = p.el('div');
+  const text = p.el('span', container);
+  text.setAttribute('data-native-touch-selection', '');
+  const blank = p.el('div', container);
+  p.fire(text, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 1 });
+  p.fire(text, 'pointerup', { pointerType: 'touch', pointerId: 1 });
+  p.fire(text, 'pointerdown', { pointerType: 'mouse', button: 2 });
+  assert.equal(p.fire(text, 'contextmenu', { button: 2, clientX: 10, clientY: 10 }).defaultPrevented, true);
+  assert.ok(p.menu());
+  p.fire(items(p.menu())[0], 'keydown', { key: 'Escape' });
+  p.fire(blank, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 2 });
+  p.advanceTimers();
+  assert.ok(p.menu());
+  assert.equal(p.fire(blank, 'contextmenu', { pointerType: 'mouse', button: 2, clientX: 10, clientY: 10 }).defaultPrevented, true);
+  p.controller.destroy();
+});
+
+test('selection movement remains native but a second touch cancels gesture tracking', () => {
+  const p = page();
+  const target = p.el('span');
+  target.setAttribute('data-native-touch-selection', '');
+  p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 1, clientX: 10, clientY: 10 });
+  p.fire(target, 'pointermove', { pointerType: 'touch', pointerId: 1, clientX: 30, clientY: 10 });
+  assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch', clientX: 30, clientY: 10 }).defaultPrevented, false);
+  p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: false, pointerId: 2 });
+  p.fire(target, 'pointerup', { pointerType: 'touch', pointerId: 1 });
+  assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch', clientX: 10, clientY: 10 }).defaultPrevented, true);
+  assert.ok(p.menu());
   p.controller.destroy();
 });
 
