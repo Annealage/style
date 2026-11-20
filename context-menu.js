@@ -55,6 +55,22 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     }
     return editable === true;
   }
+  function nearSelection(x, y) {
+    const near = rect => rect && x >= rect.left - 32 && x <= rect.right + 32 &&
+      y >= rect.top - 32 && y <= rect.bottom + 32;
+    const input = textControl(doc.activeElement);
+    if (input && input.selectionStart != null && input.selectionEnd > input.selectionStart &&
+        near(input.getBoundingClientRect())) return true;
+    const selection = win.getSelection();
+    if (!selection || selection.isCollapsed || !selection.rangeCount) return false;
+    const range = selection.getRangeAt(0);
+    for (const start of [true, false]) {
+      const endpoint = range.cloneRange();
+      endpoint.collapse(start);
+      if (near(endpoint.getBoundingClientRect())) return true;
+    }
+    return false;
+  }
   function generic(context) {
     const { target } = context;
     const input = textControl(target);
@@ -262,10 +278,11 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     if (menu?.contains(event.target)) return;
     const target = targetOf(event);
     const path = event.composedPath?.() || [];
-    const state = { target, path, id: event.pointerId, x: event.clientX, y: event.clientY, timer: null, native: nativeTouchTarget(path) };
+    const state = { target, path, id: event.pointerId, x: event.clientX, y: event.clientY, timer: null, native: nativeTouchTarget(path) || nearSelection(event.clientX, event.clientY) };
     if (state.native) { touch = state; return; }
     state.timer = win.setTimeout(() => {
       if (touch !== state) return;
+      if (nearSelection(state.x, state.y)) { state.native = true; state.timer = null; return; }
       touch = null;
       suppress = { target, pointerId: state.id, until: Date.now() + 1200 };
       cancelGesture(state);

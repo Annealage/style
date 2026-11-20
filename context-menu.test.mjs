@@ -326,6 +326,60 @@ test('touch in editable controls and contenteditable descendants remains native'
   }
 });
 
+test('selection handles leave touch native without disabling menus elsewhere', () => {
+  const p = page(() => ({ label: 'Page', items: [action('page', 'Page')] }));
+  const target = p.el('div');
+  const range = {
+    cloneRange: () => ({
+      collapse(start) { this.start = start; },
+      getBoundingClientRect() {
+        const x = this.start ? 100 : 200;
+        return { left: x, right: x, top: 100, bottom: 120 };
+      },
+    }),
+  };
+  p.win.getSelection = () => ({ isCollapsed: false, rangeCount: 1, getRangeAt: () => range });
+  p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 1, clientX: 205, clientY: 130 });
+  p.advanceTimers();
+  assert.equal(p.menu(), null);
+  p.fire(target, 'pointerup', { pointerType: 'touch', pointerId: 1 });
+  assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch', clientX: 205, clientY: 130 }).defaultPrevented, false);
+  p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 2, clientX: 500, clientY: 500 });
+  p.advanceTimers();
+  assert.ok(p.menu());
+  p.controller.destroy();
+});
+
+test('text selection beginning during a touch cancels the app menu', () => {
+  const p = page(() => ({ label: 'Page', items: [action('page', 'Page')] }));
+  const target = p.el('div');
+  p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 1, clientX: 100, clientY: 100 });
+  p.win.getSelection = () => ({
+    isCollapsed: false, rangeCount: 1,
+    getRangeAt: () => ({ cloneRange: () => ({
+      collapse() {}, getBoundingClientRect: () => ({ left: 100, right: 100, top: 100, bottom: 120 }),
+    }) }),
+  });
+  p.advanceTimers();
+  assert.equal(p.menu(), null);
+  assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch' }).defaultPrevented, false);
+  p.controller.destroy();
+});
+
+test('a selection handle next to a focused text control leaves touch native', () => {
+  const p = page(() => ({ label: 'Page', items: [action('page', 'Page')] }));
+  const editor = p.el('textarea');
+  editor.rect = { left: 50, right: 200, top: 50, bottom: 120 };
+  editor.selectionStart = 2;
+  editor.selectionEnd = 8;
+  editor.focus();
+  p.fire(p.doc.body, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 1, clientX: 210, clientY: 125 });
+  p.advanceTimers();
+  assert.equal(p.menu(), null);
+  assert.equal(p.fire(p.doc.body, 'contextmenu', { pointerType: 'touch' }).defaultPrevented, false);
+  p.controller.destroy();
+});
+
 test('unmarked siblings still use the custom menu and mouse clears stale touch suppression', () => {
   const p = page();
   const container = p.el('div');
