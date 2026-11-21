@@ -119,7 +119,7 @@ A CodeMirror 6 theme takes the same tokens: a `HighlightStyle` mapping keywords 
 
 `runtime-files.txt` is the one list of what a product serves and packages: one path or directory per line, no globs (fonts are the directory). Static routes, wheel `force-include`, Canvas's copy list and Trace's `Containerfile` read it; `demo/`, `tools/` and the `*.md` files are not on it.
 
-`context-menu.js` keeps touch selection native in text regions and near active selection handles. Long presses elsewhere and desktop right-clicks open the app menu.
+`context-menu.js` leaves touch selection and native text menus to the browser in text regions and near active selection handles. It keeps that ownership until the next pointer gesture, including delayed context-menu events. Long presses elsewhere and desktop right-clicks open the app menu.
 
 `tools/bump-style.sh` is a template: copy it to `scripts/bump-style.sh` in a product. `scripts/bump-style.sh [sha-or-tag]` fetches `lib/style`, checks out the ref detached, refuses a ref that is not on `origin/main` or a submodule with changes of its own, checks the runtime list exists, stages the gitlink and prints the log between the old and new pin. It never commits.
 

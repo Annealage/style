@@ -224,12 +224,14 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     }));
   }
   listen(doc, 'contextmenu', event => {
-    const isMouse = event.pointerType === 'mouse' || event.sourceCapabilities?.firesTouchEvents === false;
     const isKeyboard = Date.now() - keyboardAt < 500 && event.clientX === 0 && event.clientY === 0;
-    if (!isMouse && !isKeyboard) {
-      const state = touch?.native ? touch : nativeTouch;
-      if (state && (!state.until || Date.now() < state.until) && matchesGesture(event, state)) return;
-    }
+    const state = touch?.native ? touch : nativeTouch;
+    const fromTouch = event.pointerType === 'touch' || event.sourceCapabilities?.firesTouchEvents === true ||
+      (!event.pointerType && event.sourceCapabilities?.firesTouchEvents !== false &&
+       win.matchMedia?.('(pointer: coarse)').matches);
+    if (!isKeyboard && ((state && matchesGesture(event, state)) ||
+        (fromTouch && nativeTouchTarget(event.composedPath?.() || [])))) return;
+    const isMouse = event.pointerType === 'mouse' || event.sourceCapabilities?.firesTouchEvents === false;
     if (isMouse) suppress = null;
     event.preventDefault(); event.stopImmediatePropagation();
     if (menu?.contains(event.target)) return;
@@ -273,7 +275,10 @@ export function createContextMenu({ document: doc, fallback } = {}) {
       cancelTouch();
       return;
     }
-    if (event.pointerType !== 'touch' || !event.isPrimary) return;
+    if (event.pointerType !== 'touch' || !event.isPrimary) {
+      if (event.pointerType !== 'touch') cancelTouch();
+      return;
+    }
     cancelTouch();
     if (menu?.contains(event.target)) return;
     const target = targetOf(event);
@@ -296,7 +301,7 @@ export function createContextMenu({ document: doc, fallback } = {}) {
   }, true);
   listen(doc, 'pointerup', event => {
     if (touch && event.pointerId === touch.id) {
-      if (touch.native) nativeTouch = { ...touch, until: Date.now() + 1200 };
+      if (touch.native) nativeTouch = touch;
       cancelTouch();
     }
     if (suppress && Date.now() < suppress.until && event.pointerId === suppress.pointerId) {
@@ -304,7 +309,7 @@ export function createContextMenu({ document: doc, fallback } = {}) {
     }
   }, true);
   listen(doc, 'pointercancel', event => {
-    if (touch?.native && event.pointerId === touch.id) nativeTouch = { ...touch, until: Date.now() + 1200 };
+    if (touch?.native && event.pointerId === touch.id) nativeTouch = touch;
     cancelTouch();
   }, true);
   listen(doc, 'click', event => {

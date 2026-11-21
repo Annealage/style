@@ -300,6 +300,7 @@ test('marked content in a shadow tree is native for touch but custom for mouse a
   p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 7 });
   p.fire(target, 'pointerup', { pointerType: 'touch', pointerId: 7 });
   assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch', clientX: 25, clientY: 30 }).defaultPrevented, false);
+  p.fire(target, 'pointerdown', { pointerType: 'mouse', isPrimary: true, pointerId: 8, button: 2 });
   const rightClick = p.fire(target, 'contextmenu', { pointerType: 'mouse', button: 2, clientX: 25, clientY: 30 });
   assert.equal(rightClick.defaultPrevented, true);
   assert.ok(p.menu());
@@ -324,6 +325,80 @@ test('touch in editable controls and contenteditable descendants remains native'
     assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch' }).defaultPrevented, false);
     p.controller.destroy();
   }
+});
+
+test('mobile context menus in the prompt keep focus and selection without a preceding pointer event', () => {
+  for (const options of [
+    { pointerType: 'touch' },
+    { sourceCapabilities: { firesTouchEvents: true } },
+  ]) {
+    const p = page(() => ({ label: 'Page', items: [action('page', 'Page')] }));
+    const input = p.el('textarea');
+    input.value = 'Edit this prompt';
+    input.selectionStart = 5;
+    input.selectionEnd = 9;
+    input.focus();
+    const event = p.fire(input, 'contextmenu', options);
+    assert.equal(event.defaultPrevented, false);
+    assert.equal(p.menu(), null);
+    assert.equal(p.doc.activeElement, input);
+    assert.deepEqual([input.selectionStart, input.selectionEnd], [5, 9]);
+    p.controller.destroy();
+  }
+});
+
+test('a touch-oriented browser can open its native prompt menu without pointer metadata', () => {
+  const p = page(() => ({ label: 'Page', items: [action('page', 'Page')] }));
+  p.win.matchMedia = query => ({ matches: query === '(pointer: coarse)' });
+  const input = p.el('textarea');
+  input.focus();
+  const event = p.fire(input, 'contextmenu');
+  assert.equal(event.defaultPrevented, false);
+  assert.equal(p.doc.activeElement, input);
+  assert.equal(p.menu(), null);
+  p.controller.destroy();
+});
+
+test('native ownership lasts until the next pointer rather than a fixed timeout', () => {
+  const p = page(() => ({ label: 'Page', items: [action('page', 'Page')] }));
+  const input = p.el('textarea');
+  input.focus();
+  const now = Date.now;
+  try {
+    let time = now();
+    Date.now = () => time;
+    p.fire(input, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 1 });
+    p.fire(input, 'pointerup', { pointerType: 'touch', pointerId: 1 });
+    time += 5000;
+    const event = p.fire(input, 'contextmenu');
+    assert.equal(event.defaultPrevented, false);
+    assert.equal(p.doc.activeElement, input);
+    assert.equal(p.menu(), null);
+  } finally {
+    Date.now = now;
+    p.controller.destroy();
+  }
+});
+
+test('touch-generated mouse contextmenu on an editor stays native, but a mouse right click is custom', () => {
+  const p = page(() => ({ label: 'Page', items: [action('page', 'Page')] }));
+  const input = p.el('textarea');
+  input.focus();
+  p.fire(input, 'pointerdown', { pointerType: 'touch', isPrimary: true, pointerId: 1 });
+  p.fire(input, 'pointerup', { pointerType: 'touch', pointerId: 1 });
+  const mobile = p.fire(input, 'contextmenu', {
+    pointerType: 'mouse', sourceCapabilities: { firesTouchEvents: true },
+  });
+  assert.equal(mobile.defaultPrevented, false);
+  assert.equal(p.doc.activeElement, input);
+  assert.equal(p.menu(), null);
+  p.fire(input, 'pointerdown', { pointerType: 'mouse', isPrimary: true, pointerId: 2 });
+  const desktop = p.fire(input, 'contextmenu', {
+    pointerType: 'mouse', sourceCapabilities: { firesTouchEvents: false },
+  });
+  assert.equal(desktop.defaultPrevented, true);
+  assert.ok(p.menu());
+  p.controller.destroy();
 });
 
 test('selection handles leave touch native without disabling menus elsewhere', () => {
@@ -399,7 +474,7 @@ test('unmarked siblings still use the custom menu and mouse clears stale touch s
   p.controller.destroy();
 });
 
-test('selection movement remains native but a second touch cancels gesture tracking', () => {
+test('selection movement and a second touch remain native on text', () => {
   const p = page();
   const target = p.el('span');
   target.setAttribute('data-native-touch-selection', '');
@@ -408,8 +483,8 @@ test('selection movement remains native but a second touch cancels gesture track
   assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch', clientX: 30, clientY: 10 }).defaultPrevented, false);
   p.fire(target, 'pointerdown', { pointerType: 'touch', isPrimary: false, pointerId: 2 });
   p.fire(target, 'pointerup', { pointerType: 'touch', pointerId: 1 });
-  assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch', clientX: 10, clientY: 10 }).defaultPrevented, true);
-  assert.ok(p.menu());
+  assert.equal(p.fire(target, 'contextmenu', { pointerType: 'touch', clientX: 10, clientY: 10 }).defaultPrevented, false);
+  assert.equal(p.menu(), null);
   p.controller.destroy();
 });
 
